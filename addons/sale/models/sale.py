@@ -519,7 +519,11 @@ class SaleOrder(models.Model):
         if len(invoices) > 1:
             action['domain'] = [('id', 'in', invoices.ids)]
         elif len(invoices) == 1:
-            action['views'] = [(self.env.ref('account.view_move_form').id, 'form')]
+            form_view = [(self.env.ref('account.view_move_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
             action['res_id'] = invoices.id
         else:
             action = {'type': 'ir.actions.act_window_close'}
@@ -567,7 +571,7 @@ class SaleOrder(models.Model):
                     if pending_section:
                         invoice_vals['invoice_line_ids'].append((0, 0, pending_section._prepare_invoice_line()))
                         pending_section = None
-                invoice_vals['invoice_line_ids'].append((0, 0, line._prepare_invoice_line()))
+                    invoice_vals['invoice_line_ids'].append((0, 0, line._prepare_invoice_line()))
 
             if not invoice_vals['invoice_line_ids']:
                 raise UserError(_('There is no invoiceable line. If a product has a Delivered quantities invoicing policy, please make sure that a quantity has been delivered.'))
