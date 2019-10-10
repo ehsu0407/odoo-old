@@ -1,0 +1,3 @@
+[submodule "uniware"]
+	path = uniware
+	url = https://github.com/ehsu0407/uniware-odoo
