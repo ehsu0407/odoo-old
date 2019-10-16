@@ -47,7 +47,7 @@ class AccountMove(models.Model):
             journal = self.env['account.journal'].browse(self._context['default_journal_id'])
 
             if move_type != 'entry' and journal.type != journal_type:
-                raise UserError(_("Cannot create an invoice of type %s with a journal having %s as type.") % (move_type, journal_type))
+                raise UserError(_("Cannot create an invoice of type %s with a journal having %s as type.") % (move_type, journal.type))
         else:
             company_id = self._context.get('default_company_id', self.env.company.id)
             domain = [('company_id', '=', company_id), ('type', '=', journal_type)]
@@ -164,7 +164,7 @@ class AccountMove(models.Model):
         help='If this checkbox is ticked, this entry will be automatically posted at its date.')
 
     # ==== Reverse feature fields ====
-    reversed_entry_id = fields.Many2one('account.move', string="Reverse entry", readonly=True, copy=False)
+    reversed_entry_id = fields.Many2one('account.move', string="Reversal of", readonly=True, copy=False)
 
     # =========================================================
     # Invoice related fields
@@ -1924,10 +1924,11 @@ class AccountMove(models.Model):
         reverse_type_map = {
             'entry': 'entry',
             'out_invoice': 'out_refund',
+            'out_refund': 'entry',
             'in_invoice': 'in_refund',
-            'in_refund': 'in_invoice',
-            'out_receipt': 'in_receipt',
-            'in_receipt': 'out_receipt',
+            'in_refund': 'entry',
+            'out_receipt': 'entry',
+            'in_receipt': 'entry',
         }
 
         move_vals_list = []
@@ -2376,7 +2377,7 @@ class AccountMoveLine(models.Model):
     name = fields.Char(string='Label')
     quantity = fields.Float(string='Quantity',
         default=1.0, digits='Product Unit of Measure',
-        help="The optional quantity expressed by this line, eg: number of product sold."
+        help="The optional quantity expressed by this line, eg: number of product sold. "
              "The quantity is not a legal requirement but is very useful for some reports.")
     price_unit = fields.Float(string='Unit Price', digits='Product Price')
     discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0)
@@ -3049,6 +3050,7 @@ class AccountMoveLine(models.Model):
 
         for vals in vals_list:
             move = self.env['account.move'].browse(vals['move_id'])
+            vals.setdefault('company_currency_id', move.company_id.currency_id.id) # important to bypass the ORM limitation where monetary fields are not rounded; more info in the commit message
 
             if move.is_invoice(include_receipts=True):
                 currency = self.env['res.currency'].browse(vals.get('currency_id'))
