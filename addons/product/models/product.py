@@ -324,7 +324,7 @@ class ProductProduct(models.Model):
         if 'product_template_attribute_value_ids' in values:
             # `_get_variant_id_for_combination` depends on `product_template_attribute_value_ids`
             self.clear_caches()
-        if 'active' in values:
+        if 'active' in values and values['active'] != self.active:
             # prefetched o2m have to be reloaded (because of active_test)
             # (eg. product.template: product_variant_ids)
             self.invalidate_cache()
