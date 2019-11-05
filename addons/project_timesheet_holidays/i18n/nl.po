@@ -39,6 +39,9 @@ msgid ""
 "the time off. If you don't want a timesheet, you should leave the internal "
 "project and task empty."
 msgstr ""
+"Zowel het interne project als de taak zijn vereist om een rooster voor de "
+"vrije tijd te genereren. Als u geen urenstaat wilt, moet u het interne "
+"project en de taak leeg laten."
 
 #. module: project_timesheet_holidays
 #: model:ir.model,name:project_timesheet_holidays.model_res_company
@@ -69,7 +72,7 @@ msgid ""
 "Vacation Project of the company."
 msgstr ""
 "Indien aangevinkt wordt er een urenstaat gegenereerd in het vakantie project"
-" van het bedrijf wanneer de verlofaanvraag gevalideerd wordt."
+" van het bedrijf wanneer de verlofaanvraag bevestigd wordt."
 
 #. module: project_timesheet_holidays
 #: code:addons/project_timesheet_holidays/models/res_company.py:0
@@ -104,7 +107,7 @@ msgstr "Taak voor urenstaat"
 #: code:addons/project_timesheet_holidays/models/res_company.py:0
 #, python-format
 msgid "The Internal Project of a company should be in that company."
-msgstr ""
+msgstr "Het interne project van een bedrijf moet in dat bedrijf zijn."
 
 #. module: project_timesheet_holidays
 #: model:ir.model.fields,help:project_timesheet_holidays.field_hr_leave_type__timesheet_project_id
@@ -112,8 +115,7 @@ msgid ""
 "The project will contain the timesheet generated when a time off is "
 "validated."
 msgstr ""
-"Het project bevat de urenstaat gegenereerd wanneer een verlof gevalideerd "
-"is."
+"Het project bevat de urenstaat gegenereerd wanneer een verlof bevestigd is."
 
 #. module: project_timesheet_holidays
 #: code:addons/project_timesheet_holidays/models/res_company.py:0

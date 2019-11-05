@@ -4,7 +4,6 @@
 # 
 # Translators:
 # Martin Trigaux, 2019
-# Cas Vissers <casvissers@brahoo.nl>, 2019
 # Yenthe Van Ginneken <yenthespam@gmail.com>, 2019
 # Erwin van der Ploeg <erwin@odooexperts.nl>, 2019
 # 
@@ -532,7 +531,7 @@ msgid ""
 "This e-mail template will be sent on confirmation. Leave empty to send "
 "nothing."
 msgstr ""
-"Dit e-mailsjabloon wordt verstuurd bij bevestiging. Laat leeg om niets te "
+"Dit e-mailsjabloon wordt verzonden bij bevestiging. Laat leeg om niets te "
 "versturen."
 
 #. module: sale_management

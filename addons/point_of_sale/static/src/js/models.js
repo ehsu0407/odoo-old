@@ -307,7 +307,8 @@ exports.PosModel = Backbone.Model.extend({
                 });
                 if (user.id === session.uid) {
                     self.user = user;
-                    self.employee = user;
+                    self.employee.name = user.name;
+                    self.employee.role = user.role;
                     self.employee.user_id = [user.id, user.name];
                 }
             });
@@ -318,7 +319,13 @@ exports.PosModel = Backbone.Model.extend({
     },{
         model:  'product.pricelist',
         fields: ['name', 'display_name', 'discount_policy'],
-        domain: function(self) { return [['id', 'in', self.config.available_pricelist_ids]]; },
+        domain: function(self) {
+            if (self.config.use_pricelist) {
+                return [['id', 'in', self.config.available_pricelist_ids]];
+            } else {
+                return [['id', '=', self.config.pricelist_id[0]]];
+            }
+        },
         loaded: function(self, pricelists){
             _.map(pricelists, function (pricelist) { pricelist.items = []; });
             self.default_pricelist = _.findWhere(pricelists, {id: self.config.pricelist_id[0]});
