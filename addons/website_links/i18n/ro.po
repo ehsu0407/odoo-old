@@ -3,6 +3,8 @@
 # 	* website_links
 # 
 # Translators:
+# Martin Trigaux, 2019
+# Cozmin Candea <office@terrabit.ro>, 2019
 # Dorin Hongu <dhongu@gmail.com>, 2019
 # 
 msgid ""
@@ -24,14 +26,14 @@ msgstr ""
 #: code:addons/website_links/static/src/js/website_links_charts.js:0
 #, python-format
 msgid " clicks"
-msgstr ""
+msgstr "clicuri"
 
 #. module: website_links
 #. openerp-web
 #: code:addons/website_links/static/src/js/website_links_charts.js:0
 #, python-format
 msgid " countries"
-msgstr ""
+msgstr "țări"
 
 #. module: website_links
 #. openerp-web
@@ -68,7 +70,7 @@ msgstr ""
 #. module: website_links
 #: model_terms:ir.ui.view,arch_db:website_links.graphs
 msgid "<strong>Source</strong>"
-msgstr ""
+msgstr "<strong>Sursă:</strong>"
 
 #. module: website_links
 #: model_terms:ir.ui.view,arch_db:website_links.graphs
@@ -94,7 +96,7 @@ msgstr ""
 #: code:addons/website_links/static/src/js/website_links.js:0
 #, python-format
 msgid "Copied"
-msgstr ""
+msgstr "Copiat"
 
 #. module: website_links
 #. openerp-web
@@ -102,7 +104,7 @@ msgstr ""
 #: code:addons/website_links/static/src/xml/recent_link.xml:0
 #, python-format
 msgid "Copy"
-msgstr ""
+msgstr "Copie"
 
 #. module: website_links
 #. openerp-web
@@ -129,12 +131,12 @@ msgstr ""
 #: code:addons/website_links/static/src/xml/recent_link.xml:0
 #, python-format
 msgid "Icon"
-msgstr ""
+msgstr "Pictogramă"
 
 #. module: website_links
 #: model_terms:ir.ui.view,arch_db:website_links.graphs
 msgid "Last Month"
-msgstr ""
+msgstr "Ultima lună"
 
 #. module: website_links
 #: model_terms:ir.ui.view,arch_db:website_links.graphs
@@ -165,7 +167,7 @@ msgstr ""
 #. module: website_links
 #: model_terms:ir.ui.view,arch_db:website_links.create_shorten_url
 msgid "Newest"
-msgstr ""
+msgstr "Cele mai noi"
 
 #. module: website_links
 #: model_terms:ir.ui.view,arch_db:website_links.create_shorten_url
@@ -187,19 +189,23 @@ msgid ""
 "the source from which your traffic will come from, Facebook or Twitter for "
 "instance.\"/>"
 msgstr ""
+"Sursa <i class=\"fa fa-info-circle\" data-toggle=\"tooltip\" data-"
+"placement=\"top\" role=\"img\" aria-label=\"Tooltip info\" title=\"Defines "
+"the source from which your traffic will come from, Facebook or Twitter for "
+"instance.\"/>"
 
 #. module: website_links
 #: model_terms:ir.ui.view,arch_db:website_links.graphs
 #: model_terms:ir.ui.view,arch_db:website_links.link_tracker_view_tree
 msgid "Statistics"
-msgstr ""
+msgstr "Statistica"
 
 #. module: website_links
 #. openerp-web
 #: code:addons/website_links/static/src/xml/recent_link.xml:0
 #, python-format
 msgid "Stats"
-msgstr ""
+msgstr "Status"
 
 #. module: website_links
 #. openerp-web
@@ -216,7 +222,7 @@ msgstr ""
 #: code:addons/website_links/static/src/js/website_links_charts.js:0
 #, python-format
 msgid "There is no data to show"
-msgstr ""
+msgstr "Aici nu sunt date de afișat"
 
 #. module: website_links
 #. openerp-web
@@ -236,7 +242,7 @@ msgstr ""
 #. module: website_links
 #: model_terms:ir.ui.view,arch_db:website_links.create_shorten_url
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #. module: website_links
 #. openerp-web
@@ -250,7 +256,7 @@ msgstr ""
 #: code:addons/website_links/static/src/js/website_links_charts.js:0
 #, python-format
 msgid "Undefined"
-msgstr ""
+msgstr "Nedefinit(ă)"
 
 #. module: website_links
 #: code:addons/website_links/models/link_tracker.py:0
@@ -276,7 +282,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:website_links.graphs
 #, python-format
 msgid "cancel"
-msgstr ""
+msgstr "anulare"
 
 #. module: website_links
 #. openerp-web
@@ -314,7 +320,7 @@ msgstr ""
 #. module: website_links
 #: model_terms:ir.ui.view,arch_db:website_links.create_shorten_url
 msgid "e.g. https://www.odoo.com/page/contactus"
-msgstr ""
+msgstr "e.g. https://www.odoo.com/page/contactus"
 
 #. module: website_links
 #. openerp-web
@@ -322,7 +328,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:website_links.graphs
 #, python-format
 msgid "ok"
-msgstr ""
+msgstr "ok"
 
 #. module: website_links
 #. openerp-web
@@ -330,4 +336,4 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:website_links.graphs
 #, python-format
 msgid "or"
-msgstr ""
+msgstr "sau"

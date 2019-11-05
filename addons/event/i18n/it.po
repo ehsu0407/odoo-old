@@ -4,7 +4,7 @@
 # 
 # Translators:
 # Cesare Cugnasco <cesare.cugnasco@gmail.com>, 2019
-# Lorenzo Battistini <lorenzo.battistini@agilebg.com>, 2019
+# Lorenzo Battistini <lb@takobi.online>, 2019
 # Luigi Di Naro <gigidn@gmail.com>, 2019
 # SebastianoPistore <SebastianoPistore.info@protonmail.ch>, 2019
 # maiolif <maiolif@mgftools.com>, 2019
@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-07 07:12+0000\n"
+"POT-Creation-Date: 2019-10-18 09:47+0000\n"
 "PO-Revision-Date: 2019-08-26 09:10+0000\n"
 "Last-Translator: Sergio Zanchetta <primes2h@gmail.com>, 2019\n"
 "Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
@@ -48,7 +48,8 @@ msgstr "%s (copia)"
 
 #. module: event
 #: model:ir.actions.report,print_report_name:event.report_event_registration_badge
-msgid "'Registration Event - %s' % (object.name).replace('/','')"
+msgid ""
+"'Registration Event - %s' % (object.name or 'Attendee').replace('/','')"
 msgstr ""
 
 #. module: event
@@ -1251,12 +1252,6 @@ msgid ""
 msgstr ""
 
 #. module: event
-#: model_terms:ir.ui.view,arch_db:event.view_event_search
-#: model_terms:ir.ui.view,arch_db:event.view_registration_search
-msgid "Exception Activities"
-msgstr "Eccezioni "
-
-#. module: event
 #: model:event.type,name:event.event_type_1
 msgid "Exhibition"
 msgstr "Esposizione"
@@ -1559,7 +1554,7 @@ msgstr "Logo"
 #: model:ir.model.fields.selection,name:event.selection__event_mail__notification_type__mail
 #: model:ir.model.fields.selection,name:event.selection__event_type_mail__notification_type__mail
 msgid "Mail"
-msgstr "Messaggio di posta"
+msgstr "E-mail"
 
 #. module: event
 #: model:ir.model.fields,field_description:event.field_event_mail__mail_registration_ids
@@ -1951,7 +1946,7 @@ msgid ""
 "                track registrations and participations, automate the confirmation emails, sell tickets, etc."
 msgstr ""
 "Programmare e organizzare gli eventi in modo efficiente:\n"
-"                tracciare le iscrizioni e le presenze, automatizzare le email di conferma, vendere biglietti, ecc."
+"                monitorare iscrizioni e presenze, automatizzare le e-mail di conferma, vendere biglietti ecc."
 
 #. module: event
 #: model:ir.model.fields,field_description:event.field_event_mail__scheduled_date
@@ -1987,7 +1982,7 @@ msgstr "Invia"
 #. module: event
 #: model_terms:ir.ui.view,arch_db:event.view_event_registration_form
 msgid "Send by Email"
-msgstr "Invia con email"
+msgstr "Invia con e-mail"
 
 #. module: event
 #: model:ir.model.fields,field_description:event.field_event_mail__done
@@ -2204,7 +2199,7 @@ msgstr "Messaggi non letti"
 #: model:ir.model.fields,field_description:event.field_event_event__message_unread_counter
 #: model:ir.model.fields,field_description:event.field_event_registration__message_unread_counter
 msgid "Unread Messages Counter"
-msgstr "Contatore messaggi non letti"
+msgstr "Numero messaggi non letti"
 
 #. module: event
 #: model_terms:ir.ui.view,arch_db:event.view_event_search

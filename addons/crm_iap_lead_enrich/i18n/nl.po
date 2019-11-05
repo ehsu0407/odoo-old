@@ -3,8 +3,8 @@
 # 	* crm_iap_lead_enrich
 # 
 # Translators:
-# Martin Trigaux, 2019
 # Cas Vissers <casvissers@brahoo.nl>, 2019
+# Erwin van der Ploeg <erwin@odooexperts.nl>, 2019
 # Yenthe Van Ginneken <yenthespam@gmail.com>, 2019
 # 
 msgid ""
@@ -64,7 +64,7 @@ msgstr ""
 #: model:ir.cron,cron_name:crm_iap_lead_enrich.ir_cron_lead_enrichment
 #: model:ir.cron,name:crm_iap_lead_enrich.ir_cron_lead_enrichment
 msgid "CRM: enrich leads (IAP)"
-msgstr ""
+msgstr "CRM: leads verrijken (IAP)"
 
 #. module: crm_iap_lead_enrich
 #: model:ir.model,name:crm_iap_lead_enrich.model_res_config_settings
@@ -80,7 +80,7 @@ msgstr "Schermnaam"
 #: model:ir.actions.server,name:crm_iap_lead_enrich.action_enrich_mail
 #: model_terms:ir.ui.view,arch_db:crm_iap_lead_enrich.crm_lead_view_form
 msgid "Enrich"
-msgstr ""
+msgstr "Verrijk"
 
 #. module: crm_iap_lead_enrich
 #: model_terms:ir.ui.view,arch_db:crm_iap_lead_enrich.crm_lead_view_form
@@ -95,17 +95,17 @@ msgstr ""
 #. module: crm_iap_lead_enrich
 #: model:ir.model.fields,field_description:crm_iap_lead_enrich.field_crm_lead__iap_enrich_done
 msgid "Enrichment done"
-msgstr ""
+msgstr "Verrijking gereed"
 
 #. module: crm_iap_lead_enrich
 #: model:ir.model,name:crm_iap_lead_enrich.model_iap_enrich_api
 msgid "IAP Lead Enrichment API"
-msgstr ""
+msgstr "IAP lead verrijking API"
 
 #. module: crm_iap_lead_enrich
 #: model_terms:ir.ui.view,arch_db:crm_iap_lead_enrich.mail_message_lead_enrich_no_credit
 msgid "IAP account"
-msgstr ""
+msgstr "IAP account"
 
 #. module: crm_iap_lead_enrich
 #: model:ir.model.fields,field_description:crm_iap_lead_enrich.field_iap_enrich_api__id
@@ -121,17 +121,17 @@ msgstr "Laatst gewijzigd op"
 #: model_terms:ir.ui.view,arch_db:crm_iap_lead_enrich.mail_message_lead_enrich_no_email
 #: model_terms:ir.ui.view,arch_db:crm_iap_lead_enrich.mail_message_lead_enrich_notfound
 msgid "Lead Enrichment based on email address"
-msgstr ""
+msgstr "Lead verrijking gebaseerd op e-mailadres"
 
 #. module: crm_iap_lead_enrich
 #: model_terms:ir.ui.view,arch_db:crm_iap_lead_enrich.mail_message_lead_enrich_no_credit
 msgid "Lead enriched based on email address"
-msgstr ""
+msgstr "Lead verrijking gebaseerd op e-mailadres"
 
 #. module: crm_iap_lead_enrich
 #: model:ir.model,name:crm_iap_lead_enrich.model_crm_lead
 msgid "Lead/Opportunity"
-msgstr "Lead/Prospect"
+msgstr "Lead/Verkoopkans"
 
 #. module: crm_iap_lead_enrich
 #: model:ir.model.fields,field_description:crm_iap_lead_enrich.field_crm_lead__reveal_id
