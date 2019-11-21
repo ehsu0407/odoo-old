@@ -2834,7 +2834,7 @@ msgstr "產品目錄"
 #: model:ir.model.fields,field_description:sale.field_sale_report__categ_id
 #: model_terms:ir.ui.view,arch_db:sale.view_order_product_search
 msgid "Product Category"
-msgstr "產品分類"
+msgstr "產品類別"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_report_all_channels_sales__product_qty
@@ -3787,6 +3787,14 @@ msgstr "利潤率計算為產品銷售價格減去其詳細表格中的成本集
 #, python-format
 msgid "The order is not in a state requiring customer signature."
 msgstr "訂單未處於需要客戶簽名的狀態。"
+
+#. module: sale
+#: code:addons/sale/models/payment.py:97
+#, python-format
+msgid ""
+"The order was not confirmed despite response from the acquirer (%s): order "
+"total is %r but acquirer replied with %r."
+msgstr ""
 
 #. module: sale
 #: model:ir.model.fields,help:sale.field_sale_order__reference
