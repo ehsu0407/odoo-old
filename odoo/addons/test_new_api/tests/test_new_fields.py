@@ -911,12 +911,15 @@ class TestFields(common.TransactionCase):
         company2 = self.env['res.company'].create({'name': 'B'})
 
         # create one user per company
-        user0 = self.env['res.users'].create({'name': 'Foo', 'login': 'foo',
-                                              'company_id': company0.id, 'company_ids': []})
-        user1 = self.env['res.users'].create({'name': 'Bar', 'login': 'bar',
-                                              'company_id': company1.id, 'company_ids': []})
-        user2 = self.env['res.users'].create({'name': 'Baz', 'login': 'baz',
-                                              'company_id': company2.id, 'company_ids': []})
+        user0 = self.env['res.users'].create({
+            'name': 'Foo', 'login': 'foo', 'company_id': company0.id,
+            'company_ids': [(6, 0, [company0.id, company1.id, company2.id])]})
+        user1 = self.env['res.users'].create({
+            'name': 'Bar', 'login': 'bar', 'company_id': company1.id,
+            'company_ids': [(6, 0, [company0.id, company1.id, company2.id])]})
+        user2 = self.env['res.users'].create({
+            'name': 'Baz', 'login': 'baz', 'company_id': company2.id,
+            'company_ids': [(6, 0, [company0.id, company1.id, company2.id])]})
 
         # create values for many2one field
         tag0 = self.env['test_new_api.multi.tag'].create({'name': 'Qux'})
@@ -973,6 +976,12 @@ class TestFields(common.TransactionCase):
         self.assertEqual(record.with_user(user0).tag_id, tag1)
         self.assertEqual(record.with_user(user1).tag_id, tag2)
         self.assertEqual(record.with_user(user2).tag_id, tag0)
+
+        # regression: duplicated records caused values to be browse(browse(id))
+        recs = record.create({}) + record + record
+        recs.invalidate_cache()
+        for rec in recs.with_user(user0):
+            self.assertIsInstance(rec.tag_id.id, int)
 
         # unlink value of a many2one (tag2), and check again
         tag2.unlink()
@@ -1755,6 +1764,38 @@ class TestX2many(common.TransactionCase):
         self.assertTrue(child4.parent_active)
         parent.active = False
         self.assertFalse(child4.parent_active)
+
+    def test_12_active_test_one2many_with_context(self):
+        Model = self.env['test_new_api.model_active_field']
+        parent = Model.create({})
+        all_children = Model.create([
+            {'parent_id': parent.id, 'active': True},
+            {'parent_id': parent.id, 'active': False},
+        ])
+        act_children = all_children[0]
+
+        self.assertEqual(parent.children_ids, act_children)
+        self.assertEqual(parent.with_context(active_test=True).children_ids, act_children)
+        self.assertEqual(parent.with_context(active_test=False).children_ids, all_children)
+
+        self.assertEqual(parent.all_children_ids, all_children)
+        self.assertEqual(parent.with_context(active_test=True).all_children_ids, all_children)
+        self.assertEqual(parent.with_context(active_test=False).all_children_ids, all_children)
+
+        self.assertEqual(parent.active_children_ids, act_children)
+        self.assertEqual(parent.with_context(active_test=True).active_children_ids, act_children)
+        self.assertEqual(parent.with_context(active_test=False).active_children_ids, act_children)
+
+        # check read()
+        self.env.cache.invalidate()
+        self.assertEqual(parent.children_ids, act_children)
+        self.assertEqual(parent.all_children_ids, all_children)
+        self.assertEqual(parent.active_children_ids, act_children)
+
+        self.env.cache.invalidate()
+        self.assertEqual(parent.with_context(active_test=False).children_ids, all_children)
+        self.assertEqual(parent.with_context(active_test=False).all_children_ids, all_children)
+        self.assertEqual(parent.with_context(active_test=False).active_children_ids, act_children)
 
     def test_search_many2many(self):
         """ Tests search on many2many fields. """
