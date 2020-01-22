@@ -3,13 +3,14 @@
 # 	* base_gengo
 # 
 # Translators:
+# Martin Trigaux, 2019
 # Slobodan Simić <slsimic@gmail.com>, 2019
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server saas~12.5\n"
+"Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-26 08:16+0000\n"
+"POT-Creation-Date: 2019-11-22 08:19+0000\n"
 "PO-Revision-Date: 2019-08-26 09:09+0000\n"
 "Last-Translator: Slobodan Simić <slsimic@gmail.com>, 2019\n"
 "Language-Team: Serbian (https://www.transifex.com/odoo/teams/41243/sr/)\n"
@@ -74,7 +75,7 @@ msgstr ""
 #. module: base_gengo
 #: model_terms:ir.ui.view,arch_db:base_gengo.base_gengo_translation_wizard_from
 msgid "Cancel"
-msgstr ""
+msgstr "Откажи"
 
 #. module: base_gengo
 #: model:ir.model.fields,help:base_gengo.field_res_company__gengo_sandbox
@@ -92,7 +93,7 @@ msgstr ""
 #. module: base_gengo
 #: model_terms:ir.ui.view,arch_db:base_gengo.res_config_settings_view_form
 msgid "Comment"
-msgstr ""
+msgstr "Komentar"
 
 #. module: base_gengo
 #: model:ir.model.fields,field_description:base_gengo.field_res_company__gengo_comment
@@ -123,7 +124,7 @@ msgstr ""
 #. module: base_gengo
 #: model:ir.model.fields,field_description:base_gengo.field_base_gengo_translations__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Kreiran"
 
 #. module: base_gengo
 #: model:ir.model.fields,field_description:base_gengo.field_base_gengo_translations__display_name
@@ -184,6 +185,13 @@ msgid ""
 msgstr ""
 
 #. module: base_gengo
+#: code:addons/base_gengo/wizard/base_gengo_translations.py:0
+#, python-format
+msgid ""
+"Gengo library not installed. Contact your system administrator to use it."
+msgstr ""
+
+#. module: base_gengo
 #: model:ir.actions.act_window,name:base_gengo.action_wizard_base_gengo_translations
 #: model:ir.ui.menu,name:base_gengo.menu_action_wizard_base_gengo_translations
 msgid "Gengo: Manual Request of Translation"
@@ -206,7 +214,7 @@ msgstr ""
 #. module: base_gengo
 #: model:ir.model.fields,field_description:base_gengo.field_base_gengo_translations__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: base_gengo
 #: model:ir.model.fields,help:base_gengo.field_res_company__gengo_auto_approve
@@ -217,7 +225,7 @@ msgstr ""
 #. module: base_gengo
 #: model:ir.model.fields,field_description:base_gengo.field_base_gengo_translations__lang_id
 msgid "Language"
-msgstr ""
+msgstr "Jezik"
 
 #. module: base_gengo
 #: model:ir.model.fields,field_description:base_gengo.field_base_gengo_translations____last_update
@@ -269,7 +277,7 @@ msgstr ""
 #. module: base_gengo
 #: model_terms:ir.ui.view,arch_db:base_gengo.base_gengo_translation_wizard_from
 msgid "Send"
-msgstr ""
+msgstr "Pošalji"
 
 #. module: base_gengo
 #: model:ir.model.fields.selection,name:base_gengo.selection__base_gengo_translations__sync_type__send
