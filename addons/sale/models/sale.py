@@ -950,7 +950,9 @@ class SaleOrderLine(models.Model):
         for line in self:
             if line.state not in ('sale', 'done'):
                 line.invoice_status = 'no'
-            elif not float_is_zero(line.qty_to_invoice, precision_digits=precision):
+            elif line.state == 'sale' and not float_is_zero(line.qty_to_invoice, precision_digits=precision):
+                # Done orders should no longer be invoiceable.
+                # Allows setting orders to be done to prevent reinvoicing of refunded orders
                 line.invoice_status = 'to invoice'
             elif line.state == 'sale' and line.product_id.invoice_policy == 'order' and\
                     float_compare(line.qty_delivered, line.product_uom_qty, precision_digits=precision) == 1:
