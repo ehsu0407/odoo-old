@@ -3914,7 +3914,7 @@ Fields:
             # that this limit is well managed by PostgreSQL.
             # In INSERT queries, we inject integers (small) and larger data (TEXT blocks for
             # example).
-            # 
+            #
             # The problem then becomes: how to "estimate" the right size of the batch to have
             # good performance?
             #
@@ -6053,6 +6053,10 @@ Fields:
                 names (in view order), or False
             :param field_onchange: dictionary mapping field names to their
                 on_change attribute
+
+            When ``field_name`` is falsy, the method first adds default values
+            to ``values``, applies onchange methods to them, and return all the
+            fields in ``field_onchange``.
         """
         # this is for tests using `Form`
         self.flush()
@@ -6064,6 +6068,8 @@ Fields:
             names = [field_name]
         else:
             names = []
+
+        first_call = not names
 
         if not all(name in self._fields for name in names):
             return {}
@@ -6127,14 +6133,16 @@ Fields:
                     )
                 )
 
-            def diff(self, other):
+            def diff(self, other, force=False):
                 """ Return the values in ``self`` that differ from ``other``.
                     Requires record cache invalidation for correct output!
                 """
                 record = self['<record>']
                 result = {}
                 for name, subnames in self['<tree>'].items():
-                    if (name == 'id') or (other.get(name) == self[name]):
+                    if name == 'id':
+                        continue
+                    if not force and other.get(name) == self[name]:
                         continue
                     field = record._fields[name]
                     if field.type not in ('one2many', 'many2many'):
@@ -6172,9 +6180,17 @@ Fields:
 
         nametree = PrefixTree(self.browse(), field_onchange)
 
-        # prefetch x2many lines: this speeds up the initial snapshot by avoiding
-        # to compute fields on new records as much as possible, as that can be
-        # costly and is not necessary at all
+        if first_call:
+            names = list(nametree)
+            values.update(self.default_get([
+                name
+                for name in names
+                if name not in values
+            ]))
+            for name in names:
+                values.setdefault(name, False)
+
+        # prefetch x2many lines without data (for the initial snapshot)
         for name, subnames in nametree.items():
             if subnames and values.get(name):
                 # retrieve all line ids in commands
@@ -6283,7 +6299,7 @@ Fields:
 
         # determine values that have changed by comparing snapshots
         self.invalidate_cache()
-        result['value'] = snapshot1.diff(snapshot0)
+        result['value'] = snapshot1.diff(snapshot0, force=first_call)
 
         # format warnings
         warnings = result.pop('warnings')
