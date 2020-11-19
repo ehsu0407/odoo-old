@@ -26,17 +26,19 @@ class ChangeProductionQty(models.TransientModel):
         return res
 
     @api.model
-    def _update_finished_moves(self, production, qty, old_qty):
+    def _update_finished_moves(self, production, new_qty, old_qty):
         """ Update finished product and its byproducts. This method only update
         the finished moves not done or cancel and just increase or decrease
         their quantity according the unit_ratio. It does not use the BoM, BoM
         modification during production would not be taken into consideration.
         """
         modification = {}
-        for move in production.move_finished_ids.filtered(lambda m: m.state not in ('done', 'cancel')):
-            qty = (qty - old_qty) * move.unit_factor
+        for move in production.move_finished_ids:
+            if move.state in ('done', 'cancel'):
+                continue
+            qty = (new_qty - old_qty) * move.unit_factor
             modification[move] = (move.product_uom_qty + qty, move.product_uom_qty)
-            move[0].write({'product_uom_qty': move.product_uom_qty + qty})
+            move.write({'product_uom_qty': move.product_uom_qty + qty})
         return modification
 
     def change_prod_qty(self):
@@ -91,7 +93,8 @@ class ChangeProductionQty(models.TransientModel):
                     wo.duration_expected = (operation.workcenter_id.time_start +
                                  operation.workcenter_id.time_stop +
                                  cycle_number * operation.time_cycle * 100.0 / operation.workcenter_id.time_efficiency)
-                quantity = wo.qty_production - wo.qty_produced
+                production_qty = wo._get_real_uom_qty(wo.qty_production)
+                quantity = production_qty - wo.qty_produced
                 if production.product_id.tracking == 'serial':
                     quantity = 1.0 if not float_is_zero(quantity, precision_digits=precision) else 0.0
                 else:
@@ -100,10 +103,12 @@ class ChangeProductionQty(models.TransientModel):
                     wo.finished_lot_id = False
                     wo._workorder_line_ids().unlink()
                 wo.qty_producing = quantity
-                if wo.qty_produced < wo.qty_production and wo.state == 'done':
+                if wo.qty_produced < production_qty and wo.state == 'done':
                     wo.state = 'progress'
-                if wo.qty_produced == wo.qty_production and wo.state == 'progress':
+                if wo.qty_produced == production_qty and wo.state == 'progress':
                     wo.state = 'done'
+                    if wo.next_work_order_id.state == 'pending':
+                        wo.next_work_order_id.state = 'ready'
                 # assign moves; last operation receive all unassigned moves
                 # TODO: following could be put in a function as it is similar as code in _workorders_create
                 # TODO: only needed when creating new moves

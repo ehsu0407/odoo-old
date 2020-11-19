@@ -26,7 +26,7 @@ from odoo.tools.translate import _
 from odoo.tools.mimetypes import guess_mimetype
 from odoo.tools import config, DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat
 
-FIELDS_RECURSION_LIMIT = 2
+FIELDS_RECURSION_LIMIT = 3
 ERROR_PREVIEW_BYTES = 200
 DEFAULT_IMAGE_TIMEOUT = 3
 DEFAULT_IMAGE_MAXBYTES = 10 * 1024 * 1024
@@ -947,9 +947,11 @@ class Import(models.TransientModel):
             for index, column_name in enumerate(columns):
                 if column_name:
                     # Update to latest selected field
-                    exist_records = BaseImportMapping.search([('res_model', '=', self.res_model), ('column_name', '=', column_name)])
-                    if exist_records:
-                        exist_records.write({'field_name': fields[index]})
+                    mapping_domain = [('res_model', '=', self.res_model), ('column_name', '=', column_name)]
+                    column_mapping = BaseImportMapping.search(mapping_domain, limit=1)
+                    if column_mapping:
+                        if column_mapping.field_name != fields[index]:
+                            column_mapping.field_name = fields[index]
                     else:
                         BaseImportMapping.create({
                             'res_model': self.res_model,

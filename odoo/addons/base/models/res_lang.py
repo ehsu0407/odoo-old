@@ -207,6 +207,14 @@ class Lang(models.Model):
         return sorted([(lang.code, lang.url_code, lang.name) for lang in langs], key=itemgetter(2))
 
     @api.model
+    @tools.ormcache('code')
+    def _lang_code_to_urlcode(self, code):
+        for c, urlc, name in self.get_available():
+            if c == code:
+                return urlc
+        return self._lang_get(code).url_code
+
+    @api.model
     @tools.ormcache()
     def get_installed(self):
         """ Return the installed languages as a list of (code, name) sorted by name. """
@@ -234,8 +242,10 @@ class Lang(models.Model):
         if 'code' in vals and any(code != vals['code'] for code in lang_codes):
             raise UserError(_("Language code cannot be modified."))
         if vals.get('active') == False:
-            if self.env['res.users'].search([('lang', 'in', lang_codes)]):
+            if self.env['res.users'].search_count([('lang', 'in', lang_codes)]):
                 raise UserError(_("Cannot deactivate a language that is currently used by users."))
+            if self.env['res.partner'].search_count([('lang', 'in', lang_codes)]):
+                raise UserError(_("Cannot deactivate a language that is currently used by contacts."))
             # delete linked ir.default specifying default partner's language
             self.env['ir.default'].discard_values('res.partner', 'lang', lang_codes)
 

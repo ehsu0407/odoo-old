@@ -109,7 +109,7 @@ class ProductProduct(models.Model):
         In FIFO: value of the last unit that left the stock (automatically computed).
         Used to value the product when the purchase cost is not known (e.g. inventory adjustment).
         Used to compute margins on sale orders.""")
-    volume = fields.Float('Volume')
+    volume = fields.Float('Volume', digits='Volume')
     weight = fields.Float('Weight', digits='Stock Weight')
 
     pricelist_item_count = fields.Integer("Number of price rules", compute="_compute_variant_item_count")
@@ -227,7 +227,9 @@ class ProductProduct(models.Model):
             partner = self.env.context.get('partner', False)
             quantity = self.env.context.get('quantity', 1.0)
 
-            # Support context pricelists specified as display_name or ID for compatibility
+            # Support context pricelists specified as list, display_name or ID for compatibility
+            if isinstance(pricelist_id_or_name, list):
+                pricelist_id_or_name = pricelist_id_or_name[0]
             if isinstance(pricelist_id_or_name, str):
                 pricelist_name_search = self.env['product.pricelist'].name_search(pricelist_id_or_name, operator='=', limit=1)
                 if pricelist_name_search:
@@ -307,7 +309,12 @@ class ProductProduct(models.Model):
                 '&', ('product_id', '=', product.id), ('applied_on', '=', '0_product_variant')]
             product.pricelist_item_count = self.env['product.pricelist.item'].search_count(domain)
 
-    @api.onchange('uom_id', 'uom_po_id')
+    @api.onchange('uom_id')
+    def _onchange_uom_id(self):
+        if self.uom_id:
+            self.uom_po_id = self.uom_id.id
+
+    @api.onchange('uom_po_id')
     def _onchange_uom(self):
         if self.uom_id and self.uom_po_id and self.uom_id.category_id != self.uom_po_id.category_id:
             self.uom_po_id = self.uom_id
@@ -570,7 +577,9 @@ class ProductProduct(models.Model):
                 'target': 'new'}
 
     def _prepare_sellers(self, params):
-        return self.seller_ids.filtered(lambda s: s.name.active).sorted(lambda s: (s.sequence, -s.min_qty, s.price))
+        # This search is made to avoid retrieving seller_ids from the cache.
+        return self.env['product.supplierinfo'].search([('product_tmpl_id', '=', self.product_tmpl_id.id),
+                                                        ('name.active', '=', True)]).sorted(lambda s: (s.sequence, -s.min_qty, s.price, s.id))
 
     def _select_seller(self, partner_id=False, quantity=0.0, date=None, uom_id=False, params=False):
         self.ensure_one()
@@ -663,9 +672,6 @@ class ProductProduct(models.Model):
 
         See `_is_combination_possible` for more information.
 
-        This will always exclude variants for templates that have `no_variant`
-        attributes because the variant itself will not be the full combination.
-
         :param parent_combination: combination from which `self` is an
             optional or accessory product.
         :type parent_combination: recordset `product.template.attribute.value`
@@ -674,14 +680,20 @@ class ProductProduct(models.Model):
         :rtype: bool
         """
         self.ensure_one()
-        return self.product_tmpl_id._is_combination_possible(self.product_template_attribute_value_ids, parent_combination=parent_combination)
+        return self.product_tmpl_id._is_combination_possible(self.product_template_attribute_value_ids, parent_combination=parent_combination, ignore_no_variant=True)
 
     def toggle_active(self):
-        """ Archiving related product.template if there is only one active product.product """
-        with_one_active = self.filtered(lambda product: len(product.product_tmpl_id.product_variant_ids) == 1)
-        for product in with_one_active:
-            product.product_tmpl_id.toggle_active()
-        return super(ProductProduct, self - with_one_active).toggle_active()
+        """ Archiving related product.template if there is not any more active product.product
+        (and vice versa, unarchiving the related product template if there is now an active product.product) """
+        result = super().toggle_active()
+        # We deactivate product templates which are active with no active variants.
+        tmpl_to_deactivate = self.filtered(lambda product: (product.product_tmpl_id.active
+                                                            and not product.product_tmpl_id.product_variant_ids)).mapped('product_tmpl_id')
+        # We activate product templates which are inactive with active variants.
+        tmpl_to_activate = self.filtered(lambda product: (not product.product_tmpl_id.active
+                                                          and product.product_tmpl_id.product_variant_ids)).mapped('product_tmpl_id')
+        (tmpl_to_deactivate + tmpl_to_activate).toggle_active()
+        return result
 
 
 class ProductPackaging(models.Model):

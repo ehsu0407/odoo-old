@@ -3,7 +3,6 @@
 # 	* website_blog
 # 
 # Translators:
-# Pedro M. Baeza <pedro.baeza@gmail.com>, 2019
 # Mateo Tibaquirá Palacios <nestormateo@gmail.com>, 2019
 # Rick Hunter <rick_hunter_ec@yahoo.com>, 2019
 # Luis M. Ontalba <luis.martinez@tecnativa.com>, 2019
@@ -18,20 +17,23 @@
 # e2f <projects@e2f.com>, 2019
 # Daniel Blanco <daniel@blancomartin.com.ar>, 2019
 # Alejandro Die Sanchis <marketing@domatix.com>, 2019
-# Gabriel Umana <gabriel.umana@delfixcr.com>, 2019
+# gabriumaa <gabriel.umana@delfixcr.com>, 2019
 # 966ff43e6966712895a590e7320ca288, 2019
 # Jesse Garza <jga@odoo.com>, 2019
 # Jon Perez <jop@odoo.com>, 2019
 # Martin Trigaux, 2019
 # José Vicente <txusev@gmail.com>, 2019
+# Pedro M. Baeza <pedro.baeza@gmail.com>, 2020
+# Osiris Román <osiris.roman@yachaytech.edu.ec>, 2020
+# Jose Alejandro Echeverri Valencia <josealejandroeche@gmail.com>, 2020
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-07 07:13+0000\n"
+"POT-Creation-Date: 2019-12-05 12:34+0000\n"
 "PO-Revision-Date: 2019-08-26 09:15+0000\n"
-"Last-Translator: José Vicente <txusev@gmail.com>, 2019\n"
+"Last-Translator: Jose Alejandro Echeverri Valencia <josealejandroeche@gmail.com>, 2020\n"
 "Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -148,7 +150,7 @@ msgstr ""
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_comment
 msgid "<b>Sign in</b>"
-msgstr "<b>Registrarse</b>"
+msgstr "<b>Identificarse</b>"
 
 #. module: website_blog
 #. openerp-web
@@ -248,7 +250,7 @@ msgstr "<i class=\"fa fa-folder-open\"/>Elige un blog"
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
 msgid "<i class=\"fa fa-github text-github\" aria-label=\"Github\" title=\"Github\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-github text-github\" aria-label=\"Github\" title=\"Github\"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
@@ -256,6 +258,8 @@ msgid ""
 "<i class=\"fa fa-instagram text-instagram\" aria-label=\"Instagram\" "
 "title=\"Instagram\"/>"
 msgstr ""
+"<i class=\"fa fa-instagram text-instagram\" aria-label=\"Instagram\" "
+"title=\"Instagram\"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_share_links_display
@@ -264,6 +268,8 @@ msgid ""
 "<i class=\"fa fa-linkedin text-linkedin\" aria-label=\"LinkedIn\" "
 "title=\"LinkedIn\"/>"
 msgstr ""
+"<i class=\"fa fa-linkedin text-linkedin\" aria-label=\"LinkedIn\" "
+"title=\"LinkedIn\"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
@@ -280,6 +286,8 @@ msgstr "<i class=\"fa fa-sort-numeric-asc\"/>Límite de publicaciones"
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
 msgid "<i class=\"fa fa-twitter text-twitter\" aria-label=\"Twitter\" title=\"Twitter\"/>"
 msgstr ""
+"<i class=\"fa fa-twitter text-twitter\" aria-label=\"Twitter\" "
+"title=\"Twitter\"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
@@ -287,6 +295,8 @@ msgid ""
 "<i class=\"fa fa-youtube-play text-youtube\" aria-label=\"Youtube\" "
 "title=\"Youtube\"/>"
 msgstr ""
+"<i class=\"fa fa-youtube-play text-youtube\" aria-label=\"Youtube\" "
+"title=\"Youtube\"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_read_next
@@ -436,6 +446,8 @@ msgstr "Archivar"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blog_blog_view_search
+#: model_terms:ir.ui.view,arch_db:website_blog.view_blog_blog_form
+#: model_terms:ir.ui.view,arch_db:website_blog.view_blog_post_form
 #: model_terms:ir.ui.view,arch_db:website_blog.view_blog_post_search
 msgid "Archived"
 msgstr "Archivado"
@@ -849,7 +861,7 @@ msgstr ""
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
 msgid "Follow Us"
-msgstr ""
+msgstr "Síguenos"
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_blog__message_follower_ids
@@ -867,7 +879,7 @@ msgstr "Seguidores (Canales)"
 #: model:ir.model.fields,field_description:website_blog.field_blog_blog__message_partner_ids
 #: model:ir.model.fields,field_description:website_blog.field_blog_post__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "Seguidores (Empresas)"
+msgstr "Seguidores (Contactos)"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_4
@@ -1711,6 +1723,16 @@ msgid ""
 "begin looking for ways to look deeper and learn more about the spectacular "
 "universe we see in the millions of stars above us each night."
 msgstr ""
+"Ese momento \"Wow\" es de lo que se trata la astrología. Para algunos, ese "
+"momento asombroso se convierte en una pasión que los lleva a una carrera "
+"estudiando las estrellas. Para unos pocos afortunados, ese momento asombroso"
+" se debe a una obsesión que los lleva a viajar a las estrellas en el "
+"transbordador espacial o en una de nuestras primeras misiones espaciales. "
+"Pero para la mayoría de nosotros, la astrología puede convertirse en un "
+"pasatiempo o un pasatiempo habitual. Pero llevamos ese momento asombroso con"
+" nosotros por el resto de nuestras vidas y comenzamos a buscar formas de "
+"mirar más profundamente y aprender más sobre el universo espectacular que "
+"vemos en los millones de estrellas sobre nosotros cada noche."
 
 #. module: website_blog
 #: model:blog.post,subtitle:website_blog.blog_post_5
@@ -1850,7 +1872,7 @@ msgstr ""
 #: code:addons/website_blog/static/src/js/website_blog.editor.js:0
 #, python-format
 msgid "Tiny"
-msgstr ""
+msgstr "Pequeño"
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_post__name
@@ -1907,6 +1929,15 @@ msgid ""
 "carefully synchronized with computers for the best view of the lunar "
 "landscape."
 msgstr ""
+"Para llevarlo al siguiente nivel natural, es posible que desee aprovechar "
+"las asociaciones con otros astrónomos o visitando uno de los telescopios "
+"verdaderamente geniales que han sido establecidos por profesionales que han "
+"invertido en mejores técnicas para eliminar la interferencia atmosférica "
+"para ver la luna. aun mejor. Internet puede darle acceso al Hubble y a "
+"muchos de los enormes telescopios que apuntan a la luna todo el tiempo. "
+"Además, muchos clubes de astronomía están trabajando en formas de combinar "
+"múltiples telescopios, cuidadosamente sincronizados con computadoras para "
+"obtener la mejor vista del paisaje lunar."
 
 #. module: website_blog
 #: model:blog.blog,name:website_blog.blog_blog_1

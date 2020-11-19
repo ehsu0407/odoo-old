@@ -87,7 +87,6 @@ option.
     file <reference/cmdline/config>`
 
 An Odoo module is declared by its :ref:`manifest <reference/module/manifest>`.
-See the :ref:`manifest documentation <reference/module/manifest>` about it.
 
 A module is also a
 `Python package <http://docs.python.org/2/tutorial/modules.html#packages>`_
@@ -875,7 +874,7 @@ float, string), or a function taking a recordset and returning a value::
 
         .. note::
 
-            Odoo has built-in rules making fields with an ``active`` field set
+            Odoo has built-in rules making records with an ``active`` field set
             to ``False`` invisible.
 
 Onchange
@@ -1159,7 +1158,6 @@ their root element is ``<gantt>``.
 
     .. only:: solutions
 
-        #. Create a computed field expressing the session's duration in hours
         #. Add the gantt view's definition, and add the gantt view to the
            *Session* model's action
 
@@ -1483,17 +1481,20 @@ for editing and merging PO/POT files.
    .. only:: solutions
 
         #. Create a directory ``openacademy/i18n/``
+        #. You will need to activate the developer mode
+           to access the menus mentioned below (
+           :menuselection:`Settings --> Activate the developer mode`
+           )
         #. Install whichever language you want (
-           :menuselection:`Administration --> Translations --> Load an
-           Official Translation`)
-        #. Synchronize translatable terms (:menuselection:`Administration -->
-           Translations --> Application Terms --> Synchronize Translations`)
+           :menuselection:`Settings --> Translations --> Languages`)
+        #. Generate the missing terms (:menuselection:`Settings -->
+           Translations --> Application Terms --> Generate Missing Terms`)
         #. Create a template translation file by exporting (
-           :menuselection:`Administration --> Translations -> Import/Export
+           :menuselection:`Settings --> Translations --> Import/Export
            --> Export Translation`) without specifying a language, save in
            ``openacademy/i18n/``
         #. Create a translation file by exporting (
-           :menuselection:`Administration --> Translations --> Import/Export
+           :menuselection:`Settings --> Translations --> Import/Export
            --> Export Translation`) and specifying a language. Save it in
            ``openacademy/i18n/``
         #. Open the exported translation file (with a basic text editor or a

@@ -3,6 +3,7 @@
 
 from contextlib import contextmanager
 from dateutil.relativedelta import relativedelta
+from psycopg2 import OperationalError
 
 from odoo import api, fields, models
 
@@ -35,7 +36,7 @@ class HrWorkEntry(models.Model):
         ('_work_entry_start_before_end', 'check (date_stop > date_start)', 'Starting time should be before end time.')
     ]
 
-    @api.onchange('state')
+    @api.depends('state')
     def _compute_conflict(self):
         for rec in self:
             rec.conflict = rec.state == 'conflict'
@@ -172,6 +173,11 @@ class HrWorkEntry(models.Model):
                 ])
                 work_entries._reset_conflicting_state()
             yield
+        except OperationalError:
+            # the cursor is dead, do not attempt to use it or we will shadow the root exception
+            # with a "psycopg2.InternalError: current transaction is aborted, ..."
+            skip = True
+            raise
         finally:
             if not skip and start and stop:
                 # New work entries are handled in the create method,
