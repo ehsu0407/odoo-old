@@ -337,7 +337,7 @@ class MailThread(models.AbstractModel):
         cascaded, because link is done through (res_model, res_id). """
         if not self:
             return True
-        self.env['mail.message'].search([('model', '=', self._name), ('res_id', 'in', self.ids), ('message_type', '!=', 'user_notification')]).unlink()
+        self.env['mail.message'].search([('model', '=', self._name), ('res_id', 'in', self.ids)]).sudo().unlink()
         res = super(MailThread, self).unlink()
         self.env['mail.followers'].sudo().search(
             [('res_model', '=', self._name), ('res_id', 'in', self.ids)]
@@ -911,10 +911,17 @@ class MailThread(models.AbstractModel):
         email_from = message_dict['email_from']
         email_from_localpart = (tools.email_split(email_from) or [''])[0].split('@', 1)[0].lower()
         email_to = message_dict['to']
-        email_to_localpart = (tools.email_split(email_to) or [''])[0].split('@', 1)[0].lower()
+        email_to_localparts = [
+            e.split('@', 1)[0].lower()
+            for e in (tools.email_split(email_to) or [''])
+        ]
         # Delivered-To is a safe bet in most modern MTAs, but we have to fallback on To + Cc values
         # for all the odd MTAs out there, as there is no standard header for the envelope's `rcpt_to` value.
-        rcpt_tos_localparts = [e.split('@')[0].lower() for e in tools.email_split(message_dict['recipients'])]
+        rcpt_tos_localparts = [
+            e.split('@')[0].lower()
+            for e in tools.email_split(message_dict['recipients'])
+        ]
+        rcpt_tos_valid_localparts = [to for to in rcpt_tos_localparts]
 
         # 0. Handle bounce: verify whether this is a bounced email and use it to collect bounce data and update notifications for customers
         #    Bounce regex: typical form of bounce is bounce_alias+128-crm.lead-34@domain
@@ -924,7 +931,7 @@ class MailThread(models.AbstractModel):
         #        As all MTA does not respect this RFC (googlemail is one of them),
         #       we also need to verify if the message come from "mailer-daemon"
         #    If not a bounce: reset bounce information
-        if bounce_alias and bounce_alias in email_to_localpart:
+        if bounce_alias and any(email.startswith(bounce_alias) for email in email_to_localparts):
             bounce_re = re.compile("%s\+(\d+)-?([\w.]+)?-?(\d+)?" % re.escape(bounce_alias), re.UNICODE)
             bounce_match = bounce_re.search(email_to)
             if bounce_match:
@@ -939,15 +946,21 @@ class MailThread(models.AbstractModel):
         #    if destination = alias with different model -> consider it is a forward and not a reply
         #    if destination = alias with same model -> check contact settings as they still apply
         if reply_model and reply_thread_id:
-            other_alias = self.env['mail.alias'].search([
-                '&',
+            other_model_aliases = self.env['mail.alias'].search([
+                '&', '&',
                 ('alias_name', '!=', False),
-                ('alias_name', '=', email_to_localpart)
+                ('alias_name', 'in', email_to_localparts),
+                ('alias_model_id.model', '!=', reply_model),
             ])
-            if other_alias and other_alias.alias_model_id.model != reply_model:
+            if other_model_aliases:
                 is_a_reply = False
+                rcpt_tos_valid_localparts = [to for to in rcpt_tos_valid_localparts if to in other_model_aliases.mapped('alias_name')]
+
         if is_a_reply:
-            dest_aliases = self.env['mail.alias'].search([('alias_name', 'in', rcpt_tos_localparts)], limit=1)
+            dest_aliases = self.env['mail.alias'].search([
+                ('alias_name', 'in', rcpt_tos_localparts),
+                ('alias_model_id.model', '=', reply_model)
+            ], limit=1)
 
             user_id = self._mail_find_user_for_gateway(email_from, alias=dest_aliases).id or self._uid
             route = self._routing_check_route(
@@ -968,7 +981,7 @@ class MailThread(models.AbstractModel):
             message_dict.pop('parent_id', None)
 
             # check it does not directly contact catchall
-            if catchall_alias and catchall_alias in email_to_localpart:
+            if catchall_alias and all(email_localpart == catchall_alias for email_localpart in email_to_localparts):
                 _logger.info('Routing mail from %s to %s with Message-Id %s: direct write to catchall, bounce', email_from, email_to, message_id)
                 body = self.env.ref('mail.mail_bounce_catchall').render({
                     'message': message,
@@ -976,7 +989,7 @@ class MailThread(models.AbstractModel):
                 self._routing_create_bounce_email(email_from, body, message, reply_to=self.env.company.email)
                 return []
 
-            dest_aliases = self.env['mail.alias'].search([('alias_name', 'in', rcpt_tos_localparts)])
+            dest_aliases = self.env['mail.alias'].search([('alias_name', 'in', rcpt_tos_valid_localparts)])
             if dest_aliases:
                 routes = []
                 for alias in dest_aliases:
@@ -1278,7 +1291,7 @@ class MailThread(models.AbstractModel):
 
                 # 0) Inline Attachments -> attachments, with a third part in the tuple to match cid / attachment
                 if filename and part.get('content-id'):
-                    inner_cid = part.get('content-id').strip('><')
+                    inner_cid = str(part.get('content-id')).strip('><')
                     attachments.append(self._Attachment(filename, part.get_payload(decode=True), {'cid': inner_cid}))
                     continue
                 # 1) Explicit Attachments -> attachments
@@ -1389,8 +1402,8 @@ class MailThread(models.AbstractModel):
         if message.get('Subject'):
             msg_dict['subject'] = tools.decode_message_header(message, 'Subject')
 
-        email_from = tools.decode_message_header(message, 'From')
-        email_cc = tools.decode_message_header(message, 'cc')
+        email_from = tools.decode_message_header(message, 'From', quoted=True)
+        email_cc = tools.decode_message_header(message, 'cc', quoted=True)
         email_from_list = tools.email_split_and_format(email_from)
         email_cc_list = tools.email_split_and_format(email_cc)
         msg_dict['email_from'] = email_from_list[0] if email_from_list else email_from
@@ -1400,18 +1413,18 @@ class MailThread(models.AbstractModel):
         # for all the odd MTAs out there, as there is no standard header for the envelope's `rcpt_to` value.
         msg_dict['recipients'] = ','.join(set(formatted_email
             for address in [
-                tools.decode_message_header(message, 'Delivered-To'),
-                tools.decode_message_header(message, 'To'),
-                tools.decode_message_header(message, 'Cc'),
-                tools.decode_message_header(message, 'Resent-To'),
-                tools.decode_message_header(message, 'Resent-Cc')
+                tools.decode_message_header(message, 'Delivered-To', quoted=True),
+                tools.decode_message_header(message, 'To', quoted=True),
+                tools.decode_message_header(message, 'Cc', quoted=True),
+                tools.decode_message_header(message, 'Resent-To', quoted=True),
+                tools.decode_message_header(message, 'Resent-Cc', quoted=True)
             ] if address
             for formatted_email in tools.email_split_and_format(address))
         )
         msg_dict['to'] = ','.join(set(formatted_email
             for address in [
-                tools.decode_message_header(message, 'Delivered-To'),
-                tools.decode_message_header(message, 'To')
+                tools.decode_message_header(message, 'Delivered-To', quoted=True),
+                tools.decode_message_header(message, 'To', quoted=True)
             ] if address
             for formatted_email in tools.email_split_and_format(address))
         )
@@ -1525,7 +1538,7 @@ class MailThread(models.AbstractModel):
         on partner like ('user_ids', '!=', False) that would not be efficient. """
         domain = [('email_normalized', 'in', normalized_emails)]
         if extra_domain:
-            domain = expression.AND(domain, extra_domain)
+            domain = expression.AND([domain, extra_domain])
         partners = self.env['res.users'].sudo().search(domain, order='name ASC').mapped('partner_id')
         # return a search on partner to filter results current user should not see (multi company for example)
         return self.env['res.partner'].search([('id', 'in', partners.ids)])
@@ -1533,7 +1546,7 @@ class MailThread(models.AbstractModel):
     def _mail_search_on_partner(self, normalized_emails, extra_domain=False):
         domain = [('email_normalized', 'in', normalized_emails)]
         if extra_domain:
-            domain = expression.AND(domain, extra_domain)
+            domain = expression.AND([domain, extra_domain])
         return self.env['res.partner'].search(domain)
 
     def _mail_find_user_for_gateway(self, email, alias=None):
@@ -1642,7 +1655,7 @@ class MailThread(models.AbstractModel):
             normalized_email = tools.email_normalize(contact)
             partner = next((partner for partner in done_partners if partner.email_normalized == normalized_email), self.env['res.partner'])
             if not partner and force_create and normalized_email in normalized_emails:
-                partner = self.env['res.partner'].name_create(contact)[0]
+                partner = self.env['res.partner'].browse(self.env['res.partner'].name_create(contact)[0])
             partners.append(partner)
         return partners
 
@@ -2229,12 +2242,11 @@ class MailThread(models.AbstractModel):
             'mail_message_id': message.id,
             'mail_server_id': message.mail_server_id.id, # 2 query, check acces + read, may be useless, Falsy, when will it be used?
             'auto_delete': mail_auto_delete,
-            'references': message.parent_id.message_id if message.parent_id else False,
+            # due to ir.rule, user have no right to access parent message if message is not published
+            'references': message.parent_id.sudo().message_id if message.parent_id else False,
             'subject': mail_subject,
         }
-        headers = self._notify_email_headers()
-        if headers:
-            base_mail_values['headers'] = headers
+        base_mail_values = self._notify_by_email_add_values(base_mail_values)
 
         Mail = self.env['mail.mail'].sudo()
         emails = self.env['mail.mail'].sudo()
@@ -2385,6 +2397,19 @@ class MailThread(models.AbstractModel):
             'subtype': message.subtype_id,
             'lang': lang,
         }
+
+    def _notify_by_email_add_values(self, base_mail_values):
+        """ Add model-specific values to the dictionary used to create the
+        notification email. Its base behavior is to compute model-specific
+        headers.
+
+        :param dict base_mail_values: base mail.mail values, holding message
+        to notify (mail_message_id and its fields), server, references, subject.
+        """
+        headers = self._notify_email_headers()
+        if headers:
+            base_mail_values['headers'] = headers
+        return base_mail_values
 
     def _notify_compute_recipients(self, message, msg_vals):
         """ Compute recipients to notify based on subtype and followers. This

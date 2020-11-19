@@ -107,12 +107,12 @@ class Slide(models.Model):
     _description = 'Slides'
     _mail_post_access = 'read'
     _order_by_strategy = {
-        'sequence': 'sequence asc',
+        'sequence': 'sequence asc, id asc',
         'most_viewed': 'total_views desc',
         'most_voted': 'likes desc',
         'latest': 'date_published desc',
     }
-    _order = 'sequence asc, is_category asc'
+    _order = 'sequence asc, is_category asc, id asc'
 
     # description
     name = fields.Char('Title', required=True, translate=True)
@@ -169,7 +169,7 @@ class Slide(models.Model):
     # views
     embedcount_ids = fields.One2many('slide.embed', 'slide_id', string="Embed Count")
     slide_views = fields.Integer('# of Website Views', store=True, compute="_compute_slide_views")
-    public_views = fields.Integer('# of Public Views')
+    public_views = fields.Integer('# of Public Views', copy=False)
     total_views = fields.Integer("Views", default="0", compute='_compute_total', store=True)
     # comments
     comments_count = fields.Integer('Number of comments', compute="_compute_comments_count")
@@ -317,7 +317,9 @@ class Slide(models.Model):
             elif record.slide_type == 'video' and record.document_id:
                 if not record.mime_type:
                     # embed youtube video
-                    record.embed_code = '<iframe src="//www.youtube.com/embed/%s?theme=light" allowFullScreen="true" frameborder="0"></iframe>' % (record.document_id)
+                    query = urls.url_parse(record.url).query
+                    query = query + '&theme=light' if query else 'theme=light'
+                    record.embed_code = '<iframe src="//www.youtube-nocookie.com/embed/%s?%s" allowFullScreen="true" frameborder="0"></iframe>' % (record.document_id, query)
                 else:
                     # embed google doc video
                     record.embed_code = '<iframe src="//drive.google.com/file/d/%s/preview" allowFullScreen="true" frameborder="0"></iframe>' % (record.document_id)
@@ -433,6 +435,11 @@ class Slide(models.Model):
         rec.sequence = 0
         return rec
 
+    def unlink(self):
+        if self.question_ids and self.channel_id.channel_partner_ids:
+            raise UserError(_("People already took this quiz. To keep course progression it should not be deleted."))
+        super(Slide, self).unlink()
+
     # ---------------------------------------------------------
     # Mail/Rating
     # ---------------------------------------------------------
@@ -477,11 +484,19 @@ class Slide(models.Model):
             publish_template = slide.channel_id.publish_template_id
             html_body = publish_template.with_context(base_url=base_url)._render_template(publish_template.body_html, 'slide.slide', slide.id)
             subject = publish_template._render_template(publish_template.subject, 'slide.slide', slide.id)
+            # We want to use the 'reply_to' of the template if set. However, `mail.message` will check
+            # if the key 'reply_to' is in the kwargs before calling _get_reply_to. If the value is
+            # falsy, we don't include it in the 'message_post' call.
+            kwargs = {}
+            reply_to = publish_template._render_template(publish_template.reply_to, 'slide.slide', slide.id)
+            if reply_to:
+                kwargs['reply_to'] = reply_to
             slide.channel_id.with_context(mail_create_nosubscribe=True).message_post(
                 subject=subject,
                 body=html_body,
                 subtype='website_slides.mt_channel_slide_published',
                 email_layout_xmlid='mail.mail_notification_light',
+                **kwargs,
             )
         return True
 
@@ -679,7 +694,7 @@ class Slide(models.Model):
         url_obj = urls.url_parse(url)
         if url_obj.ascii_host == 'youtu.be':
             return ('youtube', url_obj.path[1:] if url_obj.path else False)
-        elif url_obj.ascii_host in ('youtube.com', 'www.youtube.com', 'm.youtube.com'):
+        elif url_obj.ascii_host in ('youtube.com', 'www.youtube.com', 'm.youtube.com', 'www.youtube-nocookie.com'):
             v_query_value = url_obj.decode_query().get('v')
             if v_query_value:
                 return ('youtube', v_query_value)

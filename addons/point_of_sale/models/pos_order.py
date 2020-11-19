@@ -54,11 +54,9 @@ class PosOrder(models.Model):
 
     @api.model
     def _payment_fields(self, order, ui_paymentline):
-        payment_date = ui_paymentline['name']
-        payment_date = fields.Date.context_today(self, fields.Datetime.from_string(payment_date))
         return {
             'amount': ui_paymentline['amount'] or 0.0,
-            'payment_date': payment_date,
+            'payment_date': ui_paymentline['name'],
             'payment_method_id': ui_paymentline['payment_method_id'],
             'card_type': ui_paymentline.get('card_type'),
             'transaction_id': ui_paymentline.get('transaction_id'),
@@ -175,7 +173,7 @@ class PosOrder(models.Model):
                 'name': _('return'),
                 'pos_order_id': order.id,
                 'amount': -pos_order['amount_return'],
-                'payment_date': fields.Date.context_today(self),
+                'payment_date': fields.Datetime.now(),
                 'payment_method_id': cash_payment_method.id,
             }
             order.add_payment(return_payment_vals)
@@ -225,7 +223,7 @@ class PosOrder(models.Model):
         readonly=True)
     config_id = fields.Many2one('pos.config', related='session_id.config_id', string="Point of Sale", readonly=False)
     currency_id = fields.Many2one('res.currency', related='config_id.currency_id', string="Currency")
-    currency_rate = fields.Float("Currency Rate", compute='_compute_currency_rate', compute_sudo=True, store=True, readonly=True, help='The rate of the currency to the currency of rate 1 applicable at the date of the order')
+    currency_rate = fields.Float("Currency Rate", compute='_compute_currency_rate', compute_sudo=True, store=True, digits=0, readonly=True, help='The rate of the currency to the currency of rate 1 applicable at the date of the order')
 
     invoice_group = fields.Boolean(related="config_id.module_account", readonly=False)
     state = fields.Selection(
@@ -244,7 +242,7 @@ class PosOrder(models.Model):
     note = fields.Text(string='Internal Notes')
     nb_print = fields.Integer(string='Number of Print', readonly=True, copy=False, default=0)
     pos_reference = fields.Char(string='Receipt Number', readonly=True, copy=False)
-    sale_journal = fields.Many2one('account.journal', related='session_id.config_id.journal_id', string='Sales Journal', store=True, readonly=True)
+    sale_journal = fields.Many2one('account.journal', related='session_id.config_id.journal_id', string='Sales Journal', store=True, readonly=True, ondelete='restrict')
     fiscal_position_id = fields.Many2one(
         comodel_name='account.fiscal.position', string='Fiscal Position',
         readonly=True,
@@ -345,7 +343,11 @@ class PosOrder(models.Model):
         }
 
     def _is_pos_order_paid(self):
-        return float_is_zero(self.amount_total - self.amount_paid, precision_rounding=self.currency_id.rounding)
+        return float_is_zero(self._get_rounded_amount(self.amount_total) - self.amount_paid, precision_rounding=self.currency_id.rounding)
+
+    def _get_rounded_amount(self, amount):
+        currency = self.currency_id
+        return currency.round(amount) if currency else amount
 
     def action_pos_order_paid(self):
         if not self._is_pos_order_paid():
@@ -359,6 +361,7 @@ class PosOrder(models.Model):
 
     def _prepare_invoice_vals(self):
         self.ensure_one()
+        timezone = pytz.timezone(self._context.get('tz') or self.env.user.tz or 'UTC')
         vals = {
             'invoice_payment_ref': self.name,
             'invoice_origin': self.name,
@@ -370,7 +373,7 @@ class PosOrder(models.Model):
             # considering partner's sale pricelist's currency
             'currency_id': self.pricelist_id.currency_id.id,
             'invoice_user_id': self.user_id.id,
-            'invoice_date': self.date_order.date(),
+            'invoice_date': self.date_order.astimezone(timezone).date(),
             'fiscal_position_id': self.fiscal_position_id.id,
             'invoice_line_ids': [(0, None, self._prepare_invoice_line(line)) for line in self.lines],
         }
@@ -473,7 +476,7 @@ class PosOrder(models.Model):
             if picking_type:
                 message = _("This transfer has been created from the point of sale session: <a href=# data-oe-model=pos.order data-oe-id=%d>%s</a>") % (order.id, order.name)
                 picking_vals = {
-                    'origin': order.name,
+                    'origin': '%s - %s' % (order.session_id.name, order.name),
                     'partner_id': address.get('delivery', False),
                     'user_id': False,
                     'date_done': order.date_order,
@@ -503,7 +506,7 @@ class PosOrder(models.Model):
                     if self.env.user.partner_id.email:
                         return_picking.message_post(body=message)
                     else:
-                        return_picking.message_post(body=message)
+                        return_picking.sudo().message_post(body=message)
 
             for line in order.lines.filtered(lambda l: l.product_id.type in ['product', 'consu'] and not float_is_zero(l.qty, precision_rounding=l.product_id.uom_id.rounding)):
                 moves |= Move.create({
@@ -652,12 +655,24 @@ class PosOrder(models.Model):
         orders = self.browse(order_ids) if order_ids else self
 
         message = _("<p>Dear %s,<br/>Here is your electronic ticket for the %s. </p>") % (client['name'], name)
+
+        filename = 'Receipt-' + name + '.jpg'
+        receipt = self.env['ir.attachment'].create({
+            'name': filename,
+            'type': 'binary',
+            'datas': ticket,
+            'res_model': 'pos.order',
+            'res_id': orders[:1].id,
+            'store_fname': filename,
+            'mimetype': 'image/jpeg',
+        })
         template_data = {
             'subject': _('Receipt %s') % name,
-            'body_html': message + '<img src="data:image/jpeg;base64,%s"/>' % ticket,
+            'body_html': message,
             'author_id': self.env.user.partner_id.id,
             'email_from': self.env.company.email or self.env.user.email_formatted,
-            'email_to': client['email']
+            'email_to': client['email'],
+            'attachment_ids': [(4, receipt.id)],
         }
 
         if orders.mapped('account_move'):
@@ -668,11 +683,11 @@ class PosOrder(models.Model):
                 'type': 'binary',
                 'datas': base64.b64encode(report[0]),
                 'store_fname': filename,
-                'res_model': 'account.move',
-                'res_id': order_ids[0],
+                'res_model': 'pos.order',
+                'res_id': orders[:1].id,
                 'mimetype': 'application/x-pdf'
             })
-            template_data['attachment_ids'] = attachment
+            template_data['attachment_ids'] += [(4, attachment.id)]
 
         mail = self.env['mail.mail'].create(template_data)
         mail.send()
@@ -778,7 +793,6 @@ class PosOrderLine(models.Model):
             values['name'] = self.env['ir.sequence'].next_by_code('pos.order.line')
         return super(PosOrderLine, self).create(values)
 
-    @api.model
     def write(self, values):
         if values.get('pack_lot_line_ids'):
             for pl in values.get('pack_lot_ids'):
@@ -872,7 +886,7 @@ class ReportSaleDetails(models.AbstractModel):
         domain = [('state', 'in', ['paid','invoiced','done'])]
 
         if (session_ids):
-            domain = AND([domain, [('session_id', 'in', session_ids.ids)]])
+            domain = AND([domain, [('session_id', 'in', session_ids)]])
         else:
             if date_start:
                 date_start = fields.Datetime.from_string(date_start)
@@ -897,7 +911,7 @@ class ReportSaleDetails(models.AbstractModel):
             ])
 
             if config_ids:
-                domain = AND([domain, [('config_id', 'in', config_ids.ids)]])
+                domain = AND([domain, [('config_id', 'in', config_ids)]])
 
         orders = self.env['pos.order'].search(domain)
 
@@ -963,5 +977,5 @@ class ReportSaleDetails(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         data = dict(data or {})
         configs = self.env['pos.config'].browse(data['config_ids'])
-        data.update(self.get_sale_details(data['date_start'], data['date_stop'], configs))
+        data.update(self.get_sale_details(data['date_start'], data['date_stop'], configs.ids))
         return data

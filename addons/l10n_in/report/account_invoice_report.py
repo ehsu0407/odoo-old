@@ -123,7 +123,7 @@ class L10nInAccountInvoiceReport(models.Model):
                 am.l10n_in_shipping_bill_number AS shipping_bill_number,
                 am.l10n_in_shipping_bill_date AS shipping_bill_date,
                 am.l10n_in_shipping_port_code_id AS shipping_port_code_id,
-                am.amount_total AS total,
+                ABS(am.amount_total_signed) AS total,
                 am.journal_id,
                 aj.company_id,
                 am.type AS move_type,
@@ -246,7 +246,7 @@ class L10nInAccountInvoiceReport(models.Model):
                 JOIN account_move am ON am.id = aml.move_id
                 JOIN account_journal aj ON aj.id = am.journal_id
                 JOIN res_company c ON c.id = aj.company_id
-                JOIN account_tax at ON at.id = aml.tax_line_id
+                LEFT JOIN account_tax at ON at.id = aml.tax_line_id
                 JOIN account_account_tag_account_move_line_rel aat_aml_rel ON aat_aml_rel.account_move_line_id = aml.id
                 JOIN account_account_tag aat ON aat.id = aat_aml_rel.account_account_tag_id
                 JOIN account_tax_report_line_tags_rel tag_rep_ln ON aat.id = tag_rep_ln.account_account_tag_id
@@ -264,7 +264,7 @@ class L10nInAccountInvoiceReport(models.Model):
     def _where(self):
         return """
                 WHERE am.state = 'posted'
-                    AND tag_rep_ln.account_tax_report_line_id in (SELECT res_id FROM ir_model_data WHERE module='l10n_in' AND name in ('tax_report_line_igst','tax_report_line_cgst','tax_report_line_sgst'))
+                    AND tag_rep_ln.account_tax_report_line_id in (SELECT res_id FROM ir_model_data WHERE module='l10n_in' AND name in ('tax_report_line_igst','tax_report_line_cgst','tax_report_line_sgst','tax_report_line_zero_rated'))
         """
 
     def _group_by(self):

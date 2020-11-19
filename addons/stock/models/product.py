@@ -4,6 +4,7 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.osv import expression
+from odoo.tools import pycompat,float_is_zero
 from odoo.tools.float_utils import float_round
 from datetime import datetime
 import operator as py_operator
@@ -218,7 +219,7 @@ class Product(models.Model):
         if picking_code == 'incoming':
             return self.description_pickingin or description
         if picking_code == 'outgoing':
-            return self.description_pickingout or description
+            return self.description_pickingout or self.name
         if picking_code == 'internal':
             return self.description_picking or description
 
@@ -313,13 +314,8 @@ class Product(models.Model):
             loc_domain = loc_domain + [('location_id', operator, other_locations.ids)]
             dest_loc_domain = dest_loc_domain and ['|'] + dest_loc_domain or dest_loc_domain
             dest_loc_domain = dest_loc_domain + [('location_dest_id', operator, other_locations.ids)]
-        usage = self._context.get('quantity_available_locations_domain')
-        if usage:
-            stock_loc_domain = expression.AND([domain + loc_domain, [('location_id.usage', 'in', usage)]])
-        else:
-            stock_loc_domain = domain + loc_domain
         return (
-            stock_loc_domain,
+            domain + loc_domain,
             domain + dest_loc_domain + ['!'] + loc_domain if loc_domain else domain + dest_loc_domain,
             domain + loc_domain + ['!'] + dest_loc_domain if dest_loc_domain else domain + loc_domain
         )
@@ -484,8 +480,7 @@ class Product(models.Model):
 
     # Be aware that the exact same function exists in product.template
     def action_open_quants(self):
-        location_domain = self._get_domain_locations()[0]
-        domain = expression.AND([[('product_id', 'in', self.ids)], location_domain])
+        domain = [('product_id', 'in', self.ids)]
         hide_location = not self.user_has_groups('stock.group_stock_multi_locations')
         hide_lot = all([product.tracking == 'none' for product in self])
         self = self.with_context(hide_location=hide_location, hide_lot=hide_lot)
@@ -510,7 +505,7 @@ class Product(models.Model):
         else:
             self = self.with_context(product_tmpl_id=self.product_tmpl_id.id)
         ctx = dict(self.env.context)
-        ctx.update({'no_at_date': True})
+        ctx.update({'no_at_date': True, 'search_default_on_hand': True})
         return self.env['stock.quant'].with_context(ctx)._get_quants_action(domain)
 
     def action_update_quantity_on_hand(self):
@@ -728,6 +723,8 @@ class ProductTemplate(models.Model):
             ])
             if existing_move_lines:
                 raise UserError(_("You can not change the type of a product that is currently reserved on a stock move. If you need to change the type, you should first unreserve the stock move."))
+        if 'type' in vals and vals['type'] != 'product' and any(p.type == 'product' and not float_is_zero(p.qty_available, precision_rounding=p.uom_id.rounding) for p in self):
+            raise UserError(_("Available quantity should be set to zero before changing type"))
         return super(ProductTemplate, self).write(vals)
 
     # Be aware that the exact same function exists in product.product

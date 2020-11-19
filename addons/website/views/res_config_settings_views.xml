@@ -68,7 +68,7 @@
                                     <div class="text-muted">
                                         The company this website belongs to
                                     </div>
-                                    <field name="website_company_id"/>
+                                    <field name="website_company_id" attrs="{'required': [('website_id', '!=', False)]}" />
                                 </div>
                             </div>
                             <div class="col-12 col-lg-6 o_setting_box" id="languages_setting">
@@ -319,6 +319,11 @@
                                             <i class="fa fa-arrow-right"/>
                                             Create a Google Project and Get a Key
                                         </a>
+                                        <a role="button" class="btn-link" target="_blank"
+                                           href="https://cloud.google.com/maps-platform/pricing">
+                                            <i class="fa fa-arrow-right"/>
+                                            Enable billing on your Google Project
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -345,7 +350,7 @@
             <field name="res_model">res.config.settings</field>
             <field name="view_mode">form</field>
             <field name="target">inline</field>
-            <field name="context">{'module' : 'website'}</field>
+            <field name="context">{'module' : 'website', 'bin_size': False}</field>
         </record>
 
         <menuitem id="menu_website_global_configuration" parent="menu_website_configuration"

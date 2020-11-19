@@ -622,6 +622,15 @@ var FieldDateRange = InputField.extend({
         }
         this._super.apply(this, arguments);
     },
+    /**
+     * Return the date written in the input, in UTC.
+     *
+     * @private
+     * @returns {Moment|false}
+     */
+    _getValue: function () {
+        return field_utils.parse[this.formatType](this.$input.val(), this.field, { timezone: true });
+    },
 
     //--------------------------------------------------------------------------
     // Private
@@ -692,6 +701,11 @@ var FieldDateRange = InputField.extend({
                 self.$el.data('daterangepicker').hide();
             }
         });
+
+        // Prevent bootstrap from focusing on modal (which breaks hours drop-down in firefox)
+        this.$pickerContainer.on('focusin.bs.modal', 'select', function (ev) {
+            ev.stopPropagation();
+        });
     },
 });
 
@@ -755,7 +769,7 @@ var FieldDate = InputField.extend({
      */
     activate: function () {
         if (this.isFocusable() && this.datewidget) {
-            this.datewidget.focus();
+            this.datewidget.$input.select();
             return true;
         }
         return false;
@@ -1332,7 +1346,7 @@ var FieldPercentage = FieldFloat.extend({
 var FieldText = InputField.extend(TranslatableFieldMixin, {
     description: _lt("Multiline Text"),
     className: 'o_field_text',
-    supportedFieldTypes: ['text'],
+    supportedFieldTypes: ['text', 'html'],
     tagName: 'span',
 
     /**
@@ -1871,6 +1885,10 @@ var FieldBinaryImage = AbstractFieldBinary.extend({
             } else {
                 $img = this.$('img');
             }
+            var zoomDelay = 0;
+            if (this.nodeOptions.zoom_delay) {
+                zoomDelay = this.nodeOptions.zoom_delay;
+            }
 
             if(this.recordData[imageField]) {
                 $img.attr('data-zoom', 1);
@@ -1878,10 +1896,13 @@ var FieldBinaryImage = AbstractFieldBinary.extend({
 
                 $img.zoomOdoo({
                     event: 'mouseenter',
+                    timer: zoomDelay,
                     attach: '.o_content',
                     attachToTarget: true,
                     onShow: function () {
-                        if(this.$zoom.height() < 256 && this.$zoom.width() < 256) {
+                        var zoomHeight = Math.ceil(this.$zoom.height());
+                        var zoomWidth = Math.ceil(this.$zoom.width());
+                        if( zoomHeight < 128 && zoomWidth < 128) {
                             this.hide();
                         }
                     },
@@ -2103,10 +2124,14 @@ var PriorityWidget = AbstractField.extend({
     // the current implementation of this widget makes it
     // only usable for fields of type selection
     className: "o_priority",
+    attributes: {
+        'role': 'radiogroup',
+    },
     events: {
         'mouseover > a': '_onMouseOver',
         'mouseout > a': '_onMouseOut',
         'click > a': '_onClick',
+        'keydown > a': '_onKeydown',
     },
     supportedFieldTypes: ['selection'],
 
@@ -2122,6 +2147,17 @@ var PriorityWidget = AbstractField.extend({
      */
     isSet: function () {
         return true;
+    },
+
+    /**
+     * Returns the currently-checked star, or the first one if no star is
+     * checked.
+     *
+     * @override
+     */
+    getFocusableElement: function () {
+        var checked = this.$("[aria-checked='true']");
+        return checked.length ? checked : this.$("[data-index='1']");
     },
 
     //--------------------------------------------------------------------------
@@ -2141,8 +2177,11 @@ var PriorityWidget = AbstractField.extend({
         }) : 0;
         this.$el.empty();
         this.empty_value = this.field.selection[0][0];
+        this.$el.attr('aria-label', this.string);
+        const isReadonly = this.record.evalModifiers(this.attrs.modifiers).readonly;
         _.each(this.field.selection.slice(1), function (choice, index) {
-            self.$el.append(self._renderStar('<a href="#">', index_value >= index+1, index+1, choice[1]));
+            const tag = isReadonly ? '<span>' : '<a href="#">';
+            self.$el.append(self._renderStar(tag, index_value >= index + 1, index + 1, choice[1], index_value));
         });
     },
 
@@ -2153,12 +2192,18 @@ var PriorityWidget = AbstractField.extend({
      * @param {boolean} isFull whether the star is a full star or not
      * @param {integer} index the index of the star in the series
      * @param {string} tip tooltip for this star's meaning
+     * @param {integer} indexValue the index of the last full star or 0
      * @private
      */
-    _renderStar: function (tag, isFull, index, tip) {
+    _renderStar: function (tag, isFull, index, tip, indexValue) {
+        var isChecked = indexValue === index;
+        var defaultFocus = indexValue === 0 && index === 1;
         return $(tag)
+            .attr('role', 'radio')
+            .attr('aria-checked', isChecked)
             .attr('title', tip)
             .attr('aria-label', tip)
+            .attr('tabindex', isChecked || defaultFocus ? 0 : -1)
             .attr('data-index', index)
             .addClass('o_priority_star fa')
             .toggleClass('fa-star', isFull)
@@ -2210,6 +2255,36 @@ var PriorityWidget = AbstractField.extend({
         this.$('.o_priority_star').removeClass('fa-star-o').addClass('fa-star');
         $(event.currentTarget).nextAll().removeClass('fa-star').addClass('fa-star-o');
     },
+
+    /**
+     * Runs the default behavior when <enter> is pressed over a star
+     * (the same as if it was clicked); otherwise forwards event to the widget.
+     *
+     * @param {KeydownEvent} event
+     * @private
+     */
+    _onKeydown: function (event) {
+        if (event.which === $.ui.keyCode.ENTER) {
+            return;
+        }
+        this._super.apply(this, arguments);
+    },
+
+    _onNavigationMove: function (ev) {
+        var $curControl = this.$('a:focus');
+        var $nextControl;
+        if (ev.data.direction === 'right' || ev.data.direction === 'down') {
+            $nextControl = $curControl.next('a');
+        } else if (ev.data.direction === 'left' || ev.data.direction === 'up') {
+            $nextControl = $curControl.prev('a');
+        }
+        if ($nextControl && $nextControl.length) {
+            ev.stopPropagation();
+            $nextControl.focus();
+            return;
+        }
+        this._super.apply(this, arguments);
+    },
 });
 
 var AttachmentImage = AbstractField.extend({
@@ -2241,6 +2316,19 @@ var StateSelectionWidget = AbstractField.extend({
         'click .dropdown-item': '_setSelection',
     },
     supportedFieldTypes: ['selection'],
+
+    //--------------------------------------------------------------------------
+    // Public
+    //--------------------------------------------------------------------------
+
+    /**
+     * Returns the drop down button.
+     *
+     * @override
+     */
+    getFocusableElement: function () {
+        return this.$("a[data-toggle='dropdown']");
+    },
 
     //--------------------------------------------------------------------------
     // Private
@@ -2296,7 +2384,7 @@ var StateSelectionWidget = AbstractField.extend({
             .addClass(currentState.state_class)
             .prop('special_click', true)
             .parent().attr('title', currentState.state_name)
-            .attr('aria-label', currentState.state_name);
+            .attr('aria-label', this.string + ": " + currentState.state_name);
 
         // Render "FormSelection.Items" and move it into "FormSelection"
         var $items = $(qweb.render('FormSelection.items', {

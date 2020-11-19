@@ -27,7 +27,7 @@ class Repair(models.Model):
 
     name = fields.Char(
         'Repair Reference',
-        default=lambda self: self.env['ir.sequence'].next_by_code('repair.order'),
+        default='/',
         copy=False, required=True,
         states={'confirmed': [('readonly', True)]})
     product_id = fields.Many2one(
@@ -43,7 +43,7 @@ class Repair(models.Model):
     product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id')
     partner_id = fields.Many2one(
         'res.partner', 'Customer',
-        index=True, states={'confirmed': [('readonly', True)]},
+        index=True, states={'confirmed': [('readonly', True)]}, change_default=True,
         help='Choose partner for whom the order will be invoiced and delivered. You can find a partner by its Name, TIN, Email or Internal Reference.')
     address_id = fields.Many2one(
         'res.partner', 'Delivery Address',
@@ -82,7 +82,7 @@ class Repair(models.Model):
         copy=True, readonly=True, states={'draft': [('readonly', False)]})
     pricelist_id = fields.Many2one(
         'product.pricelist', 'Pricelist',
-        default=lambda self: self.env['product.pricelist'].search([], limit=1).id,
+        default=lambda self: self.env['product.pricelist'].search([('company_id', 'in', [self.env.company.id, False])], limit=1).id,
         help='Pricelist of the selected partner.')
     partner_invoice_id = fields.Many2one('res.partner', 'Invoicing Address')
     invoice_method = fields.Selection([
@@ -177,15 +177,28 @@ class Repair(models.Model):
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):
+        company_id = self.company_id.id or self.env.company.id
         if not self.partner_id:
             self.address_id = False
             self.partner_invoice_id = False
-            self.pricelist_id = self.env['product.pricelist'].search([], limit=1).id
+            self.pricelist_id = self.env['product.pricelist'].search([
+                ('company_id', 'in', [company_id, False]),
+            ], limit=1)
         else:
             addresses = self.partner_id.address_get(['delivery', 'invoice', 'contact'])
             self.address_id = addresses['delivery'] or addresses['contact']
             self.partner_invoice_id = addresses['invoice']
-            self.pricelist_id = self.partner_id.property_product_pricelist.id
+            self.pricelist_id = self.partner_id.with_context(force_company=company_id).property_product_pricelist.id
+
+    @api.model
+    def create(self, vals):
+        # To avoid consuming a sequence number when clicking on 'Create', we preprend it if the
+        # the name starts with '/'.
+        vals['name'] = vals.get('name') or '/'
+        if vals['name'].startswith('/'):
+            vals['name'] = (self.env['ir.sequence'].next_by_code('repair.order') or '/') + vals['name']
+            vals['name'] = vals['name'][:-1] if vals['name'].endswith('/') and vals['name'] != '/' else vals['name']
+        return super(Repair, self).create(vals)
 
     def button_dummy(self):
         # TDE FIXME: this button is very interesting
@@ -311,6 +324,7 @@ class Repair(models.Model):
                 invoice_vals = {
                     'type': 'out_invoice',
                     'partner_id': partner_invoice.id,
+                    'partner_shipping_id': repair.address_id.id,
                     'currency_id': currency.id,
                     'narration': narration,
                     'line_ids': [],
@@ -319,6 +333,8 @@ class Repair(models.Model):
                     'invoice_line_ids': [],
                     'fiscal_position_id': fp_id
                 }
+                if partner_invoice.property_payment_term_id:
+                    invoice_vals['invoice_payment_term_id'] = partner_invoice.property_payment_term_id.id
                 current_invoices_list.append(invoice_vals)
             else:
                 # if group == True: concatenate invoices by partner and currency
@@ -503,19 +519,22 @@ class Repair(models.Model):
                 available_quantity = self.env['stock.quant']._get_available_quantity(
                     move.product_id,
                     move.location_id,
-                    lot_id=operation.lot_id.id,
+                    lot_id=operation.lot_id,
                     strict=False,
                 )
                 move._update_reserved_quantity(
                     product_qty,
                     available_quantity,
                     move.location_id,
-                    lot_id=operation.lot_id.id,
+                    lot_id=operation.lot_id,
                     strict=False,
                 )
                 # Then, set the quantity done. If the required quantity was not reserved, negative
                 # quant is created in operation.location_id.
                 move._set_quantity_done(operation.product_uom_qty)
+
+                if operation.lot_id:
+                    move.move_line_ids.lot_id = operation.lot_id
 
                 moves |= move
                 operation.write({'move_id': move.id, 'state': 'done'})
@@ -559,7 +578,7 @@ class RepairLine(models.Model):
         index=True, ondelete='cascade')
     type = fields.Selection([
         ('add', 'Add'),
-        ('remove', 'Remove')], 'Type', required=True)
+        ('remove', 'Remove')], 'Type', default='add', required=True)
     product_id = fields.Many2one('product.product', 'Product', required=True)
     invoiced = fields.Boolean('Invoiced', copy=False, readonly=True)
     price_unit = fields.Float('Unit Price', required=True, digits='Product Price')
@@ -642,7 +661,10 @@ class RepairLine(models.Model):
             else:
                 self.name = self.product_id.display_name
             if self.product_id.description_sale:
-                self.name += '\n' + self.product_id.description_sale
+                if partner:
+                    self.name += '\n' + self.product_id.with_context(lang=partner.lang).description_sale
+                else:
+                    self.name += '\n' + self.product_id.description_sale
             self.product_uom = self.product_id.uom_id.id
         if self.type != 'remove':
             if partner and self.product_id:
@@ -688,7 +710,7 @@ class RepairFee(models.Model):
     name = fields.Text('Description', index=True, required=True)
     product_id = fields.Many2one('product.product', 'Product')
     product_uom_qty = fields.Float('Quantity', digits='Product Unit of Measure', required=True, default=1.0)
-    price_unit = fields.Float('Unit Price', required=True)
+    price_unit = fields.Float('Unit Price', required=True, digits='Product Price')
     product_uom = fields.Many2one('uom.uom', 'Product Unit of Measure', required=True, domain="[('category_id', '=', product_uom_category_id)]")
     product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id')
     price_subtotal = fields.Float('Subtotal', compute='_compute_price_subtotal', store=True, digits=0)
@@ -720,10 +742,16 @@ class RepairFee(models.Model):
                 fp = self.env['account.fiscal.position'].browse(fp_id)
             self.tax_id = fp.map_tax(self.product_id.taxes_id, self.product_id, partner).ids
         if self.product_id:
-            self.name = self.product_id.display_name
+            if partner:
+                self.name = self.product_id.with_context(lang=partner.lang).display_name
+            else:
+                self.name = self.product_id.display_name
             self.product_uom = self.product_id.uom_id.id
             if self.product_id.description_sale:
-                self.name += '\n' + self.product_id.description_sale
+                if partner:
+                    self.name += '\n' + self.product_id.with_context(lang=partner.lang).description_sale
+                else:
+                    self.name += '\n' + self.product_id.description_sale
 
         warning = False
         if not pricelist:

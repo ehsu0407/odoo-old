@@ -6,7 +6,7 @@ from odoo import fields, models, api, _
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    stock_move_id = fields.Many2one('stock.move', string='Stock Move')
+    stock_move_id = fields.Many2one('stock.move', string='Stock Move', index=True)
     stock_valuation_layer_ids = fields.One2many('stock.valuation.layer', 'account_move_id', string='Stock Valuation Layer')
 
     # -------------------------------------------------------------------------
@@ -24,6 +24,19 @@ class AccountMove(models.Model):
         if not cancel:
             move_vals['line_ids'] = [vals for vals in move_vals['line_ids'] if not vals[2]['is_anglo_saxon_line']]
         return move_vals
+
+    def copy_data(self, default=None):
+        # OVERRIDE
+        # Don't keep anglo-saxon lines when copying a journal entry.
+        res = super().copy_data(default=default)
+
+        if not self._context.get('move_reverse_cancel'):
+            for copy_vals in res:
+                if 'line_ids' in copy_vals:
+                    copy_vals['line_ids'] = [line_vals for line_vals in copy_vals['line_ids']
+                                             if line_vals[0] != 0 or not line_vals[2]['is_anglo_saxon_line']]
+
+        return res
 
     def post(self):
         # OVERRIDE
@@ -99,13 +112,22 @@ class AccountMove(models.Model):
             for line in move.invoice_line_ids:
 
                 # Filter out lines being not eligible for COGS.
-                if line.product_id.type not in ('product', 'consu') or line.product_id.valuation != 'real_time':
+                if line.product_id.type != 'product' or line.product_id.valuation != 'real_time':
                     continue
 
                 # Retrieve accounts needed to generate the COGS.
-                accounts = line.product_id.product_tmpl_id.get_product_accounts(fiscal_pos=move.fiscal_position_id)
+                accounts = (
+                    line.product_id.product_tmpl_id
+                    .with_context(force_company=line.company_id.id)
+                    .get_product_accounts(fiscal_pos=move.fiscal_position_id)
+                )
                 debit_interim_account = accounts['stock_output']
                 credit_expense_account = accounts['expense']
+                if not credit_expense_account:
+                    if self.type == 'out_refund':
+                        credit_expense_account = self.journal_id.default_credit_account_id
+                    else: # out_invoice/out_receipt
+                        credit_expense_account = self.journal_id.default_debit_account_id
                 if not debit_interim_account or not credit_expense_account:
                     continue
 
@@ -125,8 +147,6 @@ class AccountMove(models.Model):
                     'debit': balance < 0.0 and -balance or 0.0,
                     'credit': balance > 0.0 and balance or 0.0,
                     'account_id': debit_interim_account.id,
-                    'analytic_account_id': line.analytic_account_id.id,
-                    'analytic_tag_ids': [(6, 0, line.analytic_tag_ids.ids)],
                     'exclude_from_invoice_tab': True,
                     'is_anglo_saxon_line': True,
                 })

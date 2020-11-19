@@ -44,7 +44,7 @@ class AccountFiscalPosition(models.Model):
     @api.constrains('zip_from', 'zip_to')
     def _check_zip(self):
         for position in self:
-            if self.zip_from and self.zip_to and position.zip_from > position.zip_to:
+            if position.zip_from and position.zip_to and position.zip_from > position.zip_to:
                 raise ValidationError(_('Invalid "Zip Range", please configure it properly.'))
 
     @api.model     # noqa
@@ -126,7 +126,7 @@ class AccountFiscalPosition(models.Model):
         base_domain = [
             ('auto_apply', '=', True),
             ('vat_required', '=', vat_required),
-            ('company_id', '=', company_id),
+            ('company_id', 'in', [company_id, False]),
         ]
         null_state_dom = state_domain = [('state_ids', '=', False)]
         null_zip_dom = zip_domain = [('zip_from', '=', False), ('zip_to', '=', False)]
@@ -241,7 +241,7 @@ class ResPartner(models.Model):
                       LEFT JOIN account_account_type act ON (a.user_type_id=act.id)
                       WHERE act.type IN ('receivable','payable')
                       AND account_move_line.partner_id IN %s
-                      AND account_move_line.reconciled IS FALSE
+                      AND account_move_line.reconciled IS NOT TRUE
                       """ + where_clause + """
                       GROUP BY account_move_line.partner_id, act.type
                       """, where_params)
@@ -250,12 +250,14 @@ class ResPartner(models.Model):
             partner = self.browse(pid)
             if type == 'receivable':
                 partner.credit = val
-                partner.debit = False
-                treated |= partner
+                if partner not in treated:
+                    partner.debit = False
+                    treated |= partner
             elif type == 'payable':
                 partner.debit = -val
-                partner.credit = False
-                treated |= partner
+                if partner not in treated:
+                    partner.credit = False
+                    treated |= partner
         remaining = (self - treated)
         remaining.debit = False
         remaining.credit = False
@@ -428,7 +430,7 @@ class ResPartner(models.Model):
     invoice_warn = fields.Selection(WARNING_MESSAGE, 'Invoice', help=WARNING_HELP, default="no-message")
     invoice_warn_msg = fields.Text('Message for Invoice')
     # Computed fields to order the partners as suppliers/customers according to the
-    # amount of their generated incoming/outgoing account moves 
+    # amount of their generated incoming/outgoing account moves
     supplier_rank = fields.Integer(default=0)
     customer_rank = fields.Integer(default=0)
 
@@ -467,7 +469,6 @@ class ResPartner(models.Model):
         action = self.env.ref('account.action_move_out_invoice_type').read()[0]
         action['domain'] = [
             ('type', 'in', ('out_invoice', 'out_refund')),
-            ('state', '=', 'posted'),
             ('partner_id', 'child_of', self.id),
         ]
         action['context'] = {'default_type':'out_invoice', 'type':'out_invoice', 'journal_type': 'sale', 'search_default_unpaid': 1}

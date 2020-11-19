@@ -9,7 +9,7 @@ from odoo.osv import expression
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.tools.float_utils import float_compare
 from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tools.misc import formatLang
+from odoo.tools.misc import formatLang, get_lang
 
 
 class PurchaseOrder(models.Model):
@@ -23,6 +23,7 @@ class PurchaseOrder(models.Model):
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
+                line._compute_amount()
                 amount_untaxed += line.price_subtotal
                 amount_tax += line.price_tax
             order.update({
@@ -39,9 +40,28 @@ class PurchaseOrder(models.Model):
                 order.invoice_status = 'no'
                 continue
 
-            if any(float_compare(line.qty_invoiced, line.product_qty if line.product_id.purchase_method == 'purchase' else line.qty_received, precision_digits=precision) == -1 for line in order.order_line):
+            if any(
+                float_compare(
+                    line.qty_invoiced,
+                    line.product_qty if line.product_id.purchase_method == 'purchase' else line.qty_received,
+                    precision_digits=precision,
+                )
+                == -1
+                for line in order.order_line.filtered(lambda l: not l.display_type)
+            ):
                 order.invoice_status = 'to invoice'
-            elif all(float_compare(line.qty_invoiced, line.product_qty if line.product_id.purchase_method == 'purchase' else line.qty_received, precision_digits=precision) >= 0 for line in order.order_line) and order.invoice_ids:
+            elif (
+                all(
+                    float_compare(
+                        line.qty_invoiced,
+                        line.product_qty if line.product_id.purchase_method == "purchase" else line.qty_received,
+                        precision_digits=precision,
+                    )
+                    >= 0
+                    for line in order.order_line.filtered(lambda l: not l.display_type)
+                )
+                and order.invoice_ids
+            ):
                 order.invoice_status = 'invoiced'
             else:
                 order.invoice_status = 'no'
@@ -175,9 +195,12 @@ class PurchaseOrder(models.Model):
         return super(PurchaseOrder, self).unlink()
 
     def copy(self, default=None):
+        ctx = dict(self.env.context)
+        ctx.pop('default_product_id', None)
+        self = self.with_context(ctx)
         new_po = super(PurchaseOrder, self).copy(default=default)
         for line in new_po.order_line:
-            if new_po.date_planned:
+            if new_po.date_planned and not line.display_type:
                 line.date_planned = new_po.date_planned
             elif line.product_id:
                 seller = line.product_id._select_seller(
@@ -204,7 +227,6 @@ class PurchaseOrder(models.Model):
         self = self.with_context(force_company=self.company_id.id)
         if not self.partner_id:
             self.fiscal_position_id = False
-            self.payment_term_id = False
             self.currency_id = self.env.company.currency_id.id
         else:
             self.fiscal_position_id = self.env['account.fiscal.position'].get_fiscal_position(self.partner_id.id)
@@ -317,7 +339,7 @@ class PurchaseOrder(models.Model):
         return self.env.ref('purchase.report_purchase_quotation').report_action(self)
 
     def button_approve(self, force=False):
-        self.write({'state': 'purchase', 'date_approve': fields.Date.context_today(self)})
+        self.write({'state': 'purchase', 'date_approve': fields.Datetime.now()})
         self.filtered(lambda p: p.company_id.po_lock == 'lock').write({'state': 'done'})
         return {}
 
@@ -410,7 +432,12 @@ class PurchaseOrder(models.Model):
             'default_type': 'in_invoice',
             'default_company_id': self.company_id.id,
             'default_purchase_id': self.id,
+            'default_partner_id': self.partner_id.id,
         }
+        # Invoice_ids may be filtered depending on the user. To ensure we get all
+        # invoices related to the purchase order, we read them in sudo to fill the
+        # cache.
+        self.sudo()._read(['invoice_ids'])
         # choose the view_mode accordingly
         if len(self.invoice_ids) > 1 and not create_bill:
             result['domain'] = "[('id', 'in', " + str(self.invoice_ids.ids) + ")]"
@@ -424,8 +451,8 @@ class PurchaseOrder(models.Model):
             # Do not set an invoice_id if we want to create a new bill.
             if not create_bill:
                 result['res_id'] = self.invoice_ids.id or False
-        result['context']['default_origin'] = self.name
-        result['context']['default_reference'] = self.partner_ref
+        result['context']['default_invoice_origin'] = self.name
+        result['context']['default_ref'] = self.partner_ref
         return result
 
 
@@ -519,8 +546,8 @@ class PurchaseOrderLine(models.Model):
     def _compute_tax_id(self):
         for line in self:
             fpos = line.order_id.fiscal_position_id or line.order_id.partner_id.with_context(force_company=line.company_id.id).property_account_position_id
-            # If company_id is set, always filter taxes by the company
-            taxes = line.product_id.supplier_taxes_id.filtered(lambda r: not line.company_id or r.company_id == line.company_id)
+            # If company_id is set in the order, always filter taxes by the company
+            taxes = line.product_id.supplier_taxes_id.filtered(lambda r: r.company_id == line.order_id.company_id)
             line.taxes_id = fpos.map_tax(taxes, line.product_id, line.order_id.partner_id) if fpos else taxes
 
     @api.depends('invoice_lines.move_id.state', 'invoice_lines.quantity')
@@ -581,7 +608,7 @@ class PurchaseOrderLine(models.Model):
 
     def write(self, values):
         if 'display_type' in values and self.filtered(lambda line: line.display_type != values.get('display_type')):
-            raise UserError("You cannot change the type of a purchase order line. Instead you should delete the current line and create a new line of the proper type.")
+            raise UserError(_("You cannot change the type of a purchase order line. Instead you should delete the current line and create a new line of the proper type."))
 
         if 'product_qty' in values:
             for line in self:
@@ -636,7 +663,7 @@ class PurchaseOrderLine(models.Model):
 
         self.product_uom = self.product_id.uom_po_id or self.product_id.uom_id
         product_lang = self.product_id.with_context(
-            lang=self.partner_id.lang,
+            lang=get_lang(self.env, self.partner_id.lang).code,
             partner_id=self.partner_id.id,
             company_id=self.company_id.id,
         )

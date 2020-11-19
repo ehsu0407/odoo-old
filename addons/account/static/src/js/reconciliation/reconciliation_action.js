@@ -116,15 +116,15 @@ var StatementAction = AbstractAction.extend({
                     self.model.context = {'active_id': self.params.context.active_id,
                                           'active_model': self.params.context.active_model};
                 }
-                if (self.params.context.journal_id) {
-                    self.model.context.active_id = self.params.context.journal_id;
-                    self.model.context.active_model = 'account.journal';
-                }
+                var journal_id = self.params.context.journal_id;
                 if (self.model.context.active_id && self.model.context.active_model === 'account.journal') {
+                    journal_id = journal_id || self.model.context.active_id;
+                }
+                if (journal_id) {
                     var promise = self._rpc({
                             model: 'account.journal',
                             method: 'read',
-                            args: [self.model.context.active_id, ['display_name']],
+                            args: [journal_id, ['display_name']],
                         });
                 } else {
                     var promise = Promise.resolve();
@@ -252,11 +252,11 @@ var StatementAction = AbstractAction.extend({
      *
      * @private
      */
-    _openFirstLine: function () {
+    _openFirstLine: function (previous_handle) {
         var self = this;
-
+        previous_handle = previous_handle || 'rline0';
         var handle = _.compact(_.map(this.model.lines,  function (line, handle) {
-                return line.reconciled ? null : handle;
+                return (line.reconciled || (parseInt(handle.substr(5)) < parseInt(previous_handle.substr(5)))) ? null : handle;
             }))[0];
         if (handle) {
             var line = this.model.getLine(handle);
@@ -430,7 +430,7 @@ var StatementAction = AbstractAction.extend({
                 var toLoad = self.model.defaultDisplayQty - self.widgets.length;
                 self._loadMore(toLoad);
             }
-            self._openFirstLine();
+            self._openFirstLine(handle);
         });
     },
 });
@@ -485,7 +485,7 @@ var ManualAction = StatementAction.extend({
             if(!_.any(result.updated, function (handle) {
                 return self.model.getLine(handle).mode !== 'inactive';
             })) {
-                self._openFirstLine();
+                self._openFirstLine(handle);
             }
         });
     },
