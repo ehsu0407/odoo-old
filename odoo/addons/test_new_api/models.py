@@ -603,13 +603,13 @@ class ComputeOnchange(models.Model):
     @api.depends('foo')
     def _compute_bar(self):
         for record in self:
-            record.bar = record.foo
+            record.bar = (record.foo or "") + "r"
 
     @api.depends('active', 'foo')
     def _compute_baz(self):
         for record in self:
             if record.active:
-                record.baz = record.foo
+                record.baz = (record.foo or "") + "z"
 
 
 class ComputeOne2many(models.Model):

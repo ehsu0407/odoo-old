@@ -542,151 +542,169 @@ class TestComputeOnchange(common.TransactionCase):
     def test_create(self):
         model = self.env['test_new_api.compute.onchange']
 
+        # compute 'bar' (readonly) and 'baz' (editable)
+        record = model.create({'active': True})
+        self.assertEqual(record.bar, "r")
+        self.assertEqual(record.baz, "z")
+
         # compute 'bar' and 'baz'
         record = model.create({'active': True, 'foo': "foo"})
-        self.assertEqual(record.bar, "foo")
-        self.assertEqual(record.baz, "foo")
+        self.assertEqual(record.bar, "foor")
+        self.assertEqual(record.baz, "fooz")
 
         # compute 'bar' but not 'baz'
         record = model.create({'active': True, 'foo': "foo", 'bar': "bar", 'baz': "baz"})
-        self.assertEqual(record.bar, "foo")
+        self.assertEqual(record.bar, "foor")
         self.assertEqual(record.baz, "baz")
 
         # compute 'bar' and 'baz', but do not change its value
         record = model.create({'active': False, 'foo': "foo"})
-        self.assertEqual(record.bar, "foo")
+        self.assertEqual(record.bar, "foor")
         self.assertEqual(record.baz, False)
 
         # compute 'bar' but not 'baz'
         record = model.create({'active': False, 'foo': "foo", 'bar': "bar", 'baz': "baz"})
-        self.assertEqual(record.bar, "foo")
+        self.assertEqual(record.bar, "foor")
         self.assertEqual(record.baz, "baz")
 
     def test_write(self):
         model = self.env['test_new_api.compute.onchange']
         record = model.create({'active': True, 'foo': "foo"})
-        self.assertEqual(record.bar, "foo")
-        self.assertEqual(record.baz, "foo")
+        self.assertEqual(record.bar, "foor")
+        self.assertEqual(record.baz, "fooz")
 
-        # recompute 'bar' and 'baz'
+        # recompute 'bar' (readonly) and 'baz' (editable)
         record.write({'foo': "foo1"})
-        self.assertEqual(record.bar, "foo1")
-        self.assertEqual(record.baz, "foo1")
+        self.assertEqual(record.bar, "foo1r")
+        self.assertEqual(record.baz, "foo1z")
 
         # recompute 'bar' but not 'baz'
         record.write({'foo': "foo2", 'bar': "bar2", 'baz': "baz2"})
-        self.assertEqual(record.bar, "foo2")
+        self.assertEqual(record.bar, "foo2r")
         self.assertEqual(record.baz, "baz2")
 
         # recompute 'bar' and 'baz', but do not change its value
         record.write({'active': False, 'foo': "foo3"})
-        self.assertEqual(record.bar, "foo3")
+        self.assertEqual(record.bar, "foo3r")
         self.assertEqual(record.baz, "baz2")
 
         # recompute 'bar' but not 'baz'
         record.write({'active': False, 'foo': "foo4", 'bar': "bar4", 'baz': "baz4"})
-        self.assertEqual(record.bar, "foo4")
+        self.assertEqual(record.bar, "foo4r")
         self.assertEqual(record.baz, "baz4")
 
     def test_set(self):
         model = self.env['test_new_api.compute.onchange']
         record = model.create({'active': True, 'foo': "foo"})
-        self.assertEqual(record.bar, "foo")
-        self.assertEqual(record.baz, "foo")
+        self.assertEqual(record.bar, "foor")
+        self.assertEqual(record.baz, "fooz")
 
-        # recompute 'bar' and 'baz'
+        # recompute 'bar' (readonly) and 'baz' (editable)
         record.foo = "foo1"
-        self.assertEqual(record.bar, "foo1")
-        self.assertEqual(record.baz, "foo1")
+        self.assertEqual(record.bar, "foo1r")
+        self.assertEqual(record.baz, "foo1z")
 
         # do not recompute 'baz'
         record.baz = "baz2"
-        self.assertEqual(record.bar, "foo1")
+        self.assertEqual(record.bar, "foo1r")
         self.assertEqual(record.baz, "baz2")
 
         # recompute 'baz', but do not change its value
         record.active = False
-        self.assertEqual(record.bar, "foo1")
+        self.assertEqual(record.bar, "foo1r")
         self.assertEqual(record.baz, "baz2")
 
         # recompute 'baz', but do not change its value
         record.foo = "foo3"
-        self.assertEqual(record.bar, "foo3")
+        self.assertEqual(record.bar, "foo3r")
         self.assertEqual(record.baz, "baz2")
 
         # do not recompute 'baz'
         record.baz = "baz4"
-        self.assertEqual(record.bar, "foo3")
+        self.assertEqual(record.bar, "foo3r")
         self.assertEqual(record.baz, "baz4")
 
     def test_set_new(self):
         model = self.env['test_new_api.compute.onchange']
-        record = model.new({'active': True, 'foo': "foo"})
-        self.assertEqual(record.bar, "foo")
-        self.assertEqual(record.baz, "foo")
+        record = model.new({'active': True})
+        self.assertEqual(record.bar, "r")
+        self.assertEqual(record.baz, "z")
 
-        # recompute 'bar' and 'baz'
+        # recompute 'bar' (readonly) and 'baz' (editable)
         record.foo = "foo1"
-        self.assertEqual(record.bar, "foo1")
-        self.assertEqual(record.baz, "foo1")
+        self.assertEqual(record.bar, "foo1r")
+        self.assertEqual(record.baz, "foo1z")
 
         # do not recompute 'baz'
         record.baz = "baz2"
-        self.assertEqual(record.bar, "foo1")
+        self.assertEqual(record.bar, "foo1r")
         self.assertEqual(record.baz, "baz2")
 
         # recompute 'baz', but do not change its value
         record.active = False
-        self.assertEqual(record.bar, "foo1")
+        self.assertEqual(record.bar, "foo1r")
         self.assertEqual(record.baz, "baz2")
 
         # recompute 'baz', but do not change its value
         record.foo = "foo3"
-        self.assertEqual(record.bar, "foo3")
+        self.assertEqual(record.bar, "foo3r")
         self.assertEqual(record.baz, "baz2")
 
         # do not recompute 'baz'
         record.baz = "baz4"
-        self.assertEqual(record.bar, "foo3")
+        self.assertEqual(record.bar, "foo3r")
         self.assertEqual(record.baz, "baz4")
 
     def test_onchange(self):
+        # check computations of 'bar' (readonly) and 'baz' (editable)
         form = common.Form(self.env['test_new_api.compute.onchange'])
+        self.assertEqual(form.bar, "r")
+        self.assertEqual(form.baz, False)
         form.active = True
+        self.assertEqual(form.bar, "r")
+        self.assertEqual(form.baz, "z")
         form.foo = "foo1"
-        self.assertEqual(form.bar, "foo1")
-        self.assertEqual(form.baz, "foo1")
+        self.assertEqual(form.bar, "foo1r")
+        self.assertEqual(form.baz, "foo1z")
         form.baz = "baz2"
-        self.assertEqual(form.bar, "foo1")
+        self.assertEqual(form.bar, "foo1r")
         self.assertEqual(form.baz, "baz2")
         form.active = False
-        self.assertEqual(form.bar, "foo1")
+        self.assertEqual(form.bar, "foo1r")
         self.assertEqual(form.baz, "baz2")
         form.foo = "foo3"
-        self.assertEqual(form.bar, "foo3")
+        self.assertEqual(form.bar, "foo3r")
         self.assertEqual(form.baz, "baz2")
         form.active = True
-        self.assertEqual(form.bar, "foo3")
-        self.assertEqual(form.baz, "foo3")
+        self.assertEqual(form.bar, "foo3r")
+        self.assertEqual(form.baz, "foo3z")
+
+        with form.line_ids.new() as line:
+            # check computation of 'bar' (readonly)
+            self.assertEqual(line.foo, False)
+            self.assertEqual(line.bar, "r")
+            line.foo = "foo"
+            self.assertEqual(line.foo, "foo")
+            self.assertEqual(line.bar, "foor")
 
         record = form.save()
-        self.assertEqual(record.bar, "foo3")
-        self.assertEqual(record.baz, "foo3")
+        self.assertEqual(record.bar, "foo3r")
+        self.assertEqual(record.baz, "foo3z")
 
         form = common.Form(record)
-        self.assertEqual(form.bar, "foo3")
-        self.assertEqual(form.baz, "foo3")
+        self.assertEqual(form.bar, "foo3r")
+        self.assertEqual(form.baz, "foo3z")
         form.foo = "foo4"
-        self.assertEqual(form.bar, "foo4")
-        self.assertEqual(form.baz, "foo4")
+        self.assertEqual(form.bar, "foo4r")
+        self.assertEqual(form.baz, "foo4z")
         form.baz = "baz5"
-        self.assertEqual(form.bar, "foo4")
+        self.assertEqual(form.bar, "foo4r")
         self.assertEqual(form.baz, "baz5")
         form.active = False
-        self.assertEqual(form.bar, "foo4")
+        self.assertEqual(form.bar, "foo4r")
         self.assertEqual(form.baz, "baz5")
         form.foo = "foo6"
-        self.assertEqual(form.bar, "foo6")
+        self.assertEqual(form.bar, "foo6r")
         self.assertEqual(form.baz, "baz5")
 
     def test_one2many(self):
