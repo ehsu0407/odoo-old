@@ -61,6 +61,7 @@ from .tools.misc import CountingStream, clean_context, DEFAULT_SERVER_DATETIME_F
 from .tools.safe_eval import safe_eval
 from .tools.translate import _
 from .tools import date_utils
+from .tools import unique
 
 _logger = logging.getLogger(__name__)
 _schema = logging.getLogger(__name__ + '.schema')
@@ -6287,7 +6288,7 @@ Fields:
         # call, 'names' only contains fields with a default. If 'self' is a new
         # line in a one2many field, 'names' also contains the one2many's inverse
         # field, and that field may not be in nametree.
-        todo = list(names) + list(nametree) if first_call else list(names)
+        todo = list(unique(itertools.chain(names, nametree))) if first_call else list(names)
         done = set()
 
         # dummy assignment: trigger invalidations on the record

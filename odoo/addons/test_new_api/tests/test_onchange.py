@@ -4,7 +4,7 @@ try:
 except ImportError:
     from mock import patch
 
-from odoo.tests import common
+from odoo.tests import common, Form
 
 def strip_prefix(prefix, names):
     size = len(prefix)
@@ -706,6 +706,14 @@ class TestComputeOnchange(common.TransactionCase):
         form.foo = "foo6"
         self.assertEqual(form.bar, "foo6r")
         self.assertEqual(form.baz, "baz5")
+
+    def test_onchange_once(self):
+        """ Modifies `foo` field which will trigger an onchange method and
+        checks it was triggered only one time. """
+        form = Form(self.env['test_new_api.compute.onchange'].with_context(default_foo="oof"))
+        record = form.save()
+        self.assertEqual(record.foo, "oof")
+        self.assertEqual(record.count, 1, "value onchange must be called only one time")
 
     def test_one2many(self):
         """ Test a computed, editable one2many field with a domain. """
