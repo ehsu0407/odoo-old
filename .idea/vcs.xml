@@ -3,13 +3,16 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/CybroAddons" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/connector" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/hr" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/odooapps" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/product-attribute" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/queue" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/sale-workflow" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/server-ux" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/stock-logistics-barcode" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/stock-logistics-warehouse" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/ventor-merp" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/web" vcs="Git" />
   </component>
