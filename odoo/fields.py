@@ -1077,10 +1077,10 @@ class Field(MetaField('DummyField', (object,), {})):
             # new records: no business logic
             new_records = records.browse(new_ids)
             with records.env.protecting(records._field_computed.get(self, [self]), records):
-                new_records.modified([self.name])
-                self.write(new_records, value)
                 if self.relational:
-                    new_records.modified([self.name])
+                    new_records.modified([self.name], before=True)
+                self.write(new_records, value)
+                new_records.modified([self.name])
 
         if other_ids:
             # base case: full business logic
@@ -2499,8 +2499,8 @@ class Many2one(_Relational):
         else:
             id_ = None
 
-        if self.delegate and record and not record.id:
-            # the parent record of a new record is a new record
+        if self.delegate and record and not any(record._ids):
+            # if all records are new, then so is the parent
             id_ = id_ and NewId(id_)
 
         return id_

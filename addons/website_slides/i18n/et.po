@@ -15,7 +15,7 @@
 # Egon Raamat <egon@avalah.ee>, 2020
 # Eneli Õigus <enelioigus@gmail.com>, 2020
 # Algo Kärp <algokarp@gmail.com>, 2020
-# Triine Aavik <triine@avalah.ee>, 2020
+# atriine <triine@avalah.ee>, 2020
 # Piia Paurson <piia@avalah.ee>, 2020
 # 
 msgid ""
@@ -970,7 +970,7 @@ msgstr ""
 #. module: website_slides
 #: model:ir.model.fields,field_description:website_slides.field_res_config_settings__module_website_slides_survey
 msgid "Certifications"
-msgstr ""
+msgstr "Sertifikaadid"
 
 #. module: website_slides
 #: model:gamification.badge,name:website_slides.badge_data_certification
@@ -2465,7 +2465,7 @@ msgstr "Sõnumid"
 #. module: website_slides
 #: model:slide.slide,name:website_slides.slide_category_demo_1_1
 msgid "Methods"
-msgstr ""
+msgstr "Meetodid"
 
 #. module: website_slides
 #: model:slide.slide,name:website_slides.slide_slide_demo_0_2
@@ -3006,7 +3006,7 @@ msgstr ""
 #. module: website_slides
 #: model:ir.model.fields,field_description:website_slides.field_slide_channel__rating_last_value
 msgid "Rating Last Value"
-msgstr ""
+msgstr "Hinnangu viimane väärtus"
 
 #. module: website_slides
 #: model:ir.model.fields,field_description:website_slides.field_slide_channel__rating_count

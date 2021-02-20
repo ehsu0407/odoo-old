@@ -148,7 +148,7 @@ msgstr ""
 msgid ""
 "<i class=\"fa fa-long-arrow-right mx-2\" aria-label=\"Arrow icon\" "
 "title=\"Arrow\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-long-arrow-right mx-2\" aria-label=\"Arrow icon\" title=\"矢印\"/>"
 
 #. module: event
 #: model_terms:ir.ui.view,arch_db:event.event_registration_view_kanban
@@ -198,8 +198,8 @@ msgstr ""
 #: model:mail.template,body_html:event.event_subscription
 msgid ""
 "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;\"><tr><td align=\"center\">\n"
-"% set date_begin = format_datetime(object.event_id.date_begin, tz='UTC', dt_format='yyyyMMdd\\'T\\'HHmmssZ')\n"
-"% set date_end = format_datetime(object.event_id.date_end, tz='UTC', dt_format='yyyyMMdd\\'T\\'HHmmssZ')\n"
+"% set date_begin = format_datetime(object.event_id.date_begin, tz='UTC', dt_format=\"yyyyMMdd'T'HHmmss'Z'\")\n"
+"% set date_end = format_datetime(object.event_id.date_end, tz='UTC', dt_format=\"yyyyMMdd'T'HHmmss'Z'\")\n"
 "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: white; color: #454748; border-collapse:separate;\">\n"
 "<tbody>\n"
 "    <!-- HEADER -->\n"
@@ -388,8 +388,8 @@ msgstr ""
 #: model:mail.template,body_html:event.event_reminder
 msgid ""
 "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;\"><tr><td align=\"center\">\n"
-"% set date_begin = format_datetime(object.event_id.date_begin, tz='UTC', dt_format='yyyyMMdd\\'T\\'HHmmssZ')\n"
-"% set date_end = format_datetime(object.event_id.date_end, tz='UTC', dt_format='yyyyMMdd\\'T\\'HHmmssZ')\n"
+"% set date_begin = format_datetime(object.event_id.date_begin, tz='UTC', dt_format=\"yyyyMMdd'T'HHmmss'Z'\")\n"
+"% set date_end = format_datetime(object.event_id.date_end, tz='UTC', dt_format=\"yyyyMMdd'T'HHmmss'Z'\")\n"
 "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: white; color: #454748; border-collapse:separate;\">\n"
 "<tbody>\n"
 "    <!-- HEADER -->\n"
@@ -1356,7 +1356,7 @@ msgstr "チェックされている場合は、新しいメッセージに注意
 #: model:ir.model.fields,help:event.field_event_registration__message_has_error
 #: model:ir.model.fields,help:event.field_event_registration__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr ""
+msgstr "チェックした場合、一部のメッセージが配信エラーが発生しています。"
 
 #. module: event
 #: model:ir.model.fields,help:event.field_event_event__state
@@ -1867,7 +1867,7 @@ msgstr "担当者"
 #: model:ir.model.fields,field_description:event.field_event_event__message_has_sms_error
 #: model:ir.model.fields,field_description:event.field_event_registration__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr ""
+msgstr "SMS配信エラー"
 
 #. module: event
 #: model_terms:ir.ui.view,arch_db:event.res_config_settings_view_form
@@ -2090,7 +2090,7 @@ msgstr "Twitterハッシュタグ"
 #: model:ir.model.fields,help:event.field_event_event__activity_exception_decoration
 #: model:ir.model.fields,help:event.field_event_registration__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr ""
+msgstr "記録上の例外アクティビティのタイプ。"
 
 #. module: event
 #: model:ir.model.fields.selection,name:event.selection__event_event__state__draft
