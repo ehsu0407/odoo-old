@@ -4,6 +4,7 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/CybroAddons" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/OpenHRMS" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/connector" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/hr" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/odooapps" vcs="Git" />
