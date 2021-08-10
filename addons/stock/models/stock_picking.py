@@ -4,7 +4,7 @@
 from ast import literal_eval
 from datetime import date
 from itertools import groupby
-from operator import itemgetter
+from operator import attrgetter, itemgetter
 import time
 
 from odoo import api, fields, models, SUPERUSER_ID, _
@@ -514,6 +514,15 @@ class Picking(models.Model):
             else:
                 picking.show_validate = True
 
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        for picking in self:
+            picking_id = isinstance(picking.id, int) and picking.id or getattr(picking, '_origin', False) and picking._origin.id
+            if picking_id:
+                moves = self.env['stock.move'].search([('picking_id', '=', picking_id)])
+                for move in moves:
+                    move.write({'partner_id': picking.partner_id.id})
+
     @api.onchange('picking_type_id', 'partner_id')
     def onchange_picking_type(self):
         if self.picking_type_id:
@@ -771,14 +780,15 @@ class Picking(models.Model):
         all_in = True
         pack_move_lines = self.move_line_ids.filtered(lambda ml: ml.package_id == package)
         keys = ['product_id', 'lot_id']
+        keys_ids = ["{}.id".format(fname) for fname in keys]
         precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
 
         grouped_quants = {}
-        for k, g in groupby(sorted(package.quant_ids, key=itemgetter(*keys)), key=itemgetter(*keys)):
+        for k, g in groupby(sorted(package.quant_ids, key=attrgetter(*keys_ids)), key=itemgetter(*keys)):
             grouped_quants[k] = sum(self.env['stock.quant'].concat(*list(g)).mapped('quantity'))
 
         grouped_ops = {}
-        for k, g in groupby(sorted(pack_move_lines, key=itemgetter(*keys)), key=itemgetter(*keys)):
+        for k, g in groupby(sorted(pack_move_lines, key=attrgetter(*keys_ids)), key=itemgetter(*keys)):
             grouped_ops[k] = sum(self.env['stock.move.line'].concat(*list(g)).mapped('product_qty'))
         if any(not float_is_zero(grouped_quants.get(key, 0) - grouped_ops.get(key, 0), precision_digits=precision_digits) for key in grouped_quants) \
                 or any(not float_is_zero(grouped_ops.get(key, 0) - grouped_quants.get(key, 0), precision_digits=precision_digits) for key in grouped_ops):

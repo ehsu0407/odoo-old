@@ -1472,6 +1472,32 @@ class TestFields(common.TransactionCase):
         self.assertNotEqual(new_disc.participants, disc.participants)
         self.assertEqual(new_disc.participants._origin, disc.participants)
 
+        # provide many2one field as a dict of values; the value is a new record
+        # with the given 'id' as origin (if given, of course)
+        new_msg = disc.messages.new({
+            'discussion': {'name': disc.name},
+        })
+        self.assertTrue(new_msg.discussion)
+        self.assertFalse(new_msg.discussion.id)
+        self.assertFalse(new_msg.discussion._origin)
+
+        new_msg = disc.messages.new({
+            'discussion': {'name': disc.name, 'id': disc.id},
+        })
+        self.assertTrue(new_msg.discussion)
+        self.assertFalse(new_msg.discussion.id)
+        self.assertEqual(new_msg.discussion._origin, disc)
+
+        # check convert_to_write
+        tag = self.env['test_new_api.multi.tag'].create({'name': 'Foo'})
+        rec = self.env['test_new_api.multi'].create({
+            'lines': [(0, 0, {'tags': [(6, 0, tag.ids)]})],
+        })
+        new = rec.new(origin=rec)
+        self.assertEqual(new.lines.tags._origin, rec.lines.tags)
+        vals = new._convert_to_write(new._cache)
+        self.assertEqual(vals['lines'], [(6, 0, rec.lines.ids)])
+
     def test_41_new_compute(self):
         """ Check recomputation of fields on new records. """
         move = self.env['test_new_api.move'].create({

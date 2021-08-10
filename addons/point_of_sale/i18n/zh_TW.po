@@ -7,7 +7,7 @@
 # Ying <acc.tou@gmail.com>, 2019
 # bluce Lan <bluce.lan@gmail.com>, 2019
 # Martin Trigaux, 2019
-# 敬雲 林 <chingyun@yuanchih-consult.com>, 2020
+# 敬雲 林 <chingyun@yuanchih-consult.com>, 2021
 # 
 msgid ""
 msgstr ""
@@ -15,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-27 11:49+0000\n"
 "PO-Revision-Date: 2019-08-26 09:12+0000\n"
-"Last-Translator: 敬雲 林 <chingyun@yuanchih-consult.com>, 2020\n"
+"Last-Translator: 敬雲 林 <chingyun@yuanchih-consult.com>, 2021\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3908,7 +3908,7 @@ msgstr "對話窗口對話"
 #. module: point_of_sale
 #: model_terms:ir.ui.view,arch_db:point_of_sale.view_pos_session_form
 msgid "Set Closing Cash"
-msgstr ""
+msgstr "設置現金盤點金額"
 
 #. module: point_of_sale
 #. openerp-web
@@ -3920,7 +3920,7 @@ msgstr "設定客戶"
 #. module: point_of_sale
 #: model_terms:ir.ui.view,arch_db:point_of_sale.view_account_bnk_stmt_cashbox_footer
 msgid "Set Default Cash Opening"
-msgstr ""
+msgstr "設置預設開店現金"
 
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_config__start_category
@@ -4038,7 +4038,7 @@ msgstr "在POS訂單明細中指定產品批號/序號"
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_payment_method__split_transactions
 msgid "Split Transactions"
-msgstr ""
+msgstr "交易明細拆分"
 
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_details_wizard__start_date
@@ -4099,7 +4099,7 @@ msgstr ""
 #: code:addons/point_of_sale/static/src/xml/pos.xml:0
 #, python-format
 msgid "Street"
-msgstr "街道"
+msgstr "地址"
 
 #. module: point_of_sale
 #. openerp-web
@@ -4966,7 +4966,7 @@ msgstr "將虛擬鍵盤用於觸摸屏"
 #: model_terms:ir.ui.view,arch_db:point_of_sale.pos_config_view_form
 msgid ""
 "Use employee credentials to log in to the PoS session and switch cashier"
-msgstr ""
+msgstr "使用員工進行POS登入，以及更換收銀人員"
 
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_report_pos_order__user_id

@@ -12893,6 +12893,12 @@ msgstr "Sinun on ensin määritettävä avausliike."
 #. module: account
 #: code:addons/account/models/account_move.py:0
 #, python-format
+msgid "The entry %s (id %s) is already posted."
+msgstr ""
+
+#. module: account
+#: code:addons/account/models/account_move.py:0
+#, python-format
 msgid "You need to add a line before posting."
 msgstr ""
 
@@ -13121,6 +13127,15 @@ msgstr "emoyhtiö"
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.account_journal_dashboard_kanban_view
 msgid "to check"
+msgstr ""
+
+#. module: account
+#: code:addons/account/models/account_move.py:0
+#, python-format
+msgid ""
+"The chosen journal has a type that is not compatible with your invoice type."
+" Sales operations should go to 'sale' journals, and purchase operations to "
+"'purchase' ones."
 msgstr ""
 
 #. module: account

@@ -639,6 +639,8 @@ msgid ""
 "<strong class=\"text-center\">The SEPA QR Code informations are not set "
 "correctly.</strong><br/>"
 msgstr ""
+"<strong class=\"text-center\">SEPA QR kodearen informazioa ez dago zuzen "
+"jarrita.</strong><br/>"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.portal_invoice_page
@@ -796,6 +798,8 @@ msgid ""
 "A journal entry consists of several journal items, each of\n"
 "                which is either a debit or a credit transaction."
 msgstr ""
+"Eguneko sarrerak egunean egindako sarrerek osatzen dute, horietako bakoitza\n"
+"zorpetze- edo kreditu-eragiketa izan daiteke."
 
 #. module: account
 #: model_terms:ir.actions.act_window,help:account.action_account_journal_form
@@ -12502,6 +12506,12 @@ msgstr "Lehenik eta behin, irekiera-mugimendu bat definitu behar duzu."
 #. module: account
 #: code:addons/account/models/account_move.py:0
 #, python-format
+msgid "The entry %s (id %s) is already posted."
+msgstr ""
+
+#. module: account
+#: code:addons/account/models/account_move.py:0
+#, python-format
 msgid "You need to add a line before posting."
 msgstr "Lerro bat gehitu behar duzu argitaratu aurretik."
 
@@ -12723,6 +12733,15 @@ msgstr "enpresa nagusia"
 #: model_terms:ir.ui.view,arch_db:account.account_journal_dashboard_kanban_view
 msgid "to check"
 msgstr "egiaztatu"
+
+#. module: account
+#: code:addons/account/models/account_move.py:0
+#, python-format
+msgid ""
+"The chosen journal has a type that is not compatible with your invoice type."
+" Sales operations should go to 'sale' journals, and purchase operations to "
+"'purchase' ones."
+msgstr ""
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_move_form
