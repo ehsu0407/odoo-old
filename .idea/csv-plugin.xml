@@ -94,6 +94,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\uniware\addons\connector_oms\security\ir.model.access.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\uniware\addons\mrp_autobuild\security\ir.model.access.csv">
           <value>
             <Attribute>
