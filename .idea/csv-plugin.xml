@@ -122,6 +122,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\uniware\addons\product_category_gpc\security\ir.model.access.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\uniware\addons\product_category_set\models\product_category.py">
           <value>
             <Attribute>

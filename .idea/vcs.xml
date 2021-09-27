@@ -8,6 +8,7 @@
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/connector" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/hr" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/odooapps" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/operating-unit" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/product-attribute" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/queue" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/sale-workflow" vcs="Git" />
