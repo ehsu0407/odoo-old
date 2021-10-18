@@ -440,4 +440,3 @@ class MrpByProduct(models.Model):
             }
             self.product_uom_id = self.product_id.uom_id.id
         return res
-

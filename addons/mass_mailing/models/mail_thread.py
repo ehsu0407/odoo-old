@@ -3,7 +3,7 @@
 
 import datetime
 
-from odoo import api, models, fields, tools
+from odoo import api, models, fields
 
 BLACKLIST_MAX_BOUNCED_LIMIT = 5
 
@@ -17,14 +17,10 @@ class MailThread(models.AbstractModel):
         """ Override to update the parent mailing traces. The parent is found
         by using the References header of the incoming message and looking for
         matching message_id in mailing.trace. """
-        if routes:
-            # even if 'reply_to' in ref (cfr mail/mail_thread) that indicates a new thread redirection
-            # (aka bypass alias configuration in gateway) consider it as a reply for statistics purpose
-            thread_references = message_dict['references'] or message_dict['in_reply_to']
-            msg_references = tools.mail_header_msgid_re.findall(thread_references)
-            if msg_references:
-                self.env['mailing.trace'].set_opened(mail_message_ids=msg_references)
-                self.env['mailing.trace'].set_replied(mail_message_ids=msg_references)
+        if message.get('References') and routes:
+            message_ids = [x.strip() for x in message['References'].split()]
+            self.env['mailing.trace'].set_opened(mail_message_ids=message_ids)
+            self.env['mailing.trace'].set_replied(mail_message_ids=message_ids)
         return super(MailThread, self)._message_route_process(message, message_dict, routes)
 
     def message_post_with_template(self, template_id, **kwargs):
@@ -53,7 +49,7 @@ class MailThread(models.AbstractModel):
         bounced_partner = message_dict['bounced_partner']
 
         if bounced_msg_id:
-            self.env['mailing.trace'].set_bounced(mail_message_ids=bounced_msg_id)
+            self.env['mailing.trace'].set_bounced(mail_message_ids=[bounced_msg_id])
         if bounced_email:
             three_months_ago = fields.Datetime.to_string(datetime.datetime.now() - datetime.timedelta(weeks=13))
             stats = self.env['mailing.trace'].search(['&', ('bounced', '>', three_months_ago), ('email', '=ilike', bounced_email)]).mapped('bounced')

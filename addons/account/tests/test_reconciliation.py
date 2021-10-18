@@ -96,18 +96,6 @@ class TestReconciliation(AccountingTestCase):
         })
 
         # Tax Cash Basis
-        self.tax_tag_base = self.env['account.account.tag'].create({
-            'name': "Base tag",
-            'applicability': 'taxes',
-            'country_id': company.country_id.id,
-        })
-
-        self.tax_tag_tax = self.env['account.account.tag'].create({
-            'name': "Tax tag",
-            'applicability': 'taxes',
-            'country_id': company.country_id.id,
-        })
-
         self.tax_cash_basis = self.env['account.tax'].create({
             'name': 'cash basis 20%',
             'type_tax_use': 'purchase',
@@ -120,14 +108,12 @@ class TestReconciliation(AccountingTestCase):
                     (0,0, {
                         'factor_percent': 100,
                         'repartition_type': 'base',
-                        'tag_ids': [(6, 0, self.tax_tag_base.ids)],
                     }),
 
                     (0,0, {
                         'factor_percent': 100,
                         'repartition_type': 'tax',
                         'account_id': self.tax_final_account.id,
-                        'tag_ids': [(6, 0, self.tax_tag_tax.ids)],
                     }),
                 ],
             'refund_repartition_line_ids': [
@@ -144,44 +130,42 @@ class TestReconciliation(AccountingTestCase):
                 ],
         })
 
-    def _create_invoice(self, type='out_invoice', invoice_amount=50, currency_id=None, partner_id=None, date_invoice=None, payment_term_id=False, auto_validate=False, tax=None):
-        date_invoice = date_invoice or time.strftime('%Y') + '-07-01'
+    def create_invoice(self, type='out_invoice', invoice_amount=50, currency_id=None):
         invoice_vals = {
             'type': type,
-            'partner_id': partner_id or self.partner_agrolait_id,
-            'invoice_date': date_invoice,
-            'date': date_invoice,
+            'partner_id': self.partner_agrolait_id,
+            'invoice_date': time.strftime('%Y') + '-07-01',
+            'date': time.strftime('%Y') + '-07-01',
             'invoice_line_ids': [(0, 0, {
                 'name': 'product that cost %s' % invoice_amount,
                 'quantity': 1,
                 'price_unit': invoice_amount,
-                'tax_ids': [(6, 0, tax and tax.ids or [])],
+                'tax_ids': [(6, 0, [])],
             })]
         }
-
-        if payment_term_id:
-            invoice_vals['invoice_payment_term_id'] = payment_term_id
-
         if currency_id:
             invoice_vals['currency_id'] = currency_id
-
         invoice = self.env['account.move'].with_context(default_type=type).create(invoice_vals)
-        if auto_validate:
-            invoice.post()
+        invoice.post()
         return invoice
 
-    def create_invoice(self, type='out_invoice', invoice_amount=50, currency_id=None):
-        return self._create_invoice(type=type, invoice_amount=invoice_amount, currency_id=currency_id, auto_validate=True)
-
     def create_invoice_partner(self, type='out_invoice', invoice_amount=50, currency_id=None, partner_id=False, payment_term_id=False):
-        return self._create_invoice(
-            type=type,
-            invoice_amount=invoice_amount,
-            currency_id=currency_id,
-            partner_id=partner_id,
-            payment_term_id=payment_term_id,
-            auto_validate=True
-        )
+        move = self.env['account.move'].with_context(default_type=type).create({
+            'type': type,
+            'partner_id': partner_id,
+            'invoice_date': time.strftime('%Y') + '-07-01',
+            'date': time.strftime('%Y') + '-07-01',
+            'currency_id': currency_id,
+            'invoice_payment_term_id': payment_term_id,
+            'invoice_line_ids': [(0, 0, {
+                'quantity': 1,
+                'price_unit': invoice_amount,
+
+                'name': 'product that cost ' + str(invoice_amount),
+            })],
+        })
+        move.post()
+        return move
 
     def make_payment(self, invoice_record, bank_journal, amount=0.0, amount_currency=0.0, currency_id=None):
         bank_stmt = self.acc_bank_stmt_model.create({
@@ -386,11 +370,11 @@ class TestReconciliationExec(TestReconciliation):
         ])
 
         # The invoice should be paid, as the payments totally cover its total
-        self.assertEquals(move.invoice_payment_state, 'paid', 'The invoice should be paid by now')
+        self.assertEqual(move.invoice_payment_state, 'paid', 'The invoice should be paid by now')
         self.assertTrue(receivable_line.reconciled, 'The invoice should be totally reconciled')
         self.assertTrue(receivable_line.full_reconcile_id, 'The invoice should have a full reconcile number')
-        self.assertEquals(receivable_line.amount_residual, 0, 'The invoice should be totally reconciled')
-        self.assertEquals(receivable_line.amount_residual_currency, 0, 'The invoice should be totally reconciled')
+        self.assertEqual(receivable_line.amount_residual, 0, 'The invoice should be totally reconciled')
+        self.assertEqual(receivable_line.amount_residual_currency, 0, 'The invoice should be totally reconciled')
 
     @unittest.skip('adapt to new accounting')
     def test_balanced_exchanges_gain_loss(self):
@@ -456,7 +440,7 @@ class TestReconciliationExec(TestReconciliation):
             ])
 
         # The invoice should be paid, as the payments totally cover its total
-        self.assertEquals(invoice.state, 'paid', 'The invoice should be paid by now')
+        self.assertEqual(invoice.state, 'paid', 'The invoice should be paid by now')
         reconcile = None
         for payment in invoice.payment_ids:
             reconcile = payment.reconcile_model_id
@@ -476,8 +460,8 @@ class TestReconciliationExec(TestReconciliation):
         self.assertTrue(exchange_loss_line, 'There should be one move line of 0.01 EUR in credit')
         # The journal items of the reconciliation should have their debit and credit total equal
         # Besides, the total debit and total credit should be 60.61 EUR (2.00 USD)
-        self.assertEquals(sum(res['debit'] for res in result.values()), 60.61)
-        self.assertEquals(sum(res['credit'] for res in result.items()), 60.61)
+        self.assertEqual(sum(res['debit'] for res in result.values()), 60.61)
+        self.assertEqual(sum(res['credit'] for res in result.items()), 60.61)
         counterpart_exchange_loss_line = None
         for line in exchange_loss_line.move_id.line_id:
             if line.account_id.id == self.account_fx_expense_id:
@@ -521,8 +505,8 @@ class TestReconciliationExec(TestReconciliation):
         aml_recs.reconcile()
         for aml in aml_recs:
             self.assertTrue(aml.reconciled, 'The journal item should be totally reconciled')
-            self.assertEquals(aml.amount_residual, 0, 'The journal item should be totally reconciled')
-            self.assertEquals(aml.amount_residual_currency, 0, 'The journal item should be totally reconciled')
+            self.assertEqual(aml.amount_residual, 0, 'The journal item should be totally reconciled')
+            self.assertEqual(aml.amount_residual_currency, 0, 'The journal item should be totally reconciled')
 
         move_list_vals = [
             ('2', 728.35, 795.05, self.currency_swiss_id),
@@ -538,8 +522,8 @@ class TestReconciliationExec(TestReconciliation):
         aml_recs.reconcile(self.account_rsa, self.bank_journal_usd)
         for aml in aml_recs:
             self.assertTrue(aml.reconciled, 'The journal item should be totally reconciled')
-            self.assertEquals(aml.amount_residual, 0, 'The journal item should be totally reconciled')
-            self.assertEquals(aml.amount_residual_currency, 0, 'The journal item should be totally reconciled')
+            self.assertEqual(aml.amount_residual, 0, 'The journal item should be totally reconciled')
+            self.assertEqual(aml.amount_residual_currency, 0, 'The journal item should be totally reconciled')
 
     def test_manual_reconcile_wizard_same_account(self):
         move_ids = self.env['account.move']
@@ -598,7 +582,7 @@ class TestReconciliationExec(TestReconciliation):
             }]
         writeoff_line = account_move_line._create_writeoff(writeoff_vals)
         (account_move_line + writeoff_line).reconcile()
-        self.assertEquals(len(writeoff_line), 1, "The writeoff_line (balance_line) should have only one moves line")
+        self.assertEqual(len(writeoff_line), 1, "The writeoff_line (balance_line) should have only one moves line")
         self.assertTrue(all(l.reconciled for l in writeoff_line), 'The balance lines should be totally reconciled')
         self.assertTrue(all(l.reconciled for l in account_move_line), 'The move lines should be totally reconciled')
 
@@ -646,7 +630,7 @@ class TestReconciliationExec(TestReconciliation):
         # Check that move lines associated to bank_statement are correct
         bank_stmt_aml = self.env['account.move.line'].search([('statement_id', '=', bank_stmt.id)])
         bank_stmt_aml |= bank_stmt_aml.mapped('move_id').mapped('line_ids')
-        self.assertEquals(len(bank_stmt_aml), 4, "The bank statement should have 4 moves lines")
+        self.assertEqual(len(bank_stmt_aml), 4, "The bank statement should have 4 moves lines")
         lines = {
             self.account_usd.id: [
                 {'debit': 3.27, 'credit': 0.0, 'amount_currency': 5, 'currency_id': self.currency_usd_id},
@@ -671,10 +655,10 @@ class TestReconciliationExec(TestReconciliation):
                     line = line[0]
                 else:
                     line = line[1]
-            self.assertEquals(round(aml.debit, 2), line['debit'])
-            self.assertEquals(round(aml.credit, 2), line['credit'])
-            self.assertEquals(round(aml.amount_currency, 2), line['amount_currency'])
-            self.assertEquals(aml.currency_id.id, line['currency_id'])
+            self.assertEqual(round(aml.debit, 2), line['debit'])
+            self.assertEqual(round(aml.credit, 2), line['credit'])
+            self.assertEqual(round(aml.amount_currency, 2), line['amount_currency'])
+            self.assertEqual(aml.currency_id.id, line['currency_id'])
 
     def test_partial_reconcile_currencies_01(self):
         #                client Account (payable, rsa)
@@ -690,8 +674,11 @@ class TestReconciliationExec(TestReconciliation):
         # Counterpart Credit goes in Exchange diff
 
         dest_journal_id = self.env['account.journal'].search([('type', '=', 'purchase'), ('company_id', '=', self.env.ref('base.main_company').id)], limit=1)
-        dest_journal_id.write({'default_debit_account_id': self.bank_journal_euro.default_credit_account_id,
-                               'default_credit_account_id': self.bank_journal_euro.default_credit_account_id})
+
+        self.bank_journal_euro.write({'default_debit_account_id': self.account_rsa.id,
+                                      'default_credit_account_id': self.account_rsa.id})
+        dest_journal_id.write({'default_debit_account_id': self.account_rsa.id,
+                               'default_credit_account_id': self.account_rsa.id})
         # Setting up rates for USD (main_company is in EUR)
         self.env['res.currency.rate'].create({'name': time.strftime('%Y') + '-' + '07' + '-01',
             'rate': 0.5,
@@ -773,9 +760,9 @@ class TestReconciliationExec(TestReconciliation):
         payment_c.post()
 
         # Assigning payments to invoices
-        debit_line_a = payment_a.move_line_ids.filtered(lambda l: l.debit and l.account_id == self.account_rsa)
-        debit_line_b = payment_b.move_line_ids.filtered(lambda l: l.debit and l.account_id == self.account_rsa)
-        debit_line_c = payment_c.move_line_ids.filtered(lambda l: l.debit and l.account_id == self.account_rsa)
+        debit_line_a = payment_a.move_line_ids.filtered(lambda l: l.debit and l.account_id == dest_journal_id.default_debit_account_id)
+        debit_line_b = payment_b.move_line_ids.filtered(lambda l: l.debit and l.account_id == dest_journal_id.default_debit_account_id)
+        debit_line_c = payment_c.move_line_ids.filtered(lambda l: l.debit and l.account_id == dest_journal_id.default_debit_account_id)
 
         invoice_a.js_assign_outstanding_line(debit_line_a.id)
         invoice_a.js_assign_outstanding_line(debit_line_b.id)
@@ -822,22 +809,19 @@ class TestReconciliationExec(TestReconciliation):
         credit_aml = payment.move_line_ids.filtered('credit')
 
         # Check residual before assignation
-        self.assertAlmostEquals(inv1.amount_residual, 10)
-        self.assertAlmostEquals(inv2.amount_residual, 20)
+        self.assertAlmostEqual(inv1.amount_residual, 10)
+        self.assertAlmostEqual(inv2.amount_residual, 20)
 
         # Assign credit and residual
         inv1.js_assign_outstanding_line(credit_aml.id)
         inv2.js_assign_outstanding_line(credit_aml.id)
-        self.assertAlmostEquals(inv1.amount_residual, 0)
-        self.assertAlmostEquals(inv2.amount_residual, 0)
+        self.assertAlmostEqual(inv1.amount_residual, 0)
+        self.assertAlmostEqual(inv2.amount_residual, 0)
 
         # Unreconcile one invoice at a time and check residual
-        credit_aml.with_context(move_id=inv1.id).remove_move_reconcile()
-        self.assertAlmostEquals(inv1.amount_residual, 10)
-        self.assertAlmostEquals(inv2.amount_residual, 0)
-        credit_aml.with_context(move_id=inv2.id).remove_move_reconcile()
-        self.assertAlmostEquals(inv1.amount_residual, 10)
-        self.assertAlmostEquals(inv2.amount_residual, 20)
+        credit_aml.remove_move_reconcile()
+        self.assertAlmostEqual(inv1.amount_residual, 10)
+        self.assertAlmostEqual(inv2.amount_residual, 20)
 
     def test_unreconcile_exchange(self):
         # Use case:
@@ -876,16 +860,16 @@ class TestReconciliationExec(TestReconciliation):
         credit_aml = payment.move_line_ids.filtered('credit')
 
         # Check residual before assignation
-        self.assertAlmostEquals(inv.amount_residual, 111)
+        self.assertAlmostEqual(inv.amount_residual, 111)
 
         # Assign credit, check exchange move and residual
         inv.js_assign_outstanding_line(credit_aml.id)
         self.assertEqual(len(payment.move_line_ids.mapped('full_reconcile_id').exchange_move_id), 1)
-        self.assertAlmostEquals(inv.amount_residual, 0)
+        self.assertAlmostEqual(inv.amount_residual, 0)
 
         # Unreconcile invoice and check residual
         credit_aml.with_context(invoice_id=inv.id).remove_move_reconcile()
-        self.assertAlmostEquals(inv.amount_residual, 111)
+        self.assertAlmostEqual(inv.amount_residual, 111)
 
     def test_revert_payment_and_reconcile(self):
         payment = self.env['account.payment'].create({
@@ -1206,7 +1190,6 @@ class TestReconciliationExec(TestReconciliation):
         inv2 = self.create_invoice(type="out_refund", invoice_amount=140, currency_id=self.currency_usd_id)
 
         payment = self.env['account.payment'].create({
-            'payment_date': time.strftime('%Y') + '-07-15',
             'payment_method_id': self.inbound_payment_method.id,
             'payment_type': 'inbound',
             'partner_type': 'customer',
@@ -1241,14 +1224,14 @@ class TestReconciliationExec(TestReconciliation):
         self.env["account.reconciliation.widget"].process_move_lines(data_for_reconciliation)
 
         self.assertTrue(inv1_receivable.full_reconcile_id.exists())
-        self.assertEquals(inv1_receivable.full_reconcile_id, inv2_receivable.full_reconcile_id)
-        self.assertEquals(inv1_receivable.full_reconcile_id, pay_receivable.full_reconcile_id)
+        self.assertEqual(inv1_receivable.full_reconcile_id, inv2_receivable.full_reconcile_id)
+        self.assertEqual(inv1_receivable.full_reconcile_id, pay_receivable.full_reconcile_id)
 
         self.assertTrue(all(l.reconciled for l in inv1_receivable))
         self.assertTrue(all(l.reconciled for l in inv2_receivable))
 
-        self.assertEquals(inv1.invoice_payment_state, 'paid')
-        self.assertEquals(inv2.invoice_payment_state, 'paid')
+        self.assertEqual(inv1.invoice_payment_state, 'paid')
+        self.assertEqual(inv2.invoice_payment_state, 'paid')
 
     def test_multiple_term_reconciliation_opw_1906665(self):
         '''Test that when registering a payment to an invoice with multiple
@@ -1320,11 +1303,6 @@ class TestReconciliationExec(TestReconciliation):
                 }),
             ],
         })
-
-        purchase_payable_line0 = purchase_move.line_ids.filtered(lambda x: x.account_id.internal_type == 'payable' and x.credit == 100)
-        purchase_payable_line1 = purchase_move.line_ids.filtered(lambda x: x.account_id.internal_type == 'payable' and x.credit == 50)
-        tax_line = purchase_move.line_ids.filtered(lambda x: x.tax_line_id == self.tax_cash_basis)
-
         purchase_move.post()
 
         payment_move = self.env['account.move'].create({
@@ -1432,12 +1410,6 @@ class TestReconciliationExec(TestReconciliation):
              }),
             ],
         })
-
-        purchase_payable_line0 = purchase_move.line_ids.filtered(lambda x: x.account_id == self.account_rsa and x.credit == 105)
-        purchase_payable_line1 = purchase_move.line_ids.filtered(lambda x: x.account_id == self.account_rsa and x.credit == 50)
-        tax_line0 = purchase_move.line_ids.filtered(lambda x: x.tax_line_id == tax_cash_basis10percent)
-        tax_line1 = purchase_move.line_ids.filtered(lambda x: x.tax_line_id == self.tax_cash_basis)
-
         purchase_move.post()
 
         payment_move0 = self.env['account.move'].create({
@@ -1534,7 +1506,7 @@ class TestReconciliationExec(TestReconciliation):
         partner = self.env['res.partner'].create({'name': 'UncertainPartner'})
         currency = self.env.company.currency_id
         invoice = self.create_invoice_partner(currency_id=currency.id, partner_id=partner.id)
-        journal = self.env['account.journal'].create({'name': 'Bank', 'type': 'bank', 'code': 'THE', 'restrict_mode_hash_table':False})
+        journal = self.env['account.journal'].create({'name': 'Bank', 'type': 'bank', 'code': 'THE', 'update_posted':True})
 
         statement = self.make_payment(invoice, journal, 50)
         st_line = statement.line_ids
@@ -1635,9 +1607,6 @@ class TestReconciliationExec(TestReconciliation):
                 }),
             ],
         })
-
-        purchase_payable_line0 = purchase_move.line_ids.filtered(lambda x: x.account_id.internal_type == 'payable')
-
         purchase_move.post()
 
         # FX 01 Move
@@ -1801,9 +1770,6 @@ class TestReconciliationExec(TestReconciliation):
                 }),
             ],
         })
-
-        purchase_payable_line0 = purchase_move.line_ids.filtered(lambda x: x.account_id.internal_type == 'payable')
-
         purchase_move.post()
 
         # FX 01 Move
@@ -1920,52 +1886,50 @@ class TestReconciliationExec(TestReconciliation):
             'code': 'TWAIT1',
         })
 
+        AccountMoveLine = self.env['account.move.line'].with_context(check_move_validity=False)
+
         # Purchase
         purchase_move = self.env['account.move'].create({
             'name': 'invoice',
             'journal_id': self.purchase_journal.id,
-            'line_ids': [
-                (0, 0, {
-                    'account_id': self.account_rsa.id,
-                    'credit': 175,
-                }),
-
-                (0, 0, {
-                    'name': 'expenseTaxed 10%',
-                    'account_id': self.expense_account.id,
-                    'debit': 50,
-                    'tax_ids': [(4, tax_cash_basis10percent.id, False)],
-                }),
-
-                (0, 0, {
-                    'name': 'TaxLine0',
-                    'account_id': tax_waiting_account10.id,
-                    'debit': 5,
-                    'tax_repartition_line_id': tax_cash_basis10percent.invoice_repartition_line_ids.filtered(lambda x: x.repartition_type == 'tax').id,
-                    'tax_base_amount': 50,
-                }),
-
-                (0, 0, {
-                    'name': 'expenseTaxed 20%',
-                    'account_id': self.expense_account.id,
-                    'debit': 100,
-                    'tax_ids': [(4, self.tax_cash_basis.id, False)],
-                }),
-
-                (0, 0, {
-                    'name': 'TaxLine1',
-                    'account_id': self.tax_waiting_account.id,
-                    'debit': 20,
-                    'tax_repartition_line_id': self.tax_cash_basis.invoice_repartition_line_ids.filtered(lambda x: x.repartition_type == 'tax').id,
-                    'tax_base_amount': 100,
-                }),
-            ],
         })
 
-        purchase_payable_line0 = purchase_move.line_ids.filtered(lambda x: x.account_id.internal_type == 'payable')
-        tax_line0 = purchase_move.line_ids.filtered(lambda x: x.tax_line_id == tax_cash_basis10percent)
-        tax_line1 = purchase_move.line_ids.filtered(lambda x: x.tax_line_id == self.tax_cash_basis)
+        purchase_payable_line0 = AccountMoveLine.create({
+            'account_id': self.account_rsa.id,
+            'credit': 175,
+            'move_id': purchase_move.id,
+        })
 
+        AccountMoveLine.create({
+            'name': 'expenseTaxed 10%',
+            'account_id': self.expense_account.id,
+            'debit': 50,
+            'move_id': purchase_move.id,
+            'tax_ids': [(4, tax_cash_basis10percent.id, False)],
+        })
+        tax_line0 = AccountMoveLine.create({
+            'name': 'TaxLine0',
+            'account_id': tax_waiting_account10.id,
+            'debit': 5,
+            'move_id': purchase_move.id,
+            'tax_repartition_line_id': tax_cash_basis10percent.invoice_repartition_line_ids.filtered(lambda x: x.repartition_type == 'tax').id,
+            'tax_base_amount': 50,
+        })
+        AccountMoveLine.create({
+            'name': 'expenseTaxed 20%',
+            'account_id': self.expense_account.id,
+            'debit': 100,
+            'move_id': purchase_move.id,
+            'tax_ids': [(4, self.tax_cash_basis.id, False)],
+        })
+        tax_line1 = AccountMoveLine.create({
+            'name': 'TaxLine1',
+            'account_id': self.tax_waiting_account.id,
+            'debit': 20,
+            'move_id': purchase_move.id,
+            'tax_repartition_line_id': self.tax_cash_basis.invoice_repartition_line_ids.filtered(lambda x: x.repartition_type == 'tax').id,
+            'tax_base_amount': 100,
+        })
         purchase_move.post()
 
         reverted = purchase_move._reverse_moves(cancel=True)
@@ -2037,155 +2001,6 @@ class TestReconciliationExec(TestReconciliation):
         pay_receivable_line1 = payment1.move_line_ids.filtered(lambda l: l.account_id == self.account_rcv)
         self.assertTrue(pay_receivable_line1.reconciled)
         self.assertEqual(pay_receivable_line1.matched_debit_ids, move_caba1.tax_cash_basis_rec_id)
-
-    def test_caba_mix_reconciliation(self):
-        """ Test the reconciliation of tax lines (when using a reconcilable tax account)
-        for cases mixing taxes exigible on payment and on invoices.
-        This test is especially useful to check the implementation of the use case tested by
-        test_reconciliation_cash_basis_foreign_currency_low_values does not have unwanted side effects.
-        """
-
-        # Make the tax account reconcilable
-        self.tax_final_account.reconcile = True
-
-        # Create a tax using the same accounts as the CABA one
-        non_caba_tax = self.env['account.tax'].create({
-            'name': 'tax 20%',
-            'type_tax_use': 'purchase',
-            'company_id': self.tax_cash_basis.company_id.id,
-            'amount': 20,
-            'tax_exigibility': 'on_invoice',
-            'invoice_repartition_line_ids': [
-                (0,0, {
-                    'factor_percent': 100,
-                    'repartition_type': 'base',
-                }),
-
-                (0,0, {
-                    'factor_percent': 100,
-                    'repartition_type': 'tax',
-                    'account_id': self.tax_final_account.id,
-                }),
-            ],
-            'refund_repartition_line_ids': [
-                (0,0, {
-                    'factor_percent': 100,
-                    'repartition_type': 'base',
-                }),
-
-                (0,0, {
-                    'factor_percent': 100,
-                    'repartition_type': 'tax',
-                    'account_id': self.tax_final_account.id,
-                }),
-            ],
-        })
-
-        # Create an invoice with a non-CABA tax
-        non_caba_inv = self._create_invoice(type='in_invoice', invoice_amount=1000, tax=non_caba_tax, auto_validate=True)
-
-        # Create an invoice with a CABA tax using the same tax account and pay it
-        caba_inv = self._create_invoice(type='in_invoice', invoice_amount=500, tax=self.tax_cash_basis, auto_validate=True)
-
-        pmt_wizard = self.env['account.payment.register'].with_context(active_model='account.invoice', active_ids=caba_inv.ids).create({
-            'payment_date': caba_inv.date,
-            'journal_id': self.bank_journal_euro.id,
-            'payment_method_id': self.inbound_payment_method.id,
-        })
-        pmt_wizard.create_payments()
-
-        partial_rec = caba_inv.mapped('line_ids.matched_debit_ids')
-        caba_move = self.env['account.move'].search([('tax_cash_basis_rec_id', '=', partial_rec.id)])
-
-        # Create a misc operation with a line on the tax account, for full reconcile of those tax lines
-        misc_move = self.env['account.move'].create({
-            'name': "Misc move",
-            'journal_id': self.general_journal.id,
-            'line_ids': [
-                (0, 0, {
-                    'name': 'line 1',
-                    'account_id': self.tax_final_account.id,
-                    'credit': 300,
-                }),
-                (0, 0, {
-                    'name': 'line 2',
-                    'account_id': self.expense_account.id, # Whatever the account here
-                    'debit': 300,
-                })
-            ],
-        })
-
-        lines_to_reconcile = (misc_move + caba_move + non_caba_inv).mapped('line_ids').filtered(lambda x: x.account_id == self.tax_final_account)
-        lines_to_reconcile.reconcile()
-
-        # Check full reconciliation
-        self.assertTrue(all(line.full_reconcile_id for line in lines_to_reconcile), "All tax lines should be fully reconciled")
-
-    def test_caba_dest_acc_reconciliation_partial_pmt(self):
-        """ Test the reconciliation of tax lines (when using a reconcilable tax account)
-        for partially paid invoices with cash basis taxes.
-        This test is especially useful to check the implementation of the use case tested by
-        test_reconciliation_cash_basis_foreign_currency_low_values does not have unwanted side effects.
-        """
-
-        # Make the tax account reconcilable
-        self.tax_final_account.reconcile = True
-
-        # Create an invoice with a CABA tax using the same tax account and pay half of it
-        caba_inv = self._create_invoice(type='in_invoice', invoice_amount=1000, tax=self.tax_cash_basis, auto_validate=True)
-
-        pmt = self.env['account.payment'].create({
-            'amount': 600,
-            'payment_date': caba_inv.date,
-            'journal_id': self.bank_journal_euro.id,
-            'payment_method_id': self.inbound_payment_method.id,
-            'payment_type': 'outbound',
-            'partner_type': 'supplier',
-            'invoice_ids': [(6, 0, caba_inv.ids)],
-        })
-        pmt.post()
-
-        partial_rec = caba_inv.mapped('line_ids.matched_debit_ids')
-        caba_move = self.env['account.move'].search([('tax_cash_basis_rec_id', '=', partial_rec.id)])
-
-        # Create a misc operation with a line on the tax account, for full reconcile with the tax line
-        misc_move = self.env['account.move'].create({
-            'name': "Misc move",
-            'journal_id': self.general_journal.id,
-            'line_ids': [
-                (0, 0, {
-                    'name': 'line 1',
-                    'account_id': self.tax_final_account.id,
-                    'credit': 100,
-                }),
-                (0, 0, {
-                    'name': 'line 2',
-                    'account_id': self.expense_account.id, # Whatever the account here
-                    'debit': 100,
-                })
-            ],
-        })
-
-        lines_to_reconcile = (misc_move + caba_move).mapped('line_ids').filtered(lambda x: x.account_id == self.tax_final_account)
-        lines_to_reconcile.reconcile()
-
-        # Check full reconciliation
-        self.assertTrue(all(line.full_reconcile_id for line in lines_to_reconcile), "All tax lines should be fully reconciled")
-
-    def test_reconciliation_cash_basis_tags(self):
-        invoice = self._create_invoice(auto_validate=True, tax=self.tax_cash_basis)
-        self.env['account.payment.register'].with_context(active_ids=invoice.ids).create({}).create_payments()
-        partial_rec = invoice.line_ids.filtered(lambda x: x.account_id.user_type_id.type == 'receivable').matched_credit_ids
-        caba_move = self.env['account.move'].search([('tax_cash_basis_rec_id', '=', partial_rec.id)])
-
-        caba_base_line = caba_move.line_ids.filtered(lambda x: x.tax_ids)
-        caba_tax_line = caba_move.line_ids.filtered(lambda x: x.tax_line_id)
-        other_lines = caba_move.line_ids - (caba_base_line + caba_tax_line)
-
-        self.assertRecordValues(caba_base_line + caba_tax_line, [
-          {'tag_ids': self.tax_tag_base.ids},
-          {'tag_ids': self.tax_tag_tax.ids},
-        ])
 
     def test_reconciliation_with_currency(self):
         #reconciliation on an account having a foreign currency being
@@ -2330,541 +2145,4 @@ class TestReconciliationExec(TestReconciliation):
         }])
 
         writeoff_line = self.env['account.move.line'].search([('name', '=', 'writeoff')])
-        self.assertEquals(writeoff_line.credit, 15.0)
-
-    def test_inv_refund_foreign_payment_writeoff_domestic2(self):
-        company = self.env.ref('base.main_company')
-        self.env['res.currency.rate'].search([]).unlink()
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.0,
-            'currency_id': self.currency_euro_id,
-            'company_id': company.id
-        })
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.110600,  # Don't change this !
-            'currency_id': self.currency_usd_id,
-            'company_id': self.env.ref('base.main_company').id
-        })
-        inv1 = self.create_invoice(invoice_amount=800, currency_id=self.currency_usd_id)
-        inv2 = self.create_invoice(type="out_refund", invoice_amount=400, currency_id=self.currency_usd_id)
-
-        payment = self.env['account.payment'].create({
-            'payment_date': time.strftime('%Y') + '-07-15',
-            'payment_method_id': self.inbound_payment_method.id,
-            'payment_type': 'inbound',
-            'partner_type': 'customer',
-            'partner_id': inv1.partner_id.id,
-            'amount': 200.00,
-            'journal_id': self.bank_journal_euro.id,
-            'company_id': company.id,
-        })
-        payment.post()
-
-        inv1_receivable = inv1.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        inv2_receivable = inv2.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        pay_receivable = payment.move_line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        move_balance = self.env['account.move'].create({
-            'partner_id': inv1.partner_id.id,
-            'date': time.strftime('%Y') + '-07-01',
-            'journal_id': self.bank_journal_euro.id,
-            'line_ids': [
-                (0, False, {'credit': 160.16, 'account_id': inv1_receivable.account_id.id, 'name': 'Balance WriteOff'}),
-                (0, False, {'debit': 160.16, 'account_id': self.diff_expense_account.id, 'name': 'Balance WriteOff'}),
-            ]
-        })
-
-        move_balance.post()
-        move_balance_receiv = move_balance.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        (inv1_receivable + inv2_receivable + pay_receivable + move_balance_receiv).reconcile()
-
-        self.assertTrue(inv1_receivable.full_reconcile_id.exists())
-        self.assertEquals(inv1_receivable.full_reconcile_id, inv2_receivable.full_reconcile_id)
-        self.assertEquals(inv1_receivable.full_reconcile_id, pay_receivable.full_reconcile_id)
-        self.assertEquals(inv1_receivable.full_reconcile_id, move_balance_receiv.full_reconcile_id)
-
-        self.assertEquals(inv1.invoice_payment_state, 'paid')
-        self.assertEquals(inv2.invoice_payment_state, 'paid')
-
-    def test_inv_refund_foreign_payment_writeoff_domestic3(self):
-        """
-                    Receivable
-                Domestic (Foreign)
-        592.47 (658.00) |                    INV 1  > Done in foreign
-                        |   202.59 (225.00)  INV 2  > Done in foreign
-                        |   372.10 (413.25)  PAYMENT > Done in domestic (the 413.25 is virtual, non stored)
-                        |    17.78  (19.75)  WriteOff > Done in domestic (the 19.75 is virtual, non stored)
-
-        Reconciliation should be full
-        Invoices should be marked as paid
-        """
-        company = self.env.ref('base.main_company')
-        self.env['res.currency.rate'].search([]).unlink()
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.0,
-            'currency_id': self.currency_euro_id,
-            'company_id': company.id
-        })
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.110600,  # Don't change this !
-            'currency_id': self.currency_usd_id,
-            'company_id': self.env.ref('base.main_company').id
-        })
-        inv1 = self.create_invoice(invoice_amount=658, currency_id=self.currency_usd_id)
-        inv2 = self.create_invoice(type="out_refund", invoice_amount=225, currency_id=self.currency_usd_id)
-
-        payment = self.env['account.payment'].create({
-            'payment_date': time.strftime('%Y') + '-07-15',
-            'payment_method_id': self.inbound_payment_method.id,
-            'payment_type': 'inbound',
-            'partner_type': 'customer',
-            'partner_id': inv1.partner_id.id,
-            'amount': 372.10,
-            'payment_date': time.strftime('%Y') + '-07-01',
-            'journal_id': self.bank_journal_euro.id,
-            'company_id': company.id,
-        })
-        payment.post()
-
-        inv1_receivable = inv1.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        inv2_receivable = inv2.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        pay_receivable = payment.move_line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        move_balance = self.env['account.move'].create({
-            'partner_id': inv1.partner_id.id,
-            'date': time.strftime('%Y') + '-07-01',
-            'journal_id': self.bank_journal_euro.id,
-            'line_ids': [
-                (0, False, {'credit': 17.78, 'account_id': inv1_receivable.account_id.id, 'name': 'Balance WriteOff'}),
-                (0, False, {'debit': 17.78, 'account_id': self.diff_expense_account.id, 'name': 'Balance WriteOff'}),
-            ]
-        })
-
-        move_balance.post()
-        move_balance_receiv = move_balance.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        (inv1_receivable + inv2_receivable + pay_receivable + move_balance_receiv).reconcile()
-
-        self.assertTrue(inv1_receivable.full_reconcile_id.exists())
-        self.assertEquals(inv1_receivable.full_reconcile_id, inv2_receivable.full_reconcile_id)
-        self.assertEquals(inv1_receivable.full_reconcile_id, pay_receivable.full_reconcile_id)
-        self.assertEquals(inv1_receivable.full_reconcile_id, move_balance_receiv.full_reconcile_id)
-
-        self.assertFalse(inv1_receivable.full_reconcile_id.exchange_move_id)
-
-        self.assertEquals(inv1.invoice_payment_state, 'paid')
-        self.assertEquals(inv2.invoice_payment_state, 'paid')
-
-    def test_inv_refund_foreign_payment_writeoff_domestic4(self):
-        """
-                    Receivable
-                Domestic (Foreign)
-        658.00 (658.00) |                    INV 1  > Done in foreign
-                        |   202.59 (225.00)  INV 2  > Done in foreign
-                        |   372.10 (413.25)  PAYMENT > Done in domestic (the 413.25 is virtual, non stored)
-                        |    83.31  (92.52)  WriteOff > Done in domestic (the 92.52 is virtual, non stored)
-
-        Reconciliation should be full
-        Invoices should be marked as paid
-        """
-        company = self.env.ref('base.main_company')
-        self.env['res.currency.rate'].search([]).unlink()
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.0,
-            'currency_id': self.currency_euro_id,
-            'company_id': company.id
-        })
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.0,  # Don't change this !
-            'currency_id': self.currency_usd_id,
-            'company_id': self.env.ref('base.main_company').id
-        })
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-15',
-            'rate': 1.110600,  # Don't change this !
-            'currency_id': self.currency_usd_id,
-            'company_id': self.env.ref('base.main_company').id
-        })
-        inv1 = self._create_invoice(invoice_amount=658, currency_id=self.currency_usd_id, date_invoice=time.strftime('%Y') + '-07-01', auto_validate=True)
-        inv2 = self._create_invoice(type="out_refund", invoice_amount=225, currency_id=self.currency_usd_id, date_invoice=time.strftime('%Y') + '-07-15', auto_validate=True)
-
-        payment = self.env['account.payment'].create({
-            'payment_date': time.strftime('%Y') + '-07-15',
-            'payment_method_id': self.inbound_payment_method.id,
-            'payment_type': 'inbound',
-            'partner_type': 'customer',
-            'partner_id': inv1.partner_id.id,
-            'amount': 372.10,
-            'journal_id': self.bank_journal_euro.id,
-            'company_id': company.id,
-            'currency_id': self.currency_euro_id,
-        })
-        payment.post()
-
-        inv1_receivable = inv1.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        inv2_receivable = inv2.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        pay_receivable = payment.move_line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        self.assertEqual(inv1_receivable.balance, 658)
-        self.assertEqual(inv2_receivable.balance, -202.59)
-        self.assertEqual(pay_receivable.balance, -372.1)
-
-        move_balance = self.env['account.move'].create({
-            'partner_id': inv1.partner_id.id,
-            'date': time.strftime('%Y') + '-07-15',
-            'journal_id': self.bank_journal_usd.id,
-            'line_ids': [
-                (0, False, {'credit': 83.31, 'account_id': inv1_receivable.account_id.id, 'name': 'Balance WriteOff'}),
-                (0, False, {'debit': 83.31, 'account_id': self.diff_expense_account.id, 'name': 'Balance WriteOff'}),
-            ]
-        })
-
-        move_balance.post()
-        move_balance_receiv = move_balance.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        (inv1_receivable + inv2_receivable + pay_receivable + move_balance_receiv).reconcile()
-
-        self.assertTrue(inv1_receivable.full_reconcile_id.exists())
-        self.assertEquals(inv1_receivable.full_reconcile_id, inv2_receivable.full_reconcile_id)
-        self.assertEquals(inv1_receivable.full_reconcile_id, pay_receivable.full_reconcile_id)
-        self.assertEquals(inv1_receivable.full_reconcile_id, move_balance_receiv.full_reconcile_id)
-
-        self.assertEquals(inv1.invoice_payment_state, 'paid')
-        self.assertEquals(inv2.invoice_payment_state, 'paid')
-
-    def test_inv_refund_foreign_payment_writeoff_domestic5(self):
-        """
-                    Receivable
-                Domestic (Foreign)
-        600.00 (600.00) |                    INV 1  > Done in foreign
-                        |   250.00 (250.00)  INV 2  > Done in foreign
-                        |   314.07 (314.07)  PAYMENT > Done in domestic (foreign non stored)
-                        |    35.93  (60.93)  WriteOff > Done in domestic (foreign non stored). WriteOff is included in payment
-
-        Reconciliation should be full, without exchange difference
-        Invoices should be marked as paid
-        """
-        company = self.env.ref('base.main_company')
-        self.env['res.currency.rate'].search([]).unlink()
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.0,
-            'currency_id': self.currency_euro_id,
-            'company_id': company.id
-        })
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.0,  # Don't change this !
-            'currency_id': self.currency_usd_id,
-            'company_id': self.env.ref('base.main_company').id
-        })
-
-        inv1 = self._create_invoice(invoice_amount=600, currency_id=self.currency_usd_id, date_invoice=time.strftime('%Y') + '-07-15', auto_validate=True)
-        inv2 = self._create_invoice(type="out_refund", invoice_amount=250, currency_id=self.currency_usd_id, date_invoice=time.strftime('%Y') + '-07-15', auto_validate=True)
-
-        inv1_receivable = inv1.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        inv2_receivable = inv2.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        self.assertEqual(inv1_receivable.balance, 600.00)
-        self.assertEqual(inv2_receivable.balance, -250)
-
-        # partially pay the invoice with the refund
-        inv1.js_assign_outstanding_line(inv2_receivable.id)
-        self.assertEqual(inv1.amount_residual, 350)
-
-        Payment = self.env['account.payment'].with_context(default_invoice_ids=[(4, inv1.id, False)])
-        payment = Payment.create({
-            'payment_date': time.strftime('%Y') + '-07-15',
-            'payment_method_id': self.inbound_payment_method.id,
-            'payment_type': 'inbound',
-            'partner_type': 'customer',
-            'partner_id': inv1.partner_id.id,
-            'amount': 314.07,
-            'journal_id': self.bank_journal_euro.id,
-            'company_id': company.id,
-            'currency_id': self.currency_euro_id,
-            'payment_difference_handling': 'reconcile',
-            'writeoff_account_id': self.diff_income_account.id,
-        })
-        payment.post()
-
-        payment_receivable = payment.move_line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        self.assertEqual(payment_receivable.balance, -350)
-
-        self.assertTrue(inv1_receivable.full_reconcile_id.exists())
-        self.assertEquals(inv1_receivable.full_reconcile_id, inv2_receivable.full_reconcile_id)
-        self.assertEquals(inv1_receivable.full_reconcile_id, payment_receivable.full_reconcile_id)
-
-        self.assertFalse(inv1_receivable.full_reconcile_id.exchange_move_id)
-
-        self.assertEquals(inv1.invoice_payment_state, 'paid')
-        self.assertEquals(inv2.invoice_payment_state, 'paid')
-
-    def test_inv_refund_foreign_payment_writeoff_domestic6(self):
-        """
-                    Receivable
-                Domestic (Foreign)
-        540.25 (600.00) |                    INV 1  > Done in foreign
-                        |   225.10 (250.00)  INV 2  > Done in foreign
-                        |   315.15 (350.00)  PAYMENT > Done in domestic (the 350.00 is virtual, non stored)
-        """
-        company = self.env.ref('base.main_company')
-        self.env['res.currency.rate'].search([]).unlink()
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.0,
-            'currency_id': self.currency_euro_id,
-            'company_id': company.id
-        })
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.1106,  # Don't change this !
-            'currency_id': self.currency_usd_id,
-            'company_id': self.env.ref('base.main_company').id
-        })
-        inv1 = self._create_invoice(invoice_amount=600, currency_id=self.currency_usd_id, date_invoice=time.strftime('%Y') + '-07-15', auto_validate=True)
-        inv2 = self._create_invoice(type="out_refund", invoice_amount=250, currency_id=self.currency_usd_id, date_invoice=time.strftime('%Y') + '-07-15', auto_validate=True)
-
-        inv1_receivable = inv1.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        inv2_receivable = inv2.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        self.assertEqual(inv1_receivable.balance, 540.25)
-        self.assertEqual(inv2_receivable.balance, -225.10)
-
-        # partially pay the invoice with the refund
-        inv1.js_assign_outstanding_line(inv2_receivable.id)
-        self.assertAlmostEqual(inv1.amount_residual, 350)
-        self.assertAlmostEqual(inv1_receivable.amount_residual, 315.15)
-
-        Payment = self.env['account.payment']
-        payment = Payment.create({
-            'payment_date': time.strftime('%Y') + '-07-15',
-            'payment_method_id': self.inbound_payment_method.id,
-            'payment_type': 'inbound',
-            'partner_type': 'customer',
-            'partner_id': inv1.partner_id.id,
-            'amount': 314.07,
-            'journal_id': self.bank_journal_euro.id,
-            'company_id': company.id,
-            'currency_id': self.currency_euro_id,
-            'payment_difference_handling': 'reconcile',
-            'writeoff_account_id': self.diff_income_account.id,
-            'invoice_ids': [(4, inv1.id, False)],
-        })
-        payment.post()
-
-        payment_receivable = payment.move_line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        self.assertTrue(inv1_receivable.full_reconcile_id.exists())
-        self.assertEquals(inv1_receivable.full_reconcile_id, inv2_receivable.full_reconcile_id)
-        self.assertEquals(inv1_receivable.full_reconcile_id, payment_receivable.full_reconcile_id)
-
-        exchange_rcv = inv1_receivable.full_reconcile_id.exchange_move_id.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        self.assertEqual(exchange_rcv.amount_currency, 0.01)
-
-        self.assertEquals(inv1.invoice_payment_state, 'paid')
-        self.assertEquals(inv2.invoice_payment_state, 'paid')
-
-    def test_inv_refund_foreign_payment_writeoff_domestic6bis(self):
-        """
-        Same as domestic6, but only in foreign currencies
-        Obviously, it should lead to the same kind of results
-        Here there is no exchange difference entry though
-        """
-        foreign_0 = self.env['res.currency'].create({
-            'name': 'foreign0',
-            'symbol': 'F0'
-        })
-        foreign_1 = self.env['res.currency'].browse(self.currency_usd_id)
-
-        company = self.env.ref('base.main_company')
-        self.env['res.currency.rate'].search([]).unlink()
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.0,
-            'currency_id': self.currency_euro_id,
-            'company_id': company.id
-        })
-
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.0,
-            'currency_id': foreign_0.id,
-            'company_id': company.id
-        })
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.1106,  # Don't change this !
-            'currency_id': foreign_1.id,
-            'company_id': self.env.ref('base.main_company').id
-        })
-        inv1 = self._create_invoice(invoice_amount=600, currency_id=foreign_1.id, date_invoice=time.strftime('%Y') + '-07-15', auto_validate=True)
-        inv2 = self._create_invoice(type="out_refund", invoice_amount=250, currency_id=foreign_1.id, date_invoice=time.strftime('%Y') + '-07-15', auto_validate=True)
-
-        inv1_receivable = inv1.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        inv2_receivable = inv2.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        self.assertEqual(inv1_receivable.balance, 540.25)
-        self.assertEqual(inv2_receivable.balance, -225.10)
-
-        # partially pay the invoice with the refund
-        inv1.js_assign_outstanding_line(inv2_receivable.id)
-        self.assertAlmostEqual(inv1.amount_residual, 350)
-        self.assertAlmostEqual(inv1_receivable.amount_residual, 315.15)
-
-        Payment = self.env['account.payment'].with_context(default_invoice_ids=[(4, inv1.id, False)])
-        payment = Payment.create({
-            'payment_date': time.strftime('%Y') + '-07-15',
-            'payment_method_id': self.inbound_payment_method.id,
-            'payment_type': 'inbound',
-            'partner_type': 'customer',
-            'partner_id': inv1.partner_id.id,
-            'amount': 314.07,
-            'journal_id': self.bank_journal_euro.id,
-            'company_id': company.id,
-            'currency_id': foreign_0.id,
-            'payment_difference_handling': 'reconcile',
-            'writeoff_account_id': self.diff_income_account.id,
-            'invoice_ids': [(4, inv1.id, False)],
-        })
-        payment.post()
-
-        payment_receivable = payment.move_line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        self.assertTrue(inv1_receivable.full_reconcile_id.exists())
-        self.assertEquals(inv1_receivable.full_reconcile_id, inv2_receivable.full_reconcile_id)
-        self.assertEquals(inv1_receivable.full_reconcile_id, payment_receivable.full_reconcile_id)
-
-        self.assertFalse(inv1_receivable.full_reconcile_id.exchange_move_id)
-
-        self.assertEquals(inv1.invoice_payment_state, 'paid')
-        self.assertEquals(inv2.invoice_payment_state, 'paid')
-
-    def test_inv_refund_foreign_payment_writeoff_domestic7(self):
-        """
-                    Receivable
-                Domestic (Foreign)
-        5384.48 (5980.00) |                      INV 1  > Done in foreign
-                          |   5384.43 (5979.95)  PAYMENT > Done in domestic (foreign non stored)
-                          |      0.05    (0.00)  WriteOff > Done in domestic (foreign non stored). WriteOff is included in payment,
-                                                                so, the amount in currency is irrelevant
-
-        Reconciliation should be full, without exchange difference
-        Invoices should be marked as paid
-        """
-        company = self.env.ref('base.main_company')
-        self.env['res.currency.rate'].search([]).unlink()
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.0,
-            'currency_id': self.currency_euro_id,
-            'company_id': company.id
-        })
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.1106,  # Don't change this !
-            'currency_id': self.currency_usd_id,
-            'company_id': self.env.ref('base.main_company').id
-        })
-        inv1 = self._create_invoice(invoice_amount=5980, currency_id=self.currency_usd_id, date_invoice=time.strftime('%Y') + '-07-15', auto_validate=True)
-
-        inv1_receivable = inv1.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        self.assertAlmostEqual(inv1_receivable.balance, 5384.48)
-
-        Payment = self.env['account.payment']
-        payment = Payment.create({
-            'payment_date': time.strftime('%Y') + '-07-15',
-            'payment_method_id': self.inbound_payment_method.id,
-            'payment_type': 'inbound',
-            'partner_type': 'customer',
-            'partner_id': inv1.partner_id.id,
-            'amount': 5384.43,
-            'journal_id': self.bank_journal_euro.id,
-            'company_id': company.id,
-            'currency_id': self.currency_euro_id,
-            'payment_difference_handling': 'reconcile',
-            'writeoff_account_id': self.diff_income_account.id,
-            'invoice_ids': [(4, inv1.id, False)],
-        })
-        payment.post()
-
-        payment_receivable = payment.move_line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        self.assertTrue(inv1_receivable.full_reconcile_id.exists())
-        self.assertEquals(inv1_receivable.full_reconcile_id, payment_receivable.full_reconcile_id)
-
-        self.assertFalse(inv1_receivable.full_reconcile_id.exchange_move_id)
-
-        self.assertEquals(inv1.invoice_payment_state, 'paid')
-
-    def test_inv_refund_foreign_payment_writeoff_domestic8(self):
-        """
-        Roughly the same as *_domestic7
-        Though it simulates going through the reconciliation widget
-        Because the WriteOff is on a different line than the payment
-        """
-        company = self.env.ref('base.main_company')
-        self.env['res.currency.rate'].search([]).unlink()
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.0,
-            'currency_id': self.currency_euro_id,
-            'company_id': company.id
-        })
-        self.env['res.currency.rate'].create({
-            'name': time.strftime('%Y') + '-07-01',
-            'rate': 1.1106,  # Don't change this !
-            'currency_id': self.currency_usd_id,
-            'company_id': self.env.ref('base.main_company').id
-        })
-        inv1 = self._create_invoice(invoice_amount=5980, currency_id=self.currency_usd_id, date_invoice=time.strftime('%Y') + '-07-15', auto_validate=True)
-
-        inv1_receivable = inv1.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        self.assertAlmostEqual(inv1_receivable.balance, 5384.48)
-
-        Payment = self.env['account.payment']
-        payment = Payment.create({
-            'payment_date': time.strftime('%Y') + '-07-15',
-            'payment_method_id': self.inbound_payment_method.id,
-            'payment_type': 'inbound',
-            'partner_type': 'customer',
-            'partner_id': inv1.partner_id.id,
-            'amount': 5384.43,
-            'journal_id': self.bank_journal_euro.id,
-            'company_id': company.id,
-            'currency_id': self.currency_euro_id,
-        })
-        payment.post()
-        payment_receivable = payment.move_line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        move_balance = self.env['account.move'].create({
-            'partner_id': inv1.partner_id.id,
-            'date': time.strftime('%Y') + '-07-15',
-            'journal_id': self.bank_journal_usd.id,
-            'line_ids': [
-                (0, False, {'credit': 0.05, 'account_id': inv1_receivable.account_id.id, 'name': 'Balance WriteOff'}),
-                (0, False, {'debit': 0.05, 'account_id': self.diff_expense_account.id, 'name': 'Balance WriteOff'}),
-            ]
-        })
-        move_balance.post()
-        move_balance_receiv = move_balance.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-
-        (inv1_receivable + payment_receivable + move_balance_receiv).reconcile()
-
-        self.assertTrue(inv1_receivable.full_reconcile_id.exists())
-        self.assertEquals(inv1_receivable.full_reconcile_id, payment_receivable.full_reconcile_id)
-        self.assertEqual(move_balance_receiv.full_reconcile_id, inv1_receivable.full_reconcile_id)
-
-        exchange_rcv = inv1_receivable.full_reconcile_id.exchange_move_id.line_ids.filtered(lambda l: l.account_id.internal_type == 'receivable')
-        self.assertEqual(exchange_rcv.amount_currency, 0.01)
-
-        self.assertEquals(inv1.invoice_payment_state, 'paid')
+        self.assertEqual(writeoff_line.credit, 15.0)

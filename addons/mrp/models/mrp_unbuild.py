@@ -270,4 +270,3 @@ class MrpUnbuild(models.Model):
                 },
                 'target': 'new'
             }
-

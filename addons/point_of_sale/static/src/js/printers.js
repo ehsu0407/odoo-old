@@ -34,7 +34,7 @@ var PrinterMixin = {
 
     /**
      * Generate a jpeg image from a canvas
-     * @param {DOMElement} canvas 
+     * @param {DOMElement} canvas
      */
     process_canvas: function (canvas) {
         return canvas.toDataURL('image/jpeg').replace('data:image/jpeg;base64,','');
@@ -56,7 +56,7 @@ var PrinterMixin = {
                 onrendered: function (canvas) {
                     $('.pos-receipt-print').empty();
                     resolve(self.process_canvas(canvas));
-                } 
+                }
             })
         });
         return promise;

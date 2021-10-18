@@ -1,4 +1,4 @@
-India, 2019-09-10
+Argentina, 2019-09-13
 
 I hereby agree to the terms of the Odoo Individual Contributor License
 Agreement v1.0.
@@ -8,5 +8,4 @@ declaration.
 
 Signed,
 
-Niyas Raphy niyasraphyk@gmail.com https://github.com/niyasraphy
-
+Roberto beto.sierra@gmail.com https://github.com/r-sierra

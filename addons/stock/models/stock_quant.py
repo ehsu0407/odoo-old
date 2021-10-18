@@ -768,4 +768,3 @@ class QuantPackage(models.Model):
                 res[quant.product_id] = 0
             res[quant.product_id] += quant.quantity
         return res
-

@@ -11,7 +11,6 @@ import socket
 import threading
 import time
 
-from email.header import decode_header, Header
 from email.utils import getaddresses
 from lxml import etree
 
@@ -21,6 +20,31 @@ from odoo.tools import misc
 
 _logger = logging.getLogger(__name__)
 
+# Optional Flanker dependency for email validation.
+_flanker_warning = False
+try:
+    from flanker.addresslib import address
+    if hasattr(address, 'six'):
+        # Python 3 supported
+        def checkmail(mail):
+            return bool(address.validate_address(mail))
+    else:
+        def checkmail(mail):
+            global _flanker_warning
+            if not _flanker_warning:
+                _logger.info("Flanker version 0.9 or greater required for Python 3 compatibility")
+                _flanker_warning = True
+            return True
+
+except ImportError:
+    _logger.info('The flanker Python module is not installed, so email validation with flanker is unavailable')
+    def checkmail(mail):
+        global _flanker_warning
+        if not _flanker_warning:
+            _logger.info('The flanker Python module is not installed, so email validation with flanker is unavailable')
+            _flanker_warning = True
+        return True
+
 #----------------------------------------------------------
 # HTML Sanitizer
 #----------------------------------------------------------
@@ -29,34 +53,18 @@ tags_to_kill = ["script", "head", "meta", "title", "link", "style", "frame", "if
 tags_to_remove = ['html', 'body']
 
 # allow new semantic HTML5 tags
-allowed_tags = frozenset({
-    'a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside',
-    'audio', 'b', 'basefont', 'bdi', 'bdo', 'big', 'blink', 'blockquote', 'body', 'br',
-    'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup',
-    'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'dir', 'div', 'dl',
-    'dt', 'em', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form',
-    'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'hr', 'html',
-    'i', 'img', 'input', 'ins', 'isindex', 'kbd', 'keygen', 'label', 'legend',
-    'li', 'main', 'map', 'mark', 'marquee', 'math', 'menu', 'meter', 'nav',
-    'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q',
-    'rp', 'rt', 'ruby', 's', 'samp', 'section', 'select', 'small', 'source',
-    'span', 'strike', 'strong', 'sub', 'summary', 'sup', 'svg', 'table', 'tbody',
-    'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'tr', 'track', 'tt', 'u',
-    'ul', 'var', 'video', 'wbr'
-}) | frozenset([etree.Comment])
-
+allowed_tags = clean.defs.tags | frozenset('article section header footer hgroup nav aside figure main'.split() + [etree.Comment])
 safe_attrs = clean.defs.safe_attrs | frozenset(
     ['style',
      'data-o-mail-quote',  # quote detection
      'data-oe-model', 'data-oe-id', 'data-oe-field', 'data-oe-type', 'data-oe-expression', 'data-oe-translation-id', 'data-oe-nodeid',
      'data-publish', 'data-id', 'data-res_id', 'data-interval', 'data-member_id', 'data-scroll-background-ratio', 'data-view-id',
-     'data-class',
      ])
 
 
 class _Cleaner(clean.Cleaner):
 
-    _style_re = re.compile(r'''([\w-]+)\s*:\s*((?:[^;"']|"[^";]*"|'[^';]*')+)''')
+    _style_re = re.compile('''([\w-]+)\s*:\s*((?:[^;"']|"[^"]*"|'[^']*')+)''')
 
     _style_whitelist = [
         'font-size', 'font-family', 'font-weight', 'background-color', 'color', 'text-align',
@@ -176,6 +184,11 @@ class _Cleaner(clean.Cleaner):
             else:
                 del el.attrib['style']
 
+    def allow_element(self, el):
+        if el.tag == 'object' and el.get('type') == "image/svg+xml":
+            return True
+        return super(_Cleaner, self).allow_element(el)
+
 
 def html_sanitize(src, silent=True, sanitize_tags=True, sanitize_attributes=False, sanitize_style=False, strip_style=False, strip_classes=False):
     if not src:
@@ -273,7 +286,7 @@ def html_keep_url(text):
     link_tags = re.compile(r"""(?<!["'])((ftp|http|https):\/\/(\w+:{0,1}\w*@)?([^\s<"']+)(:[0-9]+)?(\/|\/([^\s<"']))?)(?![^\s<"']*["']|[^\s<"']*</a>)""")
     for item in re.finditer(link_tags, text):
         final += text[idx:item.start()]
-        final += '<a href="%s" target="_blank" rel="noreferrer noopener">%s</a>' % (item.group(0), item.group(0))
+        final += '<a href="%s" target="_blank">%s</a>' % (item.group(0), item.group(0))
         idx = item.end()
     final += text[idx:]
     return final
@@ -289,7 +302,7 @@ def html2plaintext(html, body_id=None, encoding='utf-8'):
 
     html = ustr(html)
 
-    if not html.strip():
+    if not html:
         return ''
 
     tree = etree.fromstring(html, parser=etree.HTMLParser())
@@ -339,7 +352,7 @@ def html2plaintext(html, body_id=None, encoding='utf-8'):
             html += '\n\n'
         html += ustr('[%s] %s\n') % (i + 1, url)
 
-    return html.strip()
+    return html
 
 def plaintext2html(text, container_tag=False):
     """ Convert plaintext into html. Content of the text is escaped to manage
@@ -397,7 +410,7 @@ def append_content_to_html(html, content, plaintext=True, preserve=False, contai
     """
     html = ustr(html)
     if plaintext and preserve:
-        content = u'\n<pre>%s</pre>\n' % misc.html_escape(ustr(content))
+        content = u'\n<pre>%s</pre>\n' % ustr(content)
     elif plaintext:
         content = '\n%s\n' % plaintext2html(content, container_tag)
     else:
@@ -520,45 +533,27 @@ def email_normalize(text):
         return False
     return emails[0].lower()
 
+def email_validate(email):
+    """
+    Check is the email is valid using email normalization + optional Flanker module.
+    If Flanker is installed, it will check if email is valid (checking DNS and other stuff).
+    If Flanker is not installed, this method only normalizes the email
+    :param text: string containing the email to validate
+    :return: normalized email if mail is valid or False
+    """
+    return email_normalize(email) if checkmail(email) else False
+
 def email_escape_char(email_address):
     """ Escape problematic characters in the given email address string"""
     return email_address.replace('\\', '\\\\').replace('%', '\\%').replace('_', '\\_')
 
-# was mail_message.decode()
-def decode_smtp_header(smtp_header, quoted=False):
-    """Returns unicode() string conversion of the given encoded smtp header
-    text. email.header decode_header method return a decoded string and its
-    charset for each decoded part of the header. This method unicodes the
-    decoded header and join them in a complete string.
-
-    :param bool quoted: when True, encoded words in the header will be turned into RFC822
-        quoted-strings after decoding, which is appropriate for address headers
-    """
-    if isinstance(smtp_header, Header):
-        smtp_header = ustr(smtp_header)
-    if smtp_header:
-        pairs = decode_header(smtp_header.replace('\r', ''))
-        tokens = []
-        for token, enc in pairs:
-            token = ustr(token, enc)
-            if enc and quoted:
-                # re-quote the encoded word to form an RFC822 quoted-string
-                token = email_addr_escapes_re.sub(r'\\\g<0>', token)
-                tokens.append('"%s"' % token)
-            else:
-                # plain word
-                tokens.append(token)
-        return ''.join(tokens)
-    return ''
-
 # was mail_thread.decode_header()
-def decode_message_header(message, header, separator=' ', quoted=False):
-    return separator.join(decode_smtp_header(h, quoted=quoted) for h in message.get_all(header, []) if h)
+def decode_message_header(message, header, separator=' '):
+    return separator.join(h for h in message.get_all(header, []) if h)
 
-def formataddr(pair, charset='utf-8'):
-    """Pretty format a 2-tuple of the form (realname, email_address).
-
-    Set the charset to ascii to get a RFC-2822 compliant email.
+def formataddr(pair):
+    """Takes a 2-tuple of the form (realname, email_address) and returns
+    the string value suitable for an RFC 2822 From, To or Cc header.
 
     The email address is considered valid and is left unmodified.
 
@@ -575,11 +570,11 @@ def formataddr(pair, charset='utf-8'):
     address.encode('ascii')
     if name:
         try:
-            name.encode(charset)
+            name.encode('ascii')
         except UnicodeEncodeError:
-            # charset mismatch, encode as utf-8/base64
+            # non-ascii name, transcode the name in a safe format
             # rfc2047 - MIME Message Header Extensions for Non-ASCII Text
-            return "=?utf-8?b?{name}?= <{addr}>".format(
+            return "=?utf-8?b?{name}?= {addr}".format(
                 name=base64.b64encode(name.encode('utf-8')).decode('ascii'),
                 addr=address)
         else:

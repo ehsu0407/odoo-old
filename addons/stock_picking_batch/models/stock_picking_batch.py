@@ -120,4 +120,3 @@ class StockPicking(models.Model):
         check_company=True,
         states={'done': [('readonly', True)], 'cancel': [('readonly', True)]},
         help='Batch associated to this transfer', copy=False)
-
