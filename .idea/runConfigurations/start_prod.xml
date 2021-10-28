@@ -5,7 +5,6 @@
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
-      <env name="TEST_QUEUE_JOB_NO_DELAY" value="1" />
     </envs>
     <option name="SDK_HOME" value="C:\Users\ehsu0\Code\odoo\lib\Scripts\python.exe" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -14,7 +13,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/odoo-bin" />
-    <option name="PARAMETERS" value="--addons_path odoo/addons,addons,uniware/addons --dev xml,qweb -c uniware\config\prod.conf --db_host localhost --db_port 5433 --max_cron_threads 0 -i sale_commission" />
+    <option name="PARAMETERS" value="--dev xml,qweb -c uniware\config\prod.conf --db_host localhost --db_port 5433 --max-cron-threads 0" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />
