@@ -1790,22 +1790,27 @@ class TestAccountMoveInInvoiceOnchanges(AccountTestInvoicingCommon):
         move.post()
         self.assertEquals(move.name, 'INV/2019/01/1')
 
-    def test_in_invoice_payment_ref(self):
-        ''' Test the 'name' of the payable line fallbacks on the move's ref if the payment ref is empty. '''
-        ref = 'VENDORBILL123456'
-        with Form(self.invoice) as move_form:
-            move_form.ref = ref
-
-        self.assertInvoiceValues(self.invoice, [
-            self.product_line_vals_1,
-            self.product_line_vals_2,
-            self.tax_line_vals_1,
-            self.tax_line_vals_2,
-            {
-                **self.term_line_vals_1,
-                'name': ref,
-            },
-        ], {
-            **self.move_vals,
-            'ref': ref,
+    def test_in_invoice_copy(self):
+        move = self.env['account.move'].create({
+            'type': 'in_invoice',
+            'partner_id': self.partner_a.id,
+            'invoice_date': fields.Date.from_string('2016-01-01'),
+            'currency_id': self.currency_data['currency'].id,
+            'invoice_payment_term_id': self.pay_terms_a.id,
+            'invoice_line_ids': [
+                (0, None, self.product_line_vals_1),
+            ]
         })
+        self.assertEqual([move.amount_total, move.amount_total_signed], [920.0, -306.67])
+        self.assertEqual(
+            move.line_ids.filtered(lambda l: l.account_internal_type == 'payable').date,
+            fields.Date.from_string('2016-01-01'),
+        )
+
+        with self.mocked_today('2019-01-01'):
+            copied = move.copy()
+        self.assertEqual([copied.amount_total, copied.amount_total_signed], [920.0, -460])
+        self.assertEqual(
+            copied.line_ids.filtered(lambda l: l.account_internal_type == 'payable').date,
+            fields.Date.from_string('2019-01-01'),
+        )

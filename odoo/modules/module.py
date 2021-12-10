@@ -16,6 +16,7 @@ import time
 import types
 import unittest
 import threading
+import warnings
 from operator import itemgetter
 from os.path import join as opj
 
@@ -24,34 +25,155 @@ import odoo.tools as tools
 import odoo.release as release
 from odoo import SUPERUSER_ID, api
 from odoo.tools import pycompat
+from odoo.tools.misc import mute_logger
 
 MANIFEST_NAMES = ('__manifest__.py', '__openerp__.py')
 README = ['README.rst', 'README.md', 'README.txt']
 
 _logger = logging.getLogger(__name__)
 
+# addons path as a list
+# ad_paths is a deprecated alias, please use odoo.addons.__path__
+@tools.lazy
+def ad_paths():
+    warnings.warn(
+        '"odoo.modules.module.ad_paths" is a deprecated proxy to '
+        '"odoo.addons.__path__".', DeprecationWarning, stacklevel=2)
+    return odoo.addons.__path__
+
 # Modules already loaded
 loaded = []
 
+class AddonsHook(object):
+    """ Makes modules accessible through openerp.addons.* """
+
+    def find_module(self, name, path=None):
+        if name.startswith('openerp.addons.') and name.count('.') == 2:
+            warnings.warn(
+                '"openerp.addons" is a deprecated alias to "odoo.addons".',
+                DeprecationWarning, stacklevel=2)
+            return self
+
+    def load_module(self, name):
+        assert name not in sys.modules
+
+        odoo_name = re.sub(r'^openerp.addons.(\w+)$', r'odoo.addons.\g<1>', name)
+
+        odoo_module = sys.modules.get(odoo_name)
+        if not odoo_module:
+            odoo_module = importlib.import_module(odoo_name)
+
+        sys.modules[name] = odoo_module
+
+        return odoo_module
+
+# need to register loader with setuptools as Jinja relies on it when using
+# PackageLoader
+pkg_resources.register_loader_type(AddonsHook, pkg_resources.DefaultProvider)
+
+class OdooHook(object):
+    """ Makes odoo package also available as openerp """
+
+    def find_module(self, name, path=None):
+        # openerp.addons.<identifier> should already be matched by AddonsHook,
+        # only framework and subdirectories of modules should match
+        if re.match(r'^openerp\b', name):
+            warnings.warn(
+                'openerp is a deprecated alias to odoo.',
+                DeprecationWarning, stacklevel=2)
+            return self
+
+    def load_module(self, name):
+        assert name not in sys.modules
+
+        canonical = re.sub(r'^openerp(.*)', r'odoo\g<1>', name)
+
+        if canonical in sys.modules:
+            mod = sys.modules[canonical]
+        else:
+            # probable failure: canonical execution calling old naming -> corecursion
+            mod = importlib.import_module(canonical)
+
+        # just set the original module at the new location. Don't proxy,
+        # it breaks *-import (unless you can find how `from a import *` lists
+        # what's supposed to be imported by `*`, and manage to override it)
+        sys.modules[name] = mod
+
+        return sys.modules[name]
+
+
+class UpgradeHook(object):
+    """Makes the legacy `migrations` package being `odoo.upgrade`"""
+
+    def find_module(self, name, path=None):
+        if re.match(r"^odoo.addons.base.maintenance.migrations\b", name):
+            # We can't trigger a DeprecationWarning in this case.
+            # In order to be cross-versions, the multi-versions upgrade scripts (0.0.0 scripts),
+            # the tests, and the common files (utility functions) still needs to import from the
+            # legacy name.
+            return self
+
+    def load_module(self, name):
+        assert name not in sys.modules
+
+        canonical_upgrade = name.replace("odoo.addons.base.maintenance.migrations", "odoo.upgrade")
+
+        if canonical_upgrade in sys.modules:
+            mod = sys.modules[canonical_upgrade]
+        else:
+            mod = importlib.import_module(canonical_upgrade)
+
+        sys.modules[name] = mod
+
+        return sys.modules[name]
+
+
 def initialize_sys_path():
     """
-    Setup the addons path ``odoo.addons.__path__`` with various defaults
-    and explicit directories.
-    """
+    Setup an import-hook to be able to import OpenERP addons from the different
+    addons paths.
 
+    This ensures something like ``import crm`` (or even
+    ``import odoo.addons.crm``) works even if the addons are not in the
+    PYTHONPATH.
+    """
+    # hook odoo.addons on data dir
     dd = os.path.normcase(tools.config.addons_data_dir)
     if os.access(dd, os.R_OK) and dd not in odoo.addons.__path__:
         odoo.addons.__path__.append(dd)
 
+    # hook odoo.addons on addons paths
     for ad in tools.config['addons_path'].split(','):
         ad = os.path.normcase(os.path.abspath(tools.ustr(ad.strip())))
         if ad not in odoo.addons.__path__:
             odoo.addons.__path__.append(ad)
 
-    # add base module path
+    # hook odoo.addons on base module path
     base_path = os.path.normcase(os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'addons')))
     if base_path not in odoo.addons.__path__ and os.path.isdir(base_path):
         odoo.addons.__path__.append(base_path)
+
+    # hook odoo.upgrade on upgrade-path
+    from odoo import upgrade
+    legacy_upgrade_path = os.path.join(base_path, 'base', 'maintenance', 'migrations')
+    for up in (tools.config['upgrade_path'] or legacy_upgrade_path).split(','):
+        up = os.path.normcase(os.path.abspath(tools.ustr(up.strip())))
+        if up not in upgrade.__path__:
+            upgrade.__path__.append(up)
+
+    # create decrecated module alias from odoo.addons.base.maintenance.migrations to odoo.upgrade
+    spec = importlib.machinery.ModuleSpec("odoo.addons.base.maintenance", None, is_package=True)
+    maintenance_pkg = importlib.util.module_from_spec(spec)
+    maintenance_pkg.migrations = upgrade
+    sys.modules["odoo.addons.base.maintenance"] = maintenance_pkg
+    sys.modules["odoo.addons.base.maintenance.migrations"] = upgrade
+
+    if not getattr(initialize_sys_path, 'called', False): # only initialize once
+        sys.meta_path.insert(0, UpgradeHook())
+        sys.meta_path.insert(0, OdooHook())
+        sys.meta_path.insert(0, AddonsHook())
+        initialize_sys_path.called = True
+
 
 def get_module_path(module, downloaded=False, display_warning=True):
     """Return the path of the given module.
@@ -343,7 +465,19 @@ def get_test_modules(module):
     """ Return a list of module for the addons potentially containing tests to
     feed unittest.TestLoader.loadTestsFromModule() """
     # Try to import the module
-    modpath = 'odoo.addons.' + module
+    results = _get_tests_modules('odoo.addons', module)
+
+    try:
+        importlib.import_module('odoo.upgrade.%s' % module)
+    except ImportError:
+        pass
+    else:
+        results += _get_tests_modules('odoo.upgrade', module)
+
+    return results
+
+def _get_tests_modules(path, module):
+    modpath = '%s.%s' % (path, module)
     try:
         mod = importlib.import_module('.tests', modpath)
     except ImportError as e:  # will also catch subclass ModuleNotFoundError of P3.6
@@ -356,7 +490,7 @@ def get_test_modules(module):
         _logger.exception('Can not `import %s`.', module)
         return []
     if hasattr(mod, 'fast_suite') or hasattr(mod, 'checks'):
-        _logger.warning(
+        _logger.warn(
             "Found deprecated fast_suite or checks attribute in test module "
             "%s. These have no effect in or after version 8.0.",
             mod.__name__)
@@ -380,10 +514,7 @@ class OdooTestResult(unittest.result.TestResult):
         (fn, lno, func, sinfo) (logger.findCaller format), see logger.log for
         the other parameters.
         """
-        test = test or self
-        if isinstance(test, unittest.case._SubTest) and test.test_case:
-            test = test.test_case
-        logger = logging.getLogger(test.__module__)
+        logger = logging.getLogger((test or self).__module__)  # test should be always set
         try:
             caller_infos = caller_infos or logger.findCaller(stack_info)
         except ValueError:
@@ -397,8 +528,6 @@ class OdooTestResult(unittest.result.TestResult):
             logger.handle(record)
 
     def getDescription(self, test):
-        if isinstance(test, unittest.case._SubTest):
-            return 'Subtest %s' % test._subDescription()
         if isinstance(test, unittest.TestCase):
             # since we have the module name in the logger, this will avoid to duplicate module info in log line
             # we only apply this for TestCase since we can receive error handler or other special case
@@ -492,7 +621,8 @@ def run_unit_tests(module_name, position='at_install'):
     :rtype: bool
     """
     global current_test
-    from odoo.tests.common import TagsSelector # Avoid import loop
+    # avoid dependency hell
+    from odoo.tests.common import TagsSelector, OdooSuite
     current_test = module_name
     mods = get_test_modules(module_name)
     threading.currentThread().testing = True
@@ -501,7 +631,7 @@ def run_unit_tests(module_name, position='at_install'):
     r = True
     for m in mods:
         tests = unwrap_suite(unittest.TestLoader().loadTestsFromModule(m))
-        suite = unittest.TestSuite(t for t in tests if position_tag.check(t) and config_tags.check(t))
+        suite = OdooSuite(t for t in tests if position_tag.check(t) and config_tags.check(t))
 
         if suite.countTestCases():
             t0 = time.time()

@@ -109,12 +109,7 @@ class ProductProduct(models.Model):
         This override is used to get the correct quantities of products
         with 'phantom' as BoM type.
         """
-        bom_kits = {
-            product: bom
-            for product in self
-            for bom in (self.env['mrp.bom']._bom_find(product=product, bom_type='phantom'),)
-            if bom
-        }
+        bom_kits = self.env['mrp.bom']._get_product2bom(self, bom_type='phantom')
         kits = self.filtered(lambda p: bom_kits.get(p))
         res = super(ProductProduct, self - kits)._compute_quantities_dict(lot_id, owner_id, package_id, from_date=from_date, to_date=to_date)
         for product in bom_kits:
@@ -195,4 +190,5 @@ class ProductProduct(models.Model):
         res = super(ProductProduct, components).action_open_quants()
         if bom_kits:
             res['context']['single_product'] = False
+            res['context'].pop('default_product_tmpl_id', None)
         return res

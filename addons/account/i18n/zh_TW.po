@@ -12,7 +12,8 @@
 # 棋文 鄭 <a09930185@gmail.com>, 2020
 # 曾逸民 <suncombo@gmail.com>, 2020
 # pofan lai <gasklath20312@gmail.com>, 2020
-# 敬雲 林 <chingyun@yuanchih-consult.com>, 2020
+# 敬雲 林 <chingyun@yuanchih-consult.com>, 2021
+# Gerard Chen <gerardpublico@gmail.com>, 2021
 # 
 msgid ""
 msgstr ""
@@ -20,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-01 12:20+0000\n"
 "PO-Revision-Date: 2019-08-26 09:06+0000\n"
-"Last-Translator: 敬雲 林 <chingyun@yuanchih-consult.com>, 2020\n"
+"Last-Translator: Gerard Chen <gerardpublico@gmail.com>, 2021\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/odoo/teams/41243/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3924,7 +3925,7 @@ msgstr ""
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.report_hash_integrity
 msgid "Data consistency check"
-msgstr ""
+msgstr "資料一致性檢查"
 
 #. module: account
 #. openerp-web
@@ -7947,7 +7948,7 @@ msgstr "付款差異處理"
 #: code:addons/account/static/src/xml/account_payment.xml:0
 #, python-format
 msgid "Payment Info"
-msgstr "付款信息"
+msgstr "付款資訊"
 
 #. module: account
 #. openerp-web
@@ -12618,6 +12619,12 @@ msgstr "您必須首先定義一個打開動作。"
 #. module: account
 #: code:addons/account/models/account_move.py:0
 #, python-format
+msgid "The entry %s (id %s) is already posted."
+msgstr ""
+
+#. module: account
+#: code:addons/account/models/account_move.py:0
+#, python-format
 msgid "You need to add a line before posting."
 msgstr "您需要在過帳前添加分錄明細。"
 
@@ -12839,6 +12846,15 @@ msgstr "上級公司"
 #: model_terms:ir.ui.view,arch_db:account.account_journal_dashboard_kanban_view
 msgid "to check"
 msgstr "勾選"
+
+#. module: account
+#: code:addons/account/models/account_move.py:0
+#, python-format
+msgid ""
+"The chosen journal has a type that is not compatible with your invoice type."
+" Sales operations should go to 'sale' journals, and purchase operations to "
+"'purchase' ones."
+msgstr ""
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_move_form
