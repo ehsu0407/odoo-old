@@ -35,7 +35,7 @@ setup/win32/static/postgresql*.exe
 /build/
 /dist/
 /include/
-/lib/
+lib/
 /man/
 /share/
 /src/
