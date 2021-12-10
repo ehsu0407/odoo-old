@@ -29,10 +29,11 @@
 # RGB Consulting <odoo@rgbconsulting.com>, 2019
 # Jon Perez <jop@odoo.com>, 2020
 # VivianMontana23 <vivianpvm@gmail.com>, 2020
-# Osiris Román <osiris.roman@yachaytech.edu.ec>, 2020
+# Osiris Anael Roman Eras <osiris.roman@yachaytech.edu.ec>, 2020
 # Jesús Alan Ramos Rodríguez <alan.ramos@jarsa.com.mx>, 2020
 # Pedro M. Baeza <pedro.baeza@tecnativa.com>, 2021
 # Lucia Pacheco <lpo@odoo.com>, 2021
+# Jairo Llopis <yajo.sk8@gmail.com>, 2021
 # jabelchi, 2021
 # 
 msgid ""
@@ -1637,7 +1638,7 @@ msgstr "Fecha límite"
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.message_user_assigned
 msgid "Dear"
-msgstr "Querido"
+msgstr "Estimado/a"
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_activity__activity_decoration
@@ -4645,7 +4646,7 @@ msgstr "Por favor, complete la información del cliente"
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.mail_bounce_catchall
 msgid "Please contact us instead using"
-msgstr "Por favor contáctenos en vez de usar"
+msgstr "Por favor, en su lugar contáctenos usando"
 
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.mail_channel_send_guidelines
