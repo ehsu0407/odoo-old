@@ -401,7 +401,7 @@ exports.PosModel = Backbone.Model.extend({
             }
             return domain;
         },
-        // context: function(self){ return { display_default_code: false }; },
+        context: function(self){ return { display_default_code: false }; },
         loaded: function(self, products){
             var using_company_currency = self.config.currency_id[0] === self.company.currency_id[0];
             var conversion_rate = self.currency.rate / self.company_currency.rate;

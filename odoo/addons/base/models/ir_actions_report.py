@@ -18,12 +18,13 @@ import lxml.html
 import tempfile
 import subprocess
 import re
+import json
 
 from lxml import etree
 from contextlib import closing
 from distutils.version import LooseVersion
 from reportlab.graphics.barcode import createBarcodeDrawing
-from PyPDF2 import PdfFileWriter, PdfFileReader
+from PyPDF2 import PdfFileWriter, PdfFileReader, utils
 from collections import OrderedDict
 from collections.abc import Iterable
 from PIL import Image, ImageFile
@@ -177,9 +178,10 @@ class IrActionsReport(models.Model):
         if attachment.mimetype.startswith('image'):
             stream = io.BytesIO(base64.b64decode(attachment.datas))
             img = Image.open(stream)
-            img.convert("RGB").save(stream, format="pdf")
-            return stream
-        return io.BytesIO(base64.decodebytes(attachment.datas))
+            output_stream = io.BytesIO()
+            img.convert("RGB").save(output_stream, format="pdf")
+            return output_stream
+        return io.BytesIO(base64.decodestring(attachment.datas))
 
     def retrieve_attachment(self, record):
         '''Retrieve an attachment for a specific record.
@@ -211,7 +213,7 @@ class IrActionsReport(models.Model):
             return None
         attachment_vals = {
             'name': attachment_name,
-            'datas': base64.encodebytes(buffer.getvalue()),
+            'datas': base64.encodestring(buffer.getvalue()),
             'res_model': self.model,
             'res_id': record.id,
             'type': 'binary',
@@ -500,9 +502,15 @@ class IrActionsReport(models.Model):
             barcode_type = symbology_guess.get(len(value), 'Code128')
         try:
             width, height, humanreadable, quiet = int(width), int(height), bool(int(humanreadable)), bool(int(quiet))
+            # for `QR` type, `quiet` is not supported. And is simply ignored.
+            # But we can use `barBorder` to get a similar behaviour.
+            bar_border = 4
+            if barcode_type == 'QR' and quiet:
+                bar_border = 0
+
             barcode = createBarcodeDrawing(
                 barcode_type, value=value, format='png', width=width, height=height,
-                humanReadable=humanreadable, quiet=quiet
+                humanReadable=humanreadable, quiet=quiet, barBorder=bar_border
             )
             return barcode.asString('png')
         except (ValueError, AttributeError):
@@ -561,8 +569,10 @@ class IrActionsReport(models.Model):
                     pass
 
         # Check special case having only one record with existing attachment.
+        # In that case, return directly the attachment content.
+        # In that way, we also ensure the embedded files are well preserved.
         if len(save_in_attachment) == 1 and not pdf_content:
-            return self._merge_pdfs(list(save_in_attachment.values()))
+            return list(save_in_attachment.values())[0].getvalue()
 
         # Create a list of streams representing all sub-reports part of the final result
         # in order to append the existing attachments and the potentially modified sub-reports
@@ -590,15 +600,25 @@ class IrActionsReport(models.Model):
                     streams.append(pdf_content_stream)
                 else:
                     # In case of multiple docs, we need to split the pdf according the records.
-                    # To do so, we split the pdf based on outlines computed by wkhtmltopdf.
+                    # To do so, we split the pdf based on top outlines computed by wkhtmltopdf.
                     # An outline is a <h?> html tag found on the document. To retrieve this table,
-                    # we look on the pdf structure using pypdf to compute the outlines_pages that is
-                    # an array like [0, 3, 5] that means a new document start at page 0, 3 and 5.
+                    # we look on the pdf structure using pypdf to compute the outlines_pages from
+                    # the top level heading in /Outlines.
                     reader = PdfFileReader(pdf_content_stream)
-                    if reader.trailer['/Root'].get('/Dests'):
-                        outlines_pages = sorted(
-                            [outline.getObject()[0] for outline in reader.trailer['/Root']['/Dests'].values()])
+                    root = reader.trailer['/Root']
+                    if '/Outlines' in root and '/First' in root['/Outlines']:
+                        outlines_pages = []
+                        node = root['/Outlines']['/First']
+                        while True:
+                            outlines_pages.append(root['/Dests'][node['/Dest']][0])
+                            if '/Next' not in node:
+                                break
+                            node = node['/Next']
+                        outlines_pages = sorted(set(outlines_pages))
+                        # There should be only one top-level heading by document
                         assert len(outlines_pages) == len(res_ids)
+                        # There should be a top-level heading on first page
+                        assert outlines_pages[0] == 0
                         for i, num in enumerate(outlines_pages):
                             to = outlines_pages[i + 1] if i + 1 < len(outlines_pages) else reader.numPages
                             attachment_writer = PdfFileWriter()
@@ -629,7 +649,10 @@ class IrActionsReport(models.Model):
         if len(streams) == 1:
             result = streams[0].getvalue()
         else:
-            result = self._merge_pdfs(streams)
+            try:
+                result = self._merge_pdfs(streams)
+            except utils.PdfReadError:
+                raise UserError(_("One of the documents, you try to merge is encrypted"))
 
         # We have to close the streams after PdfFileWriter's call to write()
         close_streams(streams)
@@ -825,10 +848,6 @@ class IrActionsReport(models.Model):
         :param docids: id/ids/browserecord of the records to print (if not used, pass an empty list)
         :param report_name: Name of the template to generate an action for
         """
-        discard_logo_check = self.env.context.get('discard_logo_check')
-        if self.env.is_admin() and ((not self.env.company.external_report_layout_id) or (not discard_logo_check and not self.env.company.logo)) and config:
-            return self.env.ref('base.action_base_document_layout_configurator').read()[0]
-
         context = self.env.context
         if docids:
             if isinstance(docids, models.Model):
@@ -839,7 +858,7 @@ class IrActionsReport(models.Model):
                 active_ids = docids
             context = dict(self.env.context, active_ids=active_ids)
 
-        return {
+        report_action = {
             'context': context,
             'data': data,
             'type': 'ir.actions.report',
@@ -848,3 +867,15 @@ class IrActionsReport(models.Model):
             'report_file': self.report_file,
             'name': self.name,
         }
+
+        discard_logo_check = self.env.context.get('discard_logo_check')
+        if self.env.is_admin() and not self.env.company.external_report_layout_id and config and not discard_logo_check:
+            action = self.env.ref('base.action_base_document_layout_configurator').read()[0]
+            ctx = action.get('context')
+            py_ctx = json.loads(ctx) if ctx else {}
+            report_action['close_on_report_download'] = True
+            py_ctx['report_action'] = report_action
+            action['context'] = py_ctx
+            return action
+
+        return report_action

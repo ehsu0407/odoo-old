@@ -1104,3 +1104,4 @@ class Orderpoint(models.Model):
             'orderpoint_id': self,
             'group_id': group or self.group_id,
         }
+

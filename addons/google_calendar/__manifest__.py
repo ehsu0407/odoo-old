@@ -10,6 +10,7 @@
     'qweb': ['static/src/xml/*.xml'],
     'data': [
         'data/google_calendar_data.xml',
+        'data/google_calendar_data.xml',
         'security/ir.model.access.csv',
         'views/res_config_settings_views.xml',
         'views/res_users_views.xml',

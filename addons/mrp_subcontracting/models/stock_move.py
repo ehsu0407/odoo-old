@@ -206,3 +206,4 @@ operations.""") % ('\n'.join(overprocessed_moves.mapped('product_id.display_name
                     'mo_id': production.id,
                     'product_qty': production.product_uom_qty + quantity_change
                 }).change_prod_qty()
+

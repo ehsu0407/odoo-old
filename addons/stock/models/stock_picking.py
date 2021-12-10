@@ -1325,3 +1325,4 @@ class Picking(models.Model):
         action['context'] = self.env.context
         action['domain'] = [('picking_id', 'in', self.ids)]
         return action
+

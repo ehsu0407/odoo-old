@@ -59,3 +59,4 @@ class MrpProductProduce(models.TransientModel):
                     wizard.subcontract_move_id._recompute_state()
         self.env['stock.move.line'].create(move_line_vals)
         return res
+

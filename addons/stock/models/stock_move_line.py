@@ -595,3 +595,4 @@ class StockMoveLine(models.Model):
     def _should_bypass_reservation(self, location):
         self.ensure_one()
         return location.should_bypass_reservation() or self.product_id.type != 'product'
+
