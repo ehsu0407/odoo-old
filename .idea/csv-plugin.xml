@@ -10,56 +10,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\addons\mrp\models\mrp_abstract_workorder.py">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\addons\stock\models\stock_rule.py">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\odoo\addons\base\models\ir_ui_view.py">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\connector\components\mapper.py">
-          <value>
-            <Attribute>
-              <option name="separator" value=":" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\connector_common\components\exporter.py">
-          <value>
-            <Attribute>
-              <option name="separator" value=":" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\connector_common\models\base.py">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\connector_common\security\ir.model.access.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\connector_common\views\product.xml">
+        <entry key="\odoo\addons\base\data\res.country.state.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -73,63 +24,14 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\uniware\addons\connector_handshake\components\backend_adapter.py">
-          <value>
-            <Attribute>
-              <option name="separator" value=":" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\connector_handshake\models\product.py">
+        <entry key="\uniware\addons\connector_ecat\security\ir.model.access.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\connector_handshake\security\ir.model.access.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\connector_oms\components\importer.py">
-          <value>
-            <Attribute>
-              <option name="separator" value=":" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\connector_oms\components\oms_table_adapter.py">
-          <value>
-            <Attribute>
-              <option name="separator" value=":" />
             </Attribute>
           </value>
         </entry>
         <entry key="\uniware\addons\connector_oms\security\ir.model.access.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\mrp_autobuild\security\ir.model.access.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\product_category_computed\security\ir.model.access.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\product_category_gpc\models\product_template.py">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -143,49 +45,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\uniware\addons\product_category_set\models\product_category.py">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\product_category_set\models\product_category_set.py">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\tms\security\ir.model.access.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\tms_uniware\models\tms_routing_vehicle_line.py">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\uniware\addons\tms_uniware\security\ir.model.access.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\tms_uniware\views\tms_routing_view.xml">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\uniware\addons\website_sale_computed_categories\security\ir.model.access.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
