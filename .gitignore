@@ -40,8 +40,6 @@ setup/win32/static/postgresql*.exe
 /share/
 /src/
 
-!.*
-
 # idea
 .idea/*.iws
 .idea/workspace.xml
