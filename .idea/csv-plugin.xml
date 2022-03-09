@@ -3,7 +3,21 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="\addons\base_import\security\ir.model.access.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\addons\l10n_cl\data\l10n_latam.document.type.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\addons\sale_management\security\ir.model.access.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -45,6 +59,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\uniware\addons\product_category_property_inherit\security\ir.model.access.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\uniware\addons\tms_uniware\security\ir.model.access.csv">
           <value>
             <Attribute>
@@ -52,7 +73,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\uniware\addons\uniware_labels\security\ir.model.access.csv">
+        <entry key="\uniware\addons\uniware_reports\security\ir.model.access.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
