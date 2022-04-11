@@ -31,6 +31,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\uniware\addons\account_batch_deposit\security\ir.model.access.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\uniware\addons\connector_ebay\security\ir.model.access.csv">
           <value>
             <Attribute>
