@@ -28,7 +28,8 @@ import types
 import unicodedata
 import werkzeug.utils
 import zipfile
-from collections import defaultdict, Iterable, Mapping, MutableMapping, MutableSet, OrderedDict
+from collections import defaultdict, OrderedDict
+from collections.abc import Iterable, Mapping, MutableMapping, MutableSet
 from itertools import islice, groupby as itergroupby, repeat
 from lxml import etree
 
@@ -61,6 +62,8 @@ SKIPPED_ELEMENT_TYPES = (etree._Comment, etree._ProcessingInstruction, etree.Com
 
 # Configure default global parser
 etree.set_default_parser(etree.XMLParser(resolve_entities=False))
+
+NON_BREAKING_SPACE = u'\N{NO-BREAK SPACE}'
 
 #----------------------------------------------------------
 # Subprocesses
@@ -142,7 +145,7 @@ def exec_pg_command_pipe(name, *args):
 #file_path_root = os.getcwd()
 #file_path_addons = os.path.join(file_path_root, 'addons')
 
-def file_open(name, mode="r", subdir='addons', pathinfo=False):
+def file_open(name, mode="r", subdir='addons', pathinfo=False, filter_ext=None):
     """Open a file from the OpenERP root, using a subdir folder.
 
     Example::
@@ -154,6 +157,7 @@ def file_open(name, mode="r", subdir='addons', pathinfo=False):
     @param mode file open mode
     @param subdir subdirectory
     @param pathinfo if True returns tuple (fileobject, filepath)
+    @param filter_ext: optional list of supported extensions (without leading dot)
 
     @return fileobject if pathinfo is False else (fileobject, filepath)
     """
@@ -176,7 +180,7 @@ def file_open(name, mode="r", subdir='addons', pathinfo=False):
         else:
             # It is outside the OpenERP root: skip zipfile lookup.
             base, name = os.path.split(name)
-        return _fileopen(name, mode=mode, basedir=base, pathinfo=pathinfo, basename=basename)
+        return _fileopen(name, mode=mode, basedir=base, pathinfo=pathinfo, basename=basename, filter_ext=filter_ext)
 
     if name.replace(os.sep, '/').startswith('addons/'):
         subdir = 'addons'
@@ -194,15 +198,15 @@ def file_open(name, mode="r", subdir='addons', pathinfo=False):
         for adp in adps:
             try:
                 return _fileopen(name2, mode=mode, basedir=adp,
-                                 pathinfo=pathinfo, basename=basename)
+                                 pathinfo=pathinfo, basename=basename, filter_ext=filter_ext)
             except IOError:
                 pass
 
     # Second, try to locate in root_path
-    return _fileopen(name, mode=mode, basedir=rtp, pathinfo=pathinfo, basename=basename)
+    return _fileopen(name, mode=mode, basedir=rtp, pathinfo=pathinfo, basename=basename, filter_ext=filter_ext)
 
 
-def _fileopen(path, mode, basedir, pathinfo, basename=None):
+def _fileopen(path, mode, basedir, pathinfo, basename=None, filter_ext=None):
     name = os.path.normpath(os.path.normcase(os.path.join(basedir, path)))
 
     import odoo.modules as addons
@@ -213,6 +217,9 @@ def _fileopen(path, mode, basedir, pathinfo, basename=None):
             break
     else:
         raise ValueError("Unknown path: %s" % name)
+
+    if filter_ext and not name.lower().endswith(filter_ext):
+        raise ValueError("Unsupported path: %s" % name)
 
     if basename is None:
         basename = name
@@ -284,7 +291,7 @@ def flatten(list):
     """
     r = []
     for e in list:
-        if isinstance(e, (bytes, str)) or not isinstance(e, collections.Iterable):
+        if isinstance(e, (bytes, str)) or not isinstance(e, collections.abc.Iterable):
             r.append(e)
         else:
             r.extend(flatten(e))
@@ -1213,9 +1220,9 @@ def formatLang(env, value, digits=None, grouping=True, monetary=False, dp=False,
 
     if currency_obj and currency_obj.symbol:
         if currency_obj.position == 'after':
-            res = '%s %s' % (res, currency_obj.symbol)
+            res = '%s%s%s' % (res, NON_BREAKING_SPACE, currency_obj.symbol)
         elif currency_obj and currency_obj.position == 'before':
-            res = '%s %s' % (currency_obj.symbol, res)
+            res = '%s%s%s' % (currency_obj.symbol, NON_BREAKING_SPACE, res)
     return res
 
 
