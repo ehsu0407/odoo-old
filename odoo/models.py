@@ -6278,7 +6278,8 @@ Fields:
         for name in initial_values:
             field = self._fields.get(name)
             if field and field.inherited:
-                parent_name, name = field.related.split('.', 1)
+                parent_name = field.related[0]
+                name = '.'.join(field.related[1:])
                 record[parent_name]._update_cache({name: record[name]})
 
         # make a snapshot based on the initial values of record
@@ -6311,7 +6312,7 @@ Fields:
                     # record accordingly; because we don't actually assign the
                     # modified field on the record, the modification on the
                     # parent record has to be done explicitly
-                    parent = record[field.related.split('.')[0]]
+                    parent = record[field.related[0]]
                     parent[name] = record[name]
 
         result = {'warnings': OrderedSet()}
