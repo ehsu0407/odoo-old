@@ -6003,7 +6003,7 @@ Fields:
             presence of ``other_fields``.
         """
         return (field.name in self._onchange_methods) or any(
-            dep in other_fields for dep in self._dependent_fields(field.base_field)
+            dep in other_fields for dep in self._dependent_fields(field)
         )
 
     @api.model
@@ -6301,19 +6301,16 @@ Fields:
         todo = list(unique(itertools.chain(names, nametree))) if first_call else list(names)
         done = set()
 
-        # mark fields to do as modified to trigger recomputations
-        protected = [self._fields[name] for name in names]
-        with self.env.protecting(protected, record):
-            record.modified(todo)
-            for name in todo:
-                field = self._fields[name]
-                if field.inherited:
-                    # modifying an inherited field should modify the parent
-                    # record accordingly; because we don't actually assign the
-                    # modified field on the record, the modification on the
-                    # parent record has to be done explicitly
-                    parent = record[field.related[0]]
-                    parent[name] = record[name]
+        # dummy assignment: trigger invalidations on the record
+        for name in todo:
+            if name == 'id':
+                continue
+            value = record[name]
+            field = self._fields[name]
+            if field.type == 'many2one' and field.delegate and not value:
+                # do not nullify all fields of parent record for new records
+                continue
+            record[name] = value
 
         result = {'warnings': OrderedSet()}
 
