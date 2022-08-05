@@ -65,9 +65,9 @@ class FetchmailServer(models.Model):
 
                     # To leave the mail in the state in which they were.
                     if "Seen" not in data[1].decode("utf-8"):
-                        imap_server.uid('STORE', uid, '+FLAGS', '\\Seen')
+                        imap_server.uid('STORE', uid, '+FLAGS', '(\\Seen)')
                     else:
-                        imap_server.uid('STORE', uid, '-FLAGS', '\\Seen')
+                        imap_server.uid('STORE', uid, '-FLAGS', '(\\Seen)')
 
                     # See details in message_process() in mail_thread.py
                     if isinstance(message, xmlrpclib.Binary):
@@ -134,7 +134,7 @@ class FetchmailServer(models.Model):
 
         invoice_attachment = self.env['ir.attachment'].create({
                 'name': att_name,
-                'datas': base64.encodestring(att_content),
+                'datas': base64.encodebytes(att_content),
                 'type': 'binary',
                 })
 

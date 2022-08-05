@@ -119,10 +119,7 @@ body.editor_enable.editor_has_snippets {
                 box-shadow: none;
                 background-color: transparent;
                 user-select: none;
-
-                cursor: pointer;
-                cursor: copy;
-                cursor: grab;
+                @include o-grab-cursor;
 
                 .oe_snippet_thumbnail {
                     .oe_snippet_thumbnail_img {
@@ -432,6 +429,11 @@ body.editor_enable.editor_has_snippets {
             float: left;
             margin: 0 (-$o-we-dropzone-size/2);
         }
+    }
+    &.oe_drop_zone_danger {
+        background-color: rgba($o-we-color-danger, 0.15);
+        color: $o-we-color-danger;
+        border-color: $o-we-color-danger;
     }
 }
 

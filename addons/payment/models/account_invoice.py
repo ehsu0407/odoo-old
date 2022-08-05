@@ -52,12 +52,14 @@ class AccountMove(models.Model):
                 if payment_token and payment_token.acquirer_id != acquirer:
                     raise ValidationError(_('Invalid token found! Token acquirer %s != %s') % (
                     payment_token.acquirer_id.name, acquirer.name))
-                if payment_token and payment_token.partner_id != partner:
-                    raise ValidationError(_('Invalid token found! Token partner %s != %s') % (
-                    payment_token.partner.name, partner.name))
             else:
                 acquirer = payment_token.acquirer_id
 
+            if payment_token and payment_token.partner_id != partner:
+                raise ValidationError(_(
+                    'The transaction was aborted because you are not the customer of this invoice. '
+                    'Log in as %s to be able to use this payment method.'
+                ) % partner.name)
         # Check an acquirer is there.
         if not acquirer_id and not acquirer:
             raise ValidationError(_('A payment acquirer is required to create a transaction.'))

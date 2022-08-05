@@ -18,6 +18,8 @@
 # Mustafa Rawi <mustafa@cubexco.com>, 2019
 # Martin Trigaux, 2019
 # Saleh Albannay <saleh@cm.codes>, 2020
+# Malaz Abuidris <msea@odoo.com>, 2022
+# Mustafa J. Kadhem <safi2266@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
@@ -25,7 +27,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-12-05 12:34+0000\n"
 "PO-Revision-Date: 2019-08-26 09:15+0000\n"
-"Last-Translator: Saleh Albannay <saleh@cm.codes>, 2020\n"
+"Last-Translator: Mustafa J. Kadhem <safi2266@gmail.com>, 2022\n"
 "Language-Team: Arabic (https://www.transifex.com/odoo/teams/41243/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -46,12 +48,12 @@ msgstr "&lt;?xml version=\"1.0\" encoding=\"utf-8\"?&gt;"
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blog_post_short
 msgid "' page header."
-msgstr ""
+msgstr "' ترويسة الصفحة."
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.date_selector
 msgid "-- All dates"
-msgstr ""
+msgstr "-- كافة التواريخ "
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.s_latest_posts_options
@@ -112,6 +114,10 @@ msgid ""
 "they are more lightweight to carry to the country and use while you are "
 "there than a cumbersome telescope set up kit."
 msgstr ""
+"<b>تتسم المناظير بخفة الوزن وسهولة النقل.</b> إذا لم يكن باستطاعتك تركيب "
+"معدّات فاخرة وتجهيز مرصد على السطح، فسوف تضطر غالباً إلى السفر لأماكن مختلفة"
+" حتى تتمكن من المراقبة. المناظير أكثر سهولة في النقل ويمكنك جلبها معك عندما "
+"تسافر، على عكس مجموعة أجهزة التيليسكوب. "
 
 #. module: website_blog
 #. openerp-web
@@ -130,6 +136,12 @@ msgid ""
 " what works and what to avoid that is more valid than anything you will get "
 "from a web article or a salesperson at Wal-Mart."
 msgstr ""
+"<b>اختر عقول الخبراء</b>. إذا لم تكن عضواً فعالاً بالفعل في نادي أو مجتمع "
+"لعلوم الفلك، سوف يكون بوسع مندوبي المبيعات في محلات بيع التليسكوبات مساعدتك "
+"للوصول إلى المجتمعات النشطة في منطقتك. بمجرد تواصلك مع أفراد قاموا بشراء "
+"تيليسكوبات، سوف تكتسب الكثير من المعلومات والنصائح عن الأجهزة التي يُنصح "
+"بشرائها والتي يُفضّل الابتعاد عنها، أكثر من أي مقال قد تجده على الإنترنت أو "
+"مندوب مبيعات في Wal-Mart. "
 
 #. module: website_blog
 #. openerp-web
@@ -163,6 +175,10 @@ msgid ""
 "equipment, learn the key technical aspects, and try them out before you sink"
 " money in your own set up."
 msgstr ""
+"<b>جربه قبل أن تقوم بشرائه.</b> هذه ميزة أخرى من مميزات الذهاب إلى رحلات "
+"ميدانية مع نادي علوم الفلك. يمكنك قضاء بعض الوقت القيّم مع أفراد يجيدون "
+"استخدام التيليسكوب ولديهم أدوات مجهزة لتفحصها عن كثب وتعلم الجوانب التقنية "
+"المتعلقة بها وتجربتها قبل أن تنفق نقودك في المعدّات الخاصة بك. "
 
 #. module: website_blog
 #. openerp-web
@@ -183,19 +199,23 @@ msgid ""
 "<em class=\"h4 my-0\">Apart from the native population, the local wildlife "
 "is also a major crowd puller.</em>"
 msgstr ""
+"<em class=\"h4 my-0\">بعيداً عن السكان الأصليين، فإن الحياة البريّة المحلية "
+"تُعَد معلماً جذاباً أيضاً.</em>"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_6
 msgid ""
 "<em class=\"h4 my-0\">It is critically important that you get just the right"
 " telescope.</em>"
-msgstr ""
+msgstr "<em class=\"h4 my-0\">من المهم جداً الحصول على التيليسكوب المناسب.</em>"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_4
 msgid ""
 "<em class=\"h4 my-0\">That “Wow” moment is what astrology is all about.</em>"
 msgstr ""
+"<em class=\"h4 my-0\">تلك اللحظة الخاطفة للأنفاس هي ما يجعل من علوم الفلك "
+"أمراً مميزاً جداً.</em>"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
@@ -203,11 +223,13 @@ msgid ""
 "<em class=\"h4 my-0\">The more reviews you read, the more you notice how "
 "they tend to cluster at the extremes of opinion.</em>"
 msgstr ""
+"<em class=\"h4 my-0\">كلما قرأت تقييمات أكثر، كلما لاحظت تضاربات الآراء "
+"المتطرفة.</em>"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
 msgid "<em class=\"h4 my-0\">There is something timeless about the cosmos.</em>"
-msgstr ""
+msgstr "<em class=\"h4 my-0\">هناك شيء أزلي في الكون.</em>"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_7
@@ -215,6 +237,8 @@ msgid ""
 "<em class=\"h4 my-0\">Your study of the moon, like anything else, can go "
 "from the simple to the very complex.</em>"
 msgstr ""
+"<em class=\"h4 my-0\">دراستك للقمر، كأي شيء آخر، يمكن أن تتدرج من كونها "
+"بسيطة إلى شديدة التعقيد.</em>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_tags_display
@@ -227,6 +251,8 @@ msgid ""
 "<i class=\"fa fa-angle-down fa-3x text-white\" aria-label=\"To blog "
 "content\" title=\"To blog content\"/>"
 msgstr ""
+"<i class=\"fa fa-angle-down fa-3x text-white\" aria-label=\"To blog "
+"content\" title=\"إلى محتوى المدونة \"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blog_post_view_kanban
@@ -243,7 +269,7 @@ msgstr ""
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
 msgid "<i class=\"fa fa-github text-github\" aria-label=\"Github\" title=\"Github\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-github text-github\" aria-label=\"Github\" title=\"Github \"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
@@ -251,6 +277,8 @@ msgid ""
 "<i class=\"fa fa-instagram text-instagram\" aria-label=\"Instagram\" "
 "title=\"Instagram\"/>"
 msgstr ""
+"<i class=\"fa fa-instagram text-instagram\" aria-label=\"Instagram\" "
+"title=\"إنستغرام \"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_share_links_display
@@ -259,11 +287,13 @@ msgid ""
 "<i class=\"fa fa-linkedin text-linkedin\" aria-label=\"LinkedIn\" "
 "title=\"LinkedIn\"/>"
 msgstr ""
+"<i class=\"fa fa-linkedin text-linkedin\" aria-label=\"LinkedIn\" "
+"title=\"LinkedIn \"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
 msgid "<i class=\"fa fa-rss-square\" aria-label=\"RSS\" title=\"RSS\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-rss-square\" aria-label=\"RSS\" title=\"RSS \"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.s_latest_posts_options
@@ -274,7 +304,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_share_links_display
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
 msgid "<i class=\"fa fa-twitter text-twitter\" aria-label=\"Twitter\" title=\"Twitter\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-twitter text-twitter\" aria-label=\"Twitter\" title=\"تويتر \"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
@@ -282,6 +312,8 @@ msgid ""
 "<i class=\"fa fa-youtube-play text-youtube\" aria-label=\"Youtube\" "
 "title=\"Youtube\"/>"
 msgstr ""
+"<i class=\"fa fa-youtube-play text-youtube\" aria-label=\"Youtube\" "
+"title=\"يوتيوب \"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_read_next
@@ -297,21 +329,24 @@ msgid ""
 "                                    <i class=\"fa fa-angle-right fa-3x text-white\" aria-label=\"Read next\" title=\"Read Next\"/>\n"
 "                                </span>"
 msgstr ""
+"<span class=\"h4 d-inline-block py-1 px-2 rounded-sm text-white\">\n"
+"                                    <i class=\"fa fa-angle-right fa-3x text-white\" aria-label=\"Read next\" title=\"قراءة التالي \"/>\n"
+"                                </span>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.posts_loop
 msgid "<span class=\"mr-1\">Show:</span>"
-msgstr ""
+msgstr "<span class=\"mr-1\">إظهار:</span>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blogs_nav
 msgid "<span class=\"nav-link disabled pl-0\">Blogs:</span>"
-msgstr ""
+msgstr "<span class=\"nav-link disabled pl-0\">المدونات:</span>"
 
 #. module: website_blog
 #: model:blog.post,subtitle:website_blog.blog_post_2
 msgid "A great way to discover hidden places"
-msgstr ""
+msgstr "طريقة رائعة لاستكشاف الأماكن الخفية "
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_1
@@ -319,6 +354,8 @@ msgid ""
 "A holiday to the Copper Canyon promises to be an exciting mix of relaxation,"
 " culture, history, wildlife and hiking."
 msgstr ""
+"من المؤكد أن رحلة إلى كوبر كانيون ستحمل الكثير من المتعة والحماس والاسترخاء،"
+" بالإضافة إلى التعرف على الثقافة والتاريخ والاستكشاف مشياً على الأقدام. "
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blog_post_template_new_post
@@ -336,6 +373,12 @@ msgid ""
 "Travelers can also drive from anywhere in the United States and acquire a "
 "visa at the Mexican customs station at the border."
 msgstr ""
+"قد يرغب المسافر في استكشاف المنطقة مشياً على الأقدام حول الوادي أو عبره. سوف"
+" يحتاج هؤلاء الذين يرغبون في التوغّل في الوادي تخطيطاً محكماً ومفصّلاً. توجد"
+" العديد من وكالات السفر التي تتخصص في تنظيم جولات سياحية لتلك المنطقة، وبوسع"
+" المسافرين السفر إلى كوبر كانيون عن طريق تأشيرة سياح والتي تكون صالحة لمدة "
+"180 يوماً. بمقدور المسافرين أيضاً السفر براً من أي مكان في الولايات المتحدة "
+"الأمريكية والحصول على تأشيرة في مركز الجمارك المكسيكي على الحدود. "
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.sidebar_blog_index
@@ -350,6 +393,10 @@ msgid ""
 "Wal-Mart or department store, the odds you will get the right thing are "
 "remote."
 msgstr ""
+"والأهم من كل ذلك، <b>عليك أن تبني علاقة جيدة مع محل لبيع التيليسكوبات ذي "
+"سمعة جيدة والذي موظفوه على دراية كاملة بكل ما تحتاج لمعرفته عن الأمر.</b> "
+"إذا قمت بشراء التيليسكوب الخاص بك من متجر Wal-Mart، قد لا تحصل دائماً على "
+"الشيء الصحيح. "
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blog_post_template_new_post
@@ -393,12 +440,12 @@ msgstr "كافة المدونات"
 #: code:addons/website_blog/static/src/js/website_blog.js:73
 #, python-format
 msgid "Amazing blog article: %s! Check it live: %s"
-msgstr ""
+msgstr "مقالة مدهشة في المدونة: %s! راجعها مباشرةً: %s"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_6
 msgid "Along those lines, how difficult is the set up and break down?"
-msgstr ""
+msgstr "على هذا المنوال ، ما مدى صعوبة الإعداد والانهيار؟"
 
 #. module: website_blog
 #. openerp-web
@@ -415,6 +462,8 @@ msgstr ""
 #: model:blog.post,subtitle:website_blog.blog_post_1
 msgid "An exciting mix of relaxation, culture, history, wildlife and hiking."
 msgstr ""
+"مزيج مثير من الاسترخاء والثقافة والتاريخ والحياة البرية والمشي لمسافات "
+"طويلة."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
@@ -424,6 +473,9 @@ msgid ""
 "astronomy and the experience will enrich every aspect of life. It will be an"
 " addiction you never want to break."
 msgstr ""
+"وعندما يتم قول وفعل كل شيء ، <b>استعد</b> . إن سعيكم للحصول على تلسكوبات "
+"أحدث وأفضل سوف يستمر مدى الحياة. دع نفسك تدمن علم الفلك وستثري التجربة كل "
+"جانب من جوانب الحياة. سيكون إدمانًا لا تريد التخلص منه أبدًا."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_1
@@ -432,6 +484,9 @@ msgid ""
 "Indian culture. These semi-nomadic people live in cave dwellings. Their "
 "livelihood chiefly depends on farming and cattle ranching."
 msgstr ""
+"ميزة فريدة أخرى من كوبر كانيون هو وجود ثقافة التراهامارا الهندية. يعيش هؤلاء"
+" الناس شبه الرحل في مساكن الكهوف. يعتمد مصدر رزقهم بشكل أساسي على الزراعة "
+"وتربية الماشية."
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_archive_display
@@ -464,7 +519,7 @@ msgstr "المقالات"
 #. module: website_blog
 #: model:blog.blog,name:website_blog.blog_blog_2
 msgid "Astronomy"
-msgstr ""
+msgstr "الفلك"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
@@ -474,11 +529,14 @@ msgid ""
 "will go star gazing with you and overwhelm you with trivia and great "
 "knowledge."
 msgstr ""
+"نوادي علم الفلك هي أماكن حيوية مليئة بالهواة المطلعين الذين يحبون مشاركة "
+"معارفهم معك. بالنسبة لسعر فحم الكوك والوجبات الخفيفة ، سوف يذهبون معك إلى "
+"النجوم ويغمرونك بالمعلومات البديهية والمعرفة العظيمة."
 
 #. module: website_blog
 #: model:blog.blog,subtitle:website_blog.blog_blog_2
 msgid "Astronomy is “stargazing\""
-msgstr ""
+msgstr "علم الفلك هو \"مراقبة النجوم\""
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blog_post_short
@@ -505,7 +563,7 @@ msgstr "الصورة الرمزية"
 #. module: website_blog
 #: model:blog.post,subtitle:website_blog.blog_post_4
 msgid "Be aware of this thing called “astronomy”"
-msgstr ""
+msgstr "احذر من هذا الشيء الذي يسمى \"علم الفلك\""
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_7
@@ -518,16 +576,22 @@ msgid ""
 "sky, at the moon and beyond it in your quest for knowledge about the "
 "seemingly endless universe above us."
 msgstr ""
+"ستمنحك الانضمام إلى مجتمع علماء الفلك الهواة المخلصين إمكانية الوصول إلى هذه"
+" الجهود المنظمة للوصول إلى مستويات جديدة في قدرتنا على دراسة قمر الأرض. وسوف"
+" يمنح أقرانك وأصدقائك الذين يشاركونك شغفك بعلم الفلك والذين يمكنهم مشاركة "
+"خبراتهم ومجالات خبرتهم أثناء سعيك للعثور على المكان الذي قد تنظر إليه بعد "
+"ذلك في سماء الليل الضخمة ، وفي القمر وما بعده في سعيك وراء المعرفة حول الكون"
+" الذي يبدو لا نهاية له فوقنا."
 
 #. module: website_blog
 #: model:blog.post,subtitle:website_blog.blog_post_7
 msgid "Becoming part of the society of devoted amateur astronomers."
-msgstr ""
+msgstr "أن تصبح جزءًا من مجتمع علماء الفلك الهواة المخلصين."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
 msgid "Bedroom Facilities"
-msgstr ""
+msgstr "مرافق غرفة النوم"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_4
@@ -540,16 +604,22 @@ msgid ""
 "mobility and ability to keep your “enhanced vision” at your fingertips when "
 "that amazing view just presents itself to you."
 msgstr ""
+"قبل أن تذهب إلى هذه النفقات الكبيرة ، قد تكون الخطوة التالية أفضل من العين "
+"المجردة للاستثمار في مجموعة جيدة من المناظير. حتى أن هناك مناظير مناسبة "
+"للتحديق في النجوم والتي ستؤدي وظيفة جيدة في منحك تلك الرؤية الإضافية التي "
+"تريد أن ترى عجائب الكون بشكل أفضل قليلاً. تمنحك مجموعة المناظير المصممة "
+"جيدًا أيضًا قدرًا أكبر من الحركة والقدرة على الحفاظ على \"رؤيتك المحسنة\" في"
+" متناول يدك عندما يقدم لك هذا المنظر الرائع نفسه."
 
 #. module: website_blog
 #: model:blog.post,subtitle:website_blog.blog_post_6
 msgid "Before you make your first purchase…"
-msgstr ""
+msgstr "قبل إجراء عملية شرائك الأولى..."
 
 #. module: website_blog
 #: model:blog.post,name:website_blog.blog_post_7
 msgid "Beyond The Eye"
-msgstr ""
+msgstr "ما وراء العين"
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_post__blog_id
@@ -630,12 +700,12 @@ msgstr "وسوم المدونة"
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_cover_post_fullwidth_design
 msgid "Blog Title"
-msgstr ""
+msgstr "عنوان المدونة"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_cover_post
 msgid "Blog's Title"
-msgstr ""
+msgstr "عنوان المدونة"
 
 #. module: website_blog
 #: model:ir.actions.act_window,name:website_blog.action_blog_blog
@@ -658,11 +728,16 @@ msgid ""
 "interests at all. How do you know that the features that are important to "
 "the reviewer are important to you?"
 msgstr ""
+"ولكن كيف يمكنك التدقيق في الخيارات الرائعة المعروضة؟ والأهم من ذلك ، هل تثق "
+"حقًا في صور وأوصاف الفنادق التي منحوها لأنفسهم دافعًا للحصول على الحجوزات؟ "
+"يمكن أن تكون تعليقات المسافرين مفيدة ، ولكن عليك توخي الحذر. غالبًا ما تكون "
+"متحيزة ، وأحيانًا تكون قديمة ، وقد لا تخدم اهتماماتك على الإطلاق. كيف تعرف "
+"أن الميزات التي تهم المراجع مهمة بالنسبة لك؟"
 
 #. module: website_blog
 #: model:blog.post,name:website_blog.blog_post_6
 msgid "Buying A Telescope"
-msgstr ""
+msgstr "شراء تلسكوب"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_6
@@ -670,11 +745,13 @@ msgid ""
 "Buying the right telescope to take your love of astronomy to the next level "
 "is a big next step in the development of your passion for the stars."
 msgstr ""
+"يعد شراء التلسكوب المناسب لنقل حبك لعلم الفلك إلى المستوى التالي خطوة تالية "
+"كبيرة في تطوير شغفك بالنجوم."
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_post__can_publish
 msgid "Can Publish"
-msgstr ""
+msgstr "بإمكانه النشر "
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_tag__category_id
@@ -691,7 +768,7 @@ msgstr "تغيير الغلاف"
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
 msgid "Children’s’ Facilities"
-msgstr ""
+msgstr "مرافق الأطفال"
 
 #. module: website_blog
 #. openerp-web
@@ -706,6 +783,8 @@ msgid ""
 "Click on \"<b>New</b>\" in the top-right corner to write your first blog "
 "post."
 msgstr ""
+"انقر فوق \" <b>جديد</b> \" في الزاوية العلوية اليسرى لكتابة أول منشور لك في "
+"المدونة."
 
 #. module: website_blog
 #. openerp-web
@@ -749,6 +828,14 @@ msgid ""
 "where weather ranges from cold winters to hot summers. The region is unique "
 "because of the various ecosystems that exist within it."
 msgstr ""
+"وادي النحاس (كوبر كانيون) هو أحد التخوم الستة في المنطقة. على الرغم من أن "
+"الاسم يوحي بأن الوادي قد يكون له بعض الصلة بتعدين النحاس ، إلا أن هذا ليس هو"
+" الحال. الاسم مشتق من النحاس والأشنة الخضراء التي تغطي الوادي. يحتوي كوبر "
+"كانيون على منطقتين مناخيتين. تتميز المنطقة بمناخ جبال الألب في الأعلى ومناخ "
+"شبه استوائي في المستويات الدنيا. الشتاء بارد مع عواصف ثلجية متكررة على "
+"الارتفاعات العالية. الصيف جاف وساخن. العاصمة ، تشيواوا ، هي صحراء شاهقة "
+"الارتفاع حيث يتراوح الطقس فيها من الشتاء البارد إلى الصيف الحار. المنطقة "
+"فريدة من نوعها بسبب النظم البيئية المختلفة الموجودة داخلها."
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_blog__cover_properties
@@ -793,7 +880,7 @@ msgstr "استنساخ"
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
 msgid "East Maui"
-msgstr ""
+msgstr "شرق ماوي"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
@@ -804,6 +891,10 @@ msgid ""
 "dry, arid earth surrounding the south side of the volcano’s slop with Maui "
 "helicopter tours."
 msgstr ""
+"ستمنحك جولات الهليكوبتر في شرق ماوي إطلالة على بركان هاليكالا أو بيت الشمس "
+"الذي يبلغ طوله عشرة آلاف قدم. هذا البركان خامد واندلع آخر مرة في عام 1790. "
+"ستتمكن من رؤية فوهة البركان والأرض الجافة القاحلة المحيطة بالجانب الجنوبي من"
+" منحدر البركان مع جولات ماوي المروحية."
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_tags_display
@@ -818,17 +909,17 @@ msgstr "تحرير في الجهة الخلفية"
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blog_post_short
 msgid "Edit the '"
-msgstr ""
+msgstr "تحرير الـ '"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blog_post_short
 msgid "Edit the 'All Blogs' page header."
-msgstr ""
+msgstr "قم بتحرير ترويسة صفحة \"كل المدونات\"."
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blog_post_short
 msgid "Edit the 'Filter Results' page header."
-msgstr ""
+msgstr "قم بتحرير ترويسة صفحة \"نتائج التصفية\"."
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_share_links_display
@@ -839,7 +930,7 @@ msgstr "فيسبوك"
 #. module: website_blog
 #: model:blog.post,subtitle:website_blog.blog_post_3
 msgid "Facts you should bear in mind."
-msgstr ""
+msgstr "حقائق يجب ان تضعها في اعتبارك."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
@@ -850,11 +941,15 @@ msgid ""
 "only a hotel guest can and it is only then that they are really in a strong "
 "position to write about the hotel."
 msgstr ""
+"أخيرًا والأهم من ذلك ، كان يجب أن يقوم فريق فحص دليل الفندق بزيارة الفندق "
+"المعني بشكل منتظم ، ومقابلة الموظفين ، والنوم في غرفة نوم وتجربة الطعام. يجب"
+" أن يجربوا الفندق كما يمكن لنزيل الفندق فقط وعندها فقط يكونون في وضع قوي "
+"حقًا للكتابة عن الفندق."
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_follow_us
 msgid "Follow Us"
-msgstr ""
+msgstr "تابعنا"
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_blog__message_follower_ids
@@ -881,6 +976,9 @@ msgid ""
 "there on a routine basis. The lights of the city do a good job of disguising"
 " the amazing display that is above all of our heads all of the time."
 msgstr ""
+"بالنسبة للكثيرين منا ممن يسكنون المدن ، لا نلاحظ حقًا تلك السماء هناك بشكل "
+"روتيني. تقوم أضواء المدينة بعمل جيد في إخفاء العرض المذهل الذي يعلو فوق "
+"رؤوسنا جميعًا طوال الوقت."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_7
@@ -889,6 +987,8 @@ msgid ""
 "bodies begins when we saw our first full moon in the sky. It is truly a "
 "magnificent view even to the naked eye."
 msgstr ""
+"بالنسبة للكثيرين منا ، تبدأ تجربتنا الأولى للتعرف على الأجرام السماوية عندما"
+" رأينا أول قمر مكتمل في السماء. إنه حقًا منظر رائع حتى بالعين المجردة."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
@@ -898,21 +998,24 @@ msgid ""
 "that is so accessible that virtually anybody can do it virtually anywhere "
 "they are. All they have to know how to do is to look up."
 msgstr ""
+"من أصغر طفل إلى عالم الفيزياء الفلكية الأكثر تقدمًا ، هناك شيء لأي شخص يرغب "
+"في الاستمتاع بعلم الفلك. في الواقع ، إنه علم يسهل الوصول إليه بحيث يمكن لأي "
+"شخص تقريبًا القيام به في أي مكان يوجد فيه. كل ما عليهم أن يعرفوه هو البحث."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
 msgid "Get a geek"
-msgstr ""
+msgstr "احصل على مهووس"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_4
 msgid "Get a telescope"
-msgstr ""
+msgstr "احصل على تلسكوب"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
 msgid "Get some history"
-msgstr ""
+msgstr "احصل على بعض التاريخ"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_4
@@ -927,17 +1030,17 @@ msgstr "تجميع حسب"
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
 msgid "Here are some of the key facts you should bear in mind:"
-msgstr ""
+msgstr "فيما يلي بعض الحقائق الأساسية التي يجب أن تضعها في اعتبارك:"
 
 #. module: website_blog
 #: model:blog.blog,subtitle:website_blog.blog_blog_1
 msgid "Holiday tips"
-msgstr ""
+msgstr "نصائح العطلة"
 
 #. module: website_blog
 #: model:blog.post,name:website_blog.blog_post_4
 msgid "How To Look Up"
-msgstr ""
+msgstr "كيف تبحث"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_6
@@ -947,16 +1050,19 @@ msgid ""
 "homework like this, you will find just the right telescope for this next big"
 " step in the evolution of your passion for astronomy."
 msgstr ""
+"ما مدى تعقيد التلسكوب وهل ستواجه مشكلة في الصيانة؟ شبكة للحصول على إجابات "
+"لهذه الأسئلة وغيرها. إذا قمت بأداء واجبك المنزلي مثل هذا ، فستجد التلسكوب "
+"المناسب لهذه الخطوة الكبيرة التالية في تطور شغفك بعلم الفلك."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_6
 msgid "How mobile must your telescope be?"
-msgstr ""
+msgstr "كيف يجب أن يكون التلسكوب المحمول الخاص بك؟"
 
 #. module: website_blog
 #: model:blog.post,name:website_blog.blog_post_3
 msgid "How to choose the right hotel"
-msgstr ""
+msgstr "كيفية اختيار الفندق المناسب"
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_blog__id
@@ -991,6 +1097,11 @@ msgid ""
 "surroundings. There should be distance charts to the airport offered as well"
 " as some form of interactive map."
 msgstr ""
+"إذا كان من المهم أن يكون فندقك ، على سبيل المثال ، على الشاطئ ، أو قريبًا من"
+" المنتزه الترفيهي ، أو مناسبًا للمطار ، فإن الموقع يكون أمرًا بالغ الأهمية. "
+"يجب أن يقدم أي دليل لائق خريطة موقع للفندق والمناطق المحيطة به. يجب أن تكون "
+"هناك مخططات للمسافات إلى المطار معروضة بالإضافة إلى شكل من أشكال الخرائط "
+"التفاعلية."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_7
@@ -998,6 +1109,8 @@ msgid ""
 "If the night is clear, you can see amazing detail of the lunar surface just star gazing on in your back yard.\n"
 "Naturally, as you grow in your love of astronomy, you will find many celestial bodies fascinating. But the moon may always be our first love because is the one far away space object that has the unique distinction of flying close to the earth and upon which man has walked."
 msgstr ""
+"إذا كان الليل صافًا ، يمكنك رؤية تفاصيل مذهلة لسطح القمر بمجرد التحديق بالنجوم في الفناء الخلفي الخاص بك.\n"
+"بطبيعة الحال ، كلما زاد حبك لعلم الفلك ، ستجد العديد من الأجرام السماوية رائعة. لكن القمر قد يكون دائمًا حبنا الأول لأنه الجسم الفضائي البعيد الذي يتميز بميزة فريدة تتمثل في الطيران بالقرب من الأرض والذي سار عليه الإنسان."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_6
@@ -1007,6 +1120,9 @@ msgid ""
 "there is still another big step after buying a telescope before you really "
 "know how to use it."
 msgstr ""
+"من نواح كثيرة ، إنها خطوة كبيرة من شخص يتلاعب بعلم الفلك إلى طالب جاد في "
+"العلوم. لكنك وأنا نعلم أنه لا تزال هناك خطوة كبيرة أخرى بعد شراء التلسكوب "
+"قبل أن تعرف حقًا كيفية استخدامه."
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_blog__message_is_follower
@@ -1017,7 +1133,7 @@ msgstr "متابع"
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_post__is_published
 msgid "Is Published"
-msgstr ""
+msgstr "تم نشره "
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
@@ -1026,6 +1142,8 @@ msgid ""
 "night sky and find the planets and the famous stars. There are web sites and"
 " books galore to guide you."
 msgstr ""
+"إنه لأمر ممتع أن تبدأ في تعلم الأبراج وكيفية التنقل في سماء الليل والعثور "
+"على الكواكب والنجوم الشهيرة. هناك مواقع ويب وكتب وافرة لإرشادك."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
@@ -1035,6 +1153,9 @@ msgid ""
 "formal or relaxed. The ideal hotel directory should let you know of the "
 "options available."
 msgstr ""
+"من المهم اختيار فندق يجعلك تشعر بالراحة - أثاثات معاصرة أو تقليدية ، ديكور "
+"محلي أو دولي ، رسمي أو مريح. يجب أن يعلمك دليل الفندق المثالي بالخيارات "
+"المتاحة."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_4
@@ -1043,6 +1164,9 @@ msgid ""
 "has that moment when we are suddenly stunned when we come face to face with "
 "the enormity of the universe that we see in the night sky."
 msgstr ""
+"من الآمن أن نقول إنه في مرحلة ما من حياتنا ، يمر كل واحد منا بتلك اللحظة "
+"عندما نشعر بالذهول فجأة عندما نواجه ضخامة الكون التي نراها في سماء الليل "
+"وجهاً لوجه."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
@@ -1055,16 +1179,21 @@ msgid ""
 "exact same sky that our ancestors hundreds and thousands of years ago "
 "enjoyed when they just looked up."
 msgstr ""
+"إنه لأمر مدهش حقًا عندما تفكر في أنه بمجرد النظر في أي ليلة معينة ، يمكنك أن"
+" ترى تقريبًا مئات الآلاف من النجوم وأنظمة النجوم والكواكب والأقمار "
+"والكويكبات والمذنبات وربما حتى مكوك فضائي عرضي . سيكون الأمر أكثر إثارة "
+"عندما تدرك أن السماء التي تنظر إليها هي لجميع المقاصد والأغراض نفس السماء "
+"التي استمتع بها أسلافنا منذ مئات وآلاف السنين عندما نظروا للتو."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
 msgid "Know what you are looking at"
-msgstr ""
+msgstr "اعرف ما الذي تبحث عنه"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
 msgid "Know when to look"
-msgstr ""
+msgstr "تعرف متى تنظر"
 
 #. module: website_blog
 #. openerp-web
@@ -1106,7 +1235,7 @@ msgstr "آخر تحديث في"
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_cover_post
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_cover_post_fullwidth_design
 msgid "Latest"
-msgstr ""
+msgstr "الأحدث"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.s_latest_posts
@@ -1122,11 +1251,14 @@ msgid ""
 "earth so find out the greats of history who have looked at these stars "
 "before you."
 msgstr ""
+"إن تعلم خلفية الاكتشافات العظيمة في علم الفلك سيجعل لحظاتك في التحديق "
+"بالنجوم ذات مغزى أكبر. إنه أحد أقدم العلوم على وجه الأرض ، لذا اكتشف عظماء "
+"التاريخ الذين نظروا إلى هذه النجوم قبلك."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
 msgid "Leisure Facilities"
-msgstr ""
+msgstr "المرافق الترفيهية"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_share_links_display
@@ -1141,6 +1273,10 @@ msgid ""
 "whether or not they are smart or informal. A good hotel report should tell "
 "you this, and particularly about breakfast facilities."
 msgstr ""
+"اللون المحلي رائع ولكن المطاعم والبارات الخاصة بالفندق يمكن أن تلعب دورًا "
+"مهمًا في إقامتك. يجب أن تكون على دراية بالاختيار والأسلوب وما إذا كانت ذكية "
+"أو غير رسمية أم لا. يجب أن يخبرك تقرير الفندق الجيد بهذا ، وخاصة عن مرافق "
+"الإفطار."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
@@ -1156,7 +1292,7 @@ msgstr "المرفق الرئيسي"
 #. module: website_blog
 #: model:blog.post,name:website_blog.blog_post_2
 msgid "Maui helicopter tours"
-msgstr ""
+msgstr "جولات ماوي المروحية"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
@@ -1165,6 +1301,9 @@ msgid ""
 "perspective and have a fun adventure. If you have never been on a helicopter"
 " before, this is a great place to do it."
 msgstr ""
+"تعد جولات ماوي المروحية طريقة رائعة لمشاهدة الجزيرة من منظور مختلف "
+"والاستمتاع بمغامرة ممتعة. إذا لم تكن على متن طائرة هليكوبتر من قبل ، فهذا "
+"مكان رائع للقيام بذلك."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
@@ -1177,6 +1316,12 @@ msgid ""
 "to capture the moments will also allow you to relive the tour again and "
 "again as you reminisce throughout the years."
 msgstr ""
+"تعد جولات ماوي المروحية طريقة رائعة للقيام بجولة في تلك الأماكن التي لا يمكن"
+" الوصول إليها سيرًا على الأقدام أو بالسيارة. تستغرق الجولات حوالي ساعة واحدة"
+" وتتراوح ما بين مائة وثمانية وخمسة دولارات إلى مائتين وأربعين دولارًا للفرد."
+" بالنسبة للكثيرين ، هذه فرصة العمر لرؤية مناظر طبيعية لن تكون متاحة مرة "
+"أخرى. سيسمح لك التقاط الكاميرات ومقاطع الفيديو لالتقاط اللحظات بإعادة إحياء "
+"الجولة مرارًا وتكرارًا كما تتذكر على مر السنين."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
@@ -1186,6 +1331,9 @@ msgid ""
 "capture the beauty of the scenery and to show friends and family at home all"
 " the wonderful things you saw while on vacation."
 msgstr ""
+"ستسمح لك جولات ماوي المروحية بمشاهدة كل هذه المعالم. تأكد من اصطحاب كاميرا "
+"أو مقطع فيديو معك عند الذهاب في جولات مروحية ماوي لالتقاط جمال المشهد وإظهار"
+" الأصدقاء والعائلة في المنزل كل الأشياء الرائعة التي شاهدتها أثناء الإجازة."
 
 #. module: website_blog
 #. openerp-web
@@ -1209,22 +1357,22 @@ msgstr "الرسائل"
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.view_blog_post_form
 msgid "Meta Description"
-msgstr ""
+msgstr "وصف الـ Meta"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.view_blog_post_form
 msgid "Meta Keywords"
-msgstr ""
+msgstr "كلمات Meta المفتاحية"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.view_blog_post_form
 msgid "Meta Title"
-msgstr ""
+msgstr "عنوان الـ Meta"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
 msgid "Molokai Maui"
-msgstr ""
+msgstr "مولوكاي ماوي"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
@@ -1232,6 +1380,8 @@ msgid ""
 "Molokai Maui helicopter tours will take you to a different island but one that is only nine miles away and easily accessible by air. This island has a very small population with a different culture and scenery. The entire coast of the northeast is lined with cliffs and remote beaches. They are completely inaccessible by any other means of transportation than air.\n"
 "People who live on the island have never even seen this remarkable scenery unless they have taken Maui helicopter tours to view it. When the weather has been rainy and there is a lot of rainfall for he season you will see many astounding waterfalls."
 msgstr ""
+"ستأخذك جولاتملوكي ماوي المروحية إلى جزيرة مختلفة ولكن واحدة على بعد تسعة أميال فقط ويمكن الوصول إليها بسهولة عن طريق الجو. تحتوي هذه الجزيرة على عدد قليل جدًا من السكان لديهم ثقافة ومناظر طبيعية مختلفة. الساحل الشمالي الشرقي بأكمله تصطف على جانبيه المنحدرات والشواطئ النائية. لا يمكن الوصول إليها تمامًا بأي وسيلة نقل أخرى غير الجو.\n"
+"الأشخاص الذين يعيشون على الجزيرة لم يروا هذا المشهد الرائع أبدًا إلا إذا قاموا بجولات بطائرة هليكوبتر ماوي لمشاهدته. عندما يكون الطقس ممطرًا وتهطل الأمطار بغزارة في موسمه ، سترى العديد من الشلالات المذهلة."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
@@ -1243,6 +1393,11 @@ msgid ""
 "children this is of course very relevant too – perhaps a hotel that is not "
 "child friendly would be something more appropriate!"
 msgstr ""
+"والأهم من ذلك بالنسبة للمسافر العائلي من مسافر العمل ، يجب أن تكتشف مدى "
+"ملاءمة الفندق للأطفال من الدليل واتخاذ قرارك من هناك. شيء واحد يستحق البحث "
+"عنه هو ما إذا كان الفندق يقدم خدمة جليسات الأطفال. بالنسبة للمسافرين من رجال"
+" الأعمال الذين يرغبون في الهروب من الأطفال ، يعد هذا بالطبع وثيق الصلة أيضًا"
+" - ربما يكون الفندق غير الملائم للأطفال شيئًا أكثر ملاءمة!"
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_tag__name
@@ -1277,7 +1432,7 @@ msgstr "عدد المشاهدات"
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_sidebar_blog_index_tags
 msgid "No tags defined yet."
-msgstr ""
+msgstr "لم يتم تحديد أي وسوم حتى الآن."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_4
@@ -1288,6 +1443,10 @@ msgid ""
 "these guidelines, you will enjoy hours of enjoyment stargazing at the "
 "phenomenal sights in the night sky that are beyond the naked eye."
 msgstr ""
+"لا يمنعك أي من هذا من المضي قدمًا في خططك لتكوين نظام تلسكوب رائع. فقط تأكد "
+"من حصولك على مشورة الجودة والتدريب على كيفية تكوين التلسكوب الخاص بك لتلبية "
+"احتياجاتك. باستخدام هذه الإرشادات ، ستستمتع بساعات من الاستمتاع بالنجوم في "
+"المشاهد الرائعة في سماء الليل التي تتجاوز العين المجردة."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
@@ -1296,6 +1455,9 @@ msgid ""
 "but if you learn when the big meteor showers and other big astronomy events "
 "will happen will make the excitement of astronomy come alive for you."
 msgstr ""
+"لن تضمن معرفة الطقس فقط أن تحديقك في النجوم أمر مجزي ، ولكن إذا علمت متى "
+"ستقع زخات النيزك الكبيرة وغيرها من الأحداث الكبيرة في علم الفلك ، فستجعل "
+"إثارة علم الفلك تنبض بالحياة من أجلك."
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_blog__message_needaction_counter
@@ -1337,6 +1499,10 @@ msgid ""
 "geometrically. For many amateur astronomers, we sometimes cannot get enough "
 "of what we can see on this our closest space object."
 msgstr ""
+"بالطبع ، لأخذ عبادة القمر إلى أقصى حد ، فإن رفع أجهزتك إلى تلسكوب بداية جيد "
+"سيمنحك أروع تفاصيل سطح القمر. مع كل من هذه الترقيات ، ستتحسن معرفتك وعمق "
+"ونطاق ما ستتمكن من رؤيته هندسيًا. بالنسبة للعديد من علماء الفلك الهواة ، لا "
+"يمكننا أحيانًا الحصول على ما يكفي مما يمكننا رؤيته على هذا أقرب جسم فضائي."
 
 #. module: website_blog
 #. openerp-web
@@ -1353,62 +1519,62 @@ msgstr "آخرون"
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_blogs_display
 msgid "Our blogs"
-msgstr ""
+msgstr "مدوناتنا"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
 msgid "Photo by Anton Repponen, @repponen"
-msgstr ""
+msgstr "تصوير أنطون ريبونين ، @repponen"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_4
 msgid "Photo by Arto Marttinen, @wandervisions"
-msgstr ""
+msgstr "تصوير آرتو مارتنين ، @wandervisions"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_1
 msgid "Photo by Boris Smokrovic, @borisworkshop"
-msgstr ""
+msgstr "تصوير بوريس سموكروفيتش ، @borisworkshop"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
 msgid "Photo by Denys Nevozhai, @dnevozhai"
-msgstr ""
+msgstr "تصوير دينيس نيفوزاي ، @dnevozhai"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_7
 msgid "Photo by Greg Rakozy, @grakozy"
-msgstr ""
+msgstr "تصوير جريج راكوزي ، @grakozy"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
 msgid "Photo by Jason Briscoe, @jbriscoe"
-msgstr ""
+msgstr "تصوير جيسون بريسكو ، @jbriscoe"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
 msgid "Photo by Jon Ly, @jonatron"
-msgstr ""
+msgstr "تصوير جون لي ، @jonatron"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_7
 msgid "Photo by Patrick Brinksma, @patrickbrinksma"
-msgstr ""
+msgstr "تصوير باتريك برينكسما ، @patrickbrinksma"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_1
 msgid "Photo by PoloX Hernandez, @elpolox"
-msgstr ""
+msgstr "الصورة بواسطة بولو أكس هينانديز ، @elpolox"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
 msgid "Photo by SpaceX, @spacex"
-msgstr ""
+msgstr "الصورة بواسطة سبيس أكس ، @spacex"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_6
 msgid "Photo by Teddy Kelley, @teddykelley"
-msgstr ""
+msgstr "تصوير تيدي كيلي ، @teddykelley"
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_tag__post_ids
@@ -1449,12 +1615,12 @@ msgstr "قراءة المزيد"
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.posts_loop
 msgid "Read more <i class=\"fa fa-chevron-right ml-2\"/>"
-msgstr ""
+msgstr "قراءة المزيد <i class=\"fa fa-chevron-left ml-2\"/>"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
 msgid "Restaurants, Cafes and Bars"
-msgstr ""
+msgstr "مطاعم وكافيهات وبارات"
 
 #. module: website_blog
 #: model:ir.model.fields,help:website_blog.field_blog_blog__website_id
@@ -1465,7 +1631,7 @@ msgstr "قصر إمكانية النشر على هذا الموقع."
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.view_blog_post_form
 msgid "SEO"
-msgstr ""
+msgstr "تحسين محركات البحث "
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_blog__is_seo_optimized
@@ -1492,7 +1658,7 @@ msgstr "اختر المدونة"
 #: code:addons/website_blog/static/src/js/tours/website_blog.js:0
 #, python-format
 msgid "Select the blog you want to add the post to."
-msgstr ""
+msgstr "حدد المدونة التي تريد إضافة المنشور إليها."
 
 #. module: website_blog
 #. openerp-web
@@ -1504,7 +1670,7 @@ msgstr "اختر هذا العنصر من القائمة لإنشاء مقال �
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.view_blog_post_form
 msgid "Separate every keyword with a comma"
-msgstr ""
+msgstr "افصل بين كل كلمة مفتاحية بفارزة"
 
 #. module: website_blog
 #. openerp-web
@@ -1520,6 +1686,9 @@ msgid ""
 "their home. The exquisite fauna in this near-pristine land is also worth "
 "checking out."
 msgstr ""
+"العديد من الطيور والثدييات والزواحف المهاجرة والمحلية تسمى كوبر كانيون "
+"موطنها. الحيوانات الرائعة في هذه الأرض القريبة من البِكر تستحق الزيارة "
+"أيضًا."
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_share_links_display
@@ -1539,12 +1708,12 @@ msgstr "المشاركة على تويتر"
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_share_links_display
 msgid "Share this post"
-msgstr ""
+msgstr "شارك هذا المنشور"
 
 #. module: website_blog
 #: model:blog.post,name:website_blog.blog_post_1
 msgid "Sierra Tarahumara"
-msgstr ""
+msgstr "سييرا تاراهومارا"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_1
@@ -1553,6 +1722,8 @@ msgid ""
 "The area is a favorite destination among those seeking an adventurous "
 "vacation."
 msgstr ""
+"تقع سييرا تاراهومارا ، المعروفة شعبياً باسم كوبر كانيون ، في المكسيك. تعد "
+"المنطقة وجهة مفضلة لمن يبحثون عن إجازة مليئة بالمغامرات."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_6
@@ -1563,6 +1734,10 @@ msgid ""
 "“Telescope 101″ concepts to increase your chances that you will buy the "
 "right thing."
 msgstr ""
+"لذلك من المهم للغاية أن تحصل على التلسكوب المناسب لمكان وجودك وما هي "
+"تفضيلاتك في التحديق بالنجوم. في البداية ، دعنا نناقش الأنواع الثلاثة "
+"الرئيسية للتلسكوبات ثم نضع بعض مفاهيم \"التلسكوبات الاساسية\" لزيادة فرصك في"
+" شراء الشيء الصحيح."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_4
@@ -1575,6 +1750,12 @@ msgid ""
 "remember that exact moment when you could say little else but “wow” at what "
 "you saw."
 msgstr ""
+"لذلك قد تكون إجازة مرة واحدة في العام إلى مكان تخييم أو رحلة إلى منزل أحد "
+"الأقارب في الخارج عندما نجد أنفسنا في الخارج عندما يقرر منفق السماء ليلاً "
+"فجأة أن يقدم عرضًا مذهلاً. إذا مررت بهذا النوع من اللحظات عندما صدمت حرفيًا "
+"أنفاسك من قبل المنفق الذي يمكن أن تظهره لنا سماء الليل ، يمكنك على الأرجح أن"
+" تتذكر تلك اللحظة بالتحديد عندما لا يمكنك أن تقول شيئًا آخر ولكن \"رائع\" "
+"لما رأيته."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_6
@@ -1586,13 +1767,18 @@ msgid ""
 "up front and get exposure to the different kinds. So before you make your "
 "first purchase…"
 msgstr ""
+"لذا ، لاختيار النوع المناسب من التلسكوب ، فإن أهدافك في استخدام التلسكوب "
+"مهمة. لفهم نقاط القوة والضعف ليس فقط في تصميم العدسات والتلسكوب ولكن أيضًا "
+"في كيفية أداء التلسكوب في المواقف المختلفة لتحديق النجوم ، فمن الأفضل القيام"
+" ببعض الواجبات المنزلية مقدمًا والتعرف على الأنواع المختلفة. لذلك قبل إجراء "
+"عملية الشراء الأولى..."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
 msgid ""
 "So you’re going abroad, you’ve chosen your destination and now you have to "
 "choose a hotel."
-msgstr ""
+msgstr "إذا كنت مسافرًا إلى الخارج ، فقد اخترت وجهتك وعليك الآن اختيار فندق."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_1
@@ -1602,7 +1788,7 @@ msgstr ""
 #: model_terms:blog.post,content:website_blog.blog_post_6
 #: model_terms:blog.post,content:website_blog.blog_post_7
 msgid "Someone famous in <cite title=\"Source Title\">Source Title</cite>"
-msgstr ""
+msgstr "احدهم مشهور في <cite title=\"Source Title\">العنوان المصدر</cite>"
 
 #. module: website_blog
 #. openerp-web
@@ -1694,6 +1880,9 @@ msgid ""
 "The 21st Century way to select and book your hotel is of course on the "
 "Internet, by using travel websites."
 msgstr ""
+"قبل عشر سنوات ، ربما تكون قد زرت وكيل سفرك المحلي ووثقت في النصيحة وجهًا "
+"لوجه التي قدمها لك ما يسمى \"الخبراء\". طريقة القرن الحادي والعشرين لاختيار "
+"فندقك وحجزه هي بالطبع على الإنترنت ، باستخدام مواقع السفر."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_4
@@ -1707,11 +1896,18 @@ msgid ""
 "begin looking for ways to look deeper and learn more about the spectacular "
 "universe we see in the millions of stars above us each night."
 msgstr ""
+"تلك اللحظة \"المدهشة\" هي ما يدور حوله علم التنجيم. بالنسبة للبعض ، تصبح تلك"
+" اللحظة المبهرة شغفًا يؤدي إلى مهنة تدرس النجوم. بالنسبة للقلة المحظوظة ، "
+"هذه اللحظة المبهرة لأن هوسًا مستهلكًا يقودهم إلى السفر إلى النجوم في مكوك "
+"الفضاء أو في إحدى مهماتنا الفضائية المبكرة. لكن بالنسبة لمعظمنا ، قد يصبح "
+"علم التنجيم هواية أو هواية عادية. لكننا نحمل هذه اللحظة المبهرة معنا لبقية "
+"حياتنا ونبدأ في البحث عن طرق للبحث بشكل أعمق ومعرفة المزيد عن الكون المذهل "
+"الذي نراه في ملايين النجوم فوقنا كل ليلة."
 
 #. module: website_blog
 #: model:blog.post,subtitle:website_blog.blog_post_5
 msgid "The beauty of astronomy is that anybody can do it."
-msgstr ""
+msgstr "جمال علم الفلك هو أن أي شخص يمكنه فعل ذلك."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_7
@@ -1724,11 +1920,17 @@ msgid ""
 "part of the moon with some detail as well, even if the moon is only at "
 "quarter or half display."
 msgstr ""
+"من الواضح أن أفضل وقت لمشاهدة القمر هو في الليل عندما يكون هناك القليل من "
+"السحب ويكون الطقس مناسبًا لدراسة طويلة ودائمة. ينتج الربع الأول أكبر تفاصيل "
+"الدراسة. ولا تنخدعوا إلا بمسح جزء من القمر عندما لا يكون في مرحلة اكتمال "
+"القمر. تمنحك الظاهرة المعروفة باسم \"سطوع الأرض\" القدرة على رؤية الجزء "
+"المظلم من القمر ببعض التفاصيل أيضًا ، حتى لو كان القمر في عرض ربع أو نصف "
+"فقط."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_7
 msgid "The best time to view the moon."
-msgstr ""
+msgstr "أفضل وقت لمشاهدة القمر."
 
 #. module: website_blog
 #: model:ir.model.fields,help:website_blog.field_blog_post__post_date
@@ -1747,6 +1949,9 @@ msgid ""
 "from Maui with Maui helicopter tours is well worth seeing the beauty of this"
 " natural environment."
 msgstr ""
+"المنحدرات في هذه المنطقة هي من بين أعلى المنحدرات في العالم ورؤية المياه "
+"تتدفق من القمم العالية هو ببساطة مذهل. رحلة قصيرة من Maui مع جولات هليكوبتر "
+"Maui تستحق رؤية جمال هذه البيئة الطبيعية."
 
 #. module: website_blog
 #: model:ir.model.fields,help:website_blog.field_blog_post__website_url
@@ -1763,6 +1968,11 @@ msgid ""
 "of your hobby. But how to buy a good telescope can be downright confusing "
 "and intimidating."
 msgstr ""
+"الشيء التالي الذي نريد بطبيعة الحال الحصول عليه هو تلسكوب جيد. ربما تكون قد "
+"رأيت أحد الهواة الذي كان جيدًا في دراستهم يقوم بإعداد تلك التلسكوبات الرائعة"
+" حقًا على تل في مكان ما. هذا يثير عالم الفلك الهاوي بداخلك لأن ذلك يجب أن "
+"يكون الخطوة المنطقية التالية في نمو هوايتك. لكن كيفية شراء تلسكوب جيد يمكن "
+"أن تكون مربكة ومخيفة بصراحة."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
@@ -1774,6 +1984,12 @@ msgid ""
 "accessibility policy. Whilst again this does not apply to every visitor, it "
 "is absolutely vital to some."
 msgstr ""
+"يجب أن يقدم الموقع تحليلاً مفصلاً للخدمات الترفيهية داخل الفندق - منتجع صحي "
+"، مسبح ، صالة ألعاب رياضية ، ساونا - بالإضافة إلى تفاصيل أي مرافق أخرى قريبة"
+" مثل ملاعب الجولف. 7. الاحتياجات الخاصة: يجب أن يقوم موقع دليل الفنادق "
+"بإبلاغ الزائر بخدمات ذوي الاحتياجات الخاصة وسياسة الوصول الخاصة بكل فندق. في"
+" حين أن هذا لا ينطبق مرة أخرى على كل زائر ، إلا أنه أمر حيوي للغاية بالنسبة "
+"للبعض."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_6
@@ -1782,6 +1998,9 @@ msgid ""
 "telescope that will live on your deck versus one that you plan to take to "
 "many remote locations."
 msgstr ""
+"سيتغير الحامل ثلاثي القوائم أو قرارات الملحقات الأخرى بشكل كبير باستخدام "
+"التلسكوب الذي سيعيش على سطح السفينة الخاص بك مقابل التلسكوب الذي تخطط لنقله "
+"إلى العديد من المواقع البعيدة."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
@@ -1795,6 +2014,12 @@ msgid ""
 "the island and it is something that is not easily accessible by any other "
 "means than by air."
 msgstr ""
+"منظر هذا مذهل حقًا وهو مشهد لا ينبغي تفويته. إنه أيضًا تعليمي للغاية مع فرصة"
+" لرؤية بركان خامد عن قرب ، وهو شيء لا يمكن رؤيته كل يوم. على الجانبين "
+"الشمالي والجنوبي من البركان ، سترى منظرًا مختلفًا لا يصدق. هذه الجوانب مورقة"
+" وخضراء وستكون قادرًا على رؤية بعض الشلالات الجميلة والفرشاة الرائعة. تكثر "
+"الغابات الاستوائية المطيرة في هذا الجانب من الجزيرة ولا يمكن الوصول إليها "
+"بسهولة بأي وسيلة أخرى غير الجو."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
@@ -1810,12 +2035,20 @@ msgid ""
 "that gives up-to-date, independent, impartial information that really "
 "matters."
 msgstr ""
+"ثم هناك مشكلة دافع المراجع. كلما قرأت المزيد من المراجعات ، كلما لاحظت كيف "
+"تميل إلى التجمع على النقيض من الرأي. من ناحية ، لديك مراجعين غاضبين لديهم "
+"محاور للطحن ؛ ومن ناحية أخرى ، فقد أسعدت الضيوف الذين يثنون على الثناء بشكل "
+"لا يصدق. لن تندهش عندما تعلم أن الفنادق تنشر أحيانًا تقييماتها البراقة ، أو "
+"يصطف هذا المنافس للحصول على فرصة لانتقاد المنافسة بالتعليقات السيئة. من "
+"المنطقي مراعاة ما هو مهم حقًا بالنسبة لك عند اختيار فندق. يجب عليك بعد ذلك "
+"اختيار دليل الفنادق عبر الإنترنت الذي يقدم معلومات حديثة ومستقلة ومحايدة "
+"مهمة حقًا."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_6
 msgid ""
 "There are other considerations to factor into your final purchase decision."
-msgstr ""
+msgstr "هناك اعتبارات أخرى يجب مراعاتها في قرار الشراء النهائي."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
@@ -1827,6 +2060,11 @@ msgid ""
 "hundreds of thousands of years ago. That light is just now reaching the "
 "earth. So in a very real way, looking up is like time travel."
 msgstr ""
+"هناك شيء خالد في الكون. حقيقة أن الكواكب والقمر والنجوم التي خلفها كانت "
+"موجودة منذ زمن طويل تفعل شيئًا لإحساسنا بمكاننا في الكون. في الواقع ، العديد"
+" من النجوم التي \"نراها\" بالعين المجردة هي في الواقع ضوء جاء من ذلك النجم "
+"منذ مئات الآلاف من السنين. هذا الضوء وصل للتو إلى الأرض. وبطريقة حقيقية "
+"للغاية ، فإن البحث يشبه السفر عبر الزمن."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_3
@@ -1835,18 +2073,20 @@ msgid ""
 " this sort of advice on bedrooms – not just the number of rooms which is the"
 " usual option!"
 msgstr ""
+"هذه الأشياء مهمة حقًا وأي دليل فندق لائق يجب أن يقدم لك هذا النوع من النصائح"
+" حول غرف النوم - وليس فقط عدد الغرف وهو الخيار المعتاد!"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.posts_loop
 msgid "This box will not be visible to your visitors"
-msgstr ""
+msgstr "لن يكون هذا المربع مرئيًا للزائرين"
 
 #. module: website_blog
 #. openerp-web
 #: code:addons/website_blog/static/src/js/website_blog.editor.js:0
 #, python-format
 msgid "Tiny"
-msgstr ""
+msgstr "صغير"
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_post__name
@@ -1863,6 +2103,10 @@ msgid ""
 "enjoyable. Moon maps can be had from any astronomy shop or online and they "
 "are well worth the investment."
 msgstr ""
+"عند النظر إلى القمر بالعين المجردة ، فإن التعرف على خريطة القمر سيساعدك على "
+"التقاط البحار والحفر والظواهر الجغرافية الأخرى التي رسمها الآخرون بالفعل "
+"لجعل دراستك أكثر إمتاعًا. يمكن الحصول على خرائط القمر من أي متجر فلك أو عبر "
+"الإنترنت وهي تستحق الاستثمار."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_4
@@ -1876,6 +2120,13 @@ msgid ""
 " if you add to that map some well done introductory materials into the hobby"
 " of astronomy, you are well on your way."
 msgstr ""
+"للبدء في تعلم كيفية مراقبة النجوم بشكل أفضل بكثير ، هناك بعض الأشياء "
+"الأساسية التي قد نحتاج إلى النظر فيها بشكل أعمق ، بخلاف ما يمكننا رؤيته "
+"بالعين المجردة والبدء في دراسة النجوم والاستمتاع بها. أول شيء تحتاجه ليس "
+"المعدات على الإطلاق بل الأدب. ستُظهر لك خريطة النجوم الجيدة الأبراج الرئيسية"
+" وموقع النجوم الرئيسية التي نستخدمها للتنقل في السماء والكواكب التي ستظهر "
+"أكبر من النجوم. وإذا أضفت إلى تلك الخريطة بعض المواد التمهيدية التي تم "
+"إجراؤها جيدًا في هواية علم الفلك ، فأنت على الطريق الصحيح."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_7
@@ -1889,6 +2140,13 @@ msgid ""
 "you can affix the binoculars to so you can study the moon in comfort and "
 "with a stable viewing platform."
 msgstr ""
+"لرفعه قليلاً ، يمكن لزوج جيد من المناظير أن يفعل العجائب للحصول على التفاصيل"
+" التي ستراها على سطح القمر. للحصول على أفضل النتائج ، احصل على مجال واسع جيد"
+" في إعدادات مجهر حتى تتمكن من الاستمتاع بالمناظر الطبيعية للقمر بكل جمالها. "
+"ولأنه يكاد يكون من المستحيل الإبقاء على المنظار ثابتًا طوال الوقت الذي تريد "
+"أن تنظر فيه إلى هذا الجسم الرائع في الفضاء ، فقد ترغب في إضافة حامل ثلاثي "
+"القوائم جيد إلى ترسانة المعدات الخاصة بك بحيث يمكنك تثبيت المنظار عليه حتى "
+"تتمكن من ذلك. دراسة القمر براحة ومن خلال منصة عرض مستقرة."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_7
@@ -1903,11 +2161,19 @@ msgid ""
 "carefully synchronized with computers for the best view of the lunar "
 "landscape."
 msgstr ""
+"للانتقال به إلى المستوى التالي الطبيعي ، قد ترغب في الاستفادة من الشراكات مع"
+" علماء فلك آخرين أو من خلال زيارة أحد التلسكوبات العظيمة حقًا التي تم "
+"إنشاؤها من قبل المتخصصين الذين استثمروا في تقنيات أفضل للقضاء على التداخل في"
+" الغلاف الجوي لرؤية القمر حتى أفضل. يمكن أن يمنحك الإنترنت إمكانية الوصول "
+"إلى هابل والعديد من التلسكوبات الضخمة الموجهة نحو القمر طوال الوقت. علاوة "
+"على ذلك ، تعمل العديد من نوادي علم الفلك على طرق لدمج تلسكوبات متعددة ، "
+"متزامنة بعناية مع أجهزة الكمبيوتر للحصول على أفضل رؤية للمناظر الطبيعية "
+"للقمر."
 
 #. module: website_blog
 #: model:blog.blog,name:website_blog.blog_blog_1
 msgid "Travel"
-msgstr ""
+msgstr "السفر"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_share_links_display
@@ -2020,7 +2286,7 @@ msgstr "صورة الرسم البياني المفتوح للموقع"
 #. module: website_blog
 #: model:blog.post,name:website_blog.blog_post_5
 msgid "What If They Let You Run The Hubble"
-msgstr ""
+msgstr "ماذا لو سمحوا لك بتشغيل تليسكوب هابل"
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_5
@@ -2031,11 +2297,15 @@ msgid ""
 "you look up. Here are some steps you can take to make the moments you can "
 "devote to your hobby of astronomy much more enjoyable."
 msgstr ""
+"بينما يمكن لأي شخص البحث عن النجوم والوقوع في حبها في أي وقت ، فإن متعة علم "
+"الفلك هي تعلم كيفية أن تصبح أكثر وأكثر مهارة ومجهزة في التحديق بالنجوم الذي "
+"تراه وتفهمه أكثر فأكثر في كل مرة تنظر فيها. فيما يلي بعض الخطوات التي يمكنك "
+"اتخاذها لجعل اللحظات التي يمكنك تخصيصها لهواية علم الفلك أكثر إمتاعًا."
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.sidebar_blog_index
 msgid "Write a small text here to describe your blog or company."
-msgstr ""
+msgstr "اكتب نصًا صغيرًا هنا لوصف مدونتك أو شركتك."
 
 #. module: website_blog
 #. openerp-web
@@ -2055,6 +2325,12 @@ msgid ""
 "offerings like a Pillow menu or Bath menu, choice of smoking or non smoking "
 "rooms etc."
 msgstr ""
+"يجب عليك دائمًا التفكير بعناية في نوع المرافق التي تحتاجها من غرفة نومك "
+"والعثور على الفندق الذي به تلك التي تعتبرها مهمة. يجب أن يوضح موقع دليل "
+"الفندق على الويب أمورًا مثل: حجم السرير ، والوصول إلى الإنترنت (تكلفته ، "
+"سواء كان هناك اتصال واي فاي أو اتصال سلكي واسع النطاق) ، ووسائل الراحة "
+"المجانية ، وإطلالات من الغرفة والعروض الفاخرة مثل قائمة الوسائد أو قائمة باث"
+" ، واختيار من غرف للمدخنين أو لغير المدخنين وما إلى ذلك."
 
 #. module: website_blog
 #: model_terms:blog.post,content:website_blog.blog_post_2
@@ -2068,11 +2344,18 @@ msgid ""
 "considerable amount of time, you may want to think about doing multiple Maui"
 " helicopter tours."
 msgstr ""
+"سترى كل الجمال الذي تقدمه ماوي ويمكن أن تقضي وقتًا ممتعًا لجميع أفراد "
+"الأسرة. الجولات ليست باهظة الثمن وتستمر من خمس وأربعين دقيقة إلى أكثر من "
+"ساعة. يمكنك مشاهدة الأماكن التي يتعذر الوصول إليها عادةً من خلال جولات "
+"طائرات الهليكوبتر في ماوي. يمكن رؤية الأماكن غير المتوفرة سيرًا على الأقدام "
+"أو بالسيارة عن طريق الجو. مناظر خلابة تنتظر أولئك الذين يستعدون لبعض جولات "
+"مروحية ماوي الممتعة. إذا كنت ستقيم في الجزيرة لفترة طويلة من الوقت ، فقد "
+"ترغب في التفكير في القيام بجولات متعددة بطائرة هليكوبتر ماوي."
 
 #. module: website_blog
 #: model:blog.tag,name:website_blog.blog_tag_2
 msgid "adventure"
-msgstr ""
+msgstr "مفامرة"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_share_links_display
@@ -2101,7 +2384,7 @@ msgstr "بواسطة"
 #. module: website_blog
 #: model:blog.tag,name:website_blog.blog_tag_5
 msgid "discovery"
-msgstr ""
+msgstr "اكتشاف"
 
 #. module: website_blog
 #: model:blog.tag,name:website_blog.blog_tag_3
@@ -2116,7 +2399,7 @@ msgstr "تم نشره على"
 #. module: website_blog
 #: model:blog.tag,name:website_blog.blog_tag_1
 msgid "hotels"
-msgstr ""
+msgstr "فنادق"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blog_post_content
@@ -2126,12 +2409,12 @@ msgstr "في"
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_cover_post
 msgid "in <i class=\"fa fa-folder-open text-muted\"/>"
-msgstr ""
+msgstr "في <i class=\"fa fa-folder-open text-muted\"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_cover_post_fullwidth_design
 msgid "in <i class=\"fa fa-folder-open text-white-75\"/>"
-msgstr ""
+msgstr "في <i class=\"fa fa-folder-open text-white-75\"/>"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.blog_post_short
@@ -2141,7 +2424,7 @@ msgstr ""
 #. module: website_blog
 #: model:blog.tag,name:website_blog.blog_tag_4
 msgid "telescopes"
-msgstr ""
+msgstr "التلسكوبات"
 
 #. module: website_blog
 #: model_terms:ir.ui.view,arch_db:website_blog.opt_blog_post_comment

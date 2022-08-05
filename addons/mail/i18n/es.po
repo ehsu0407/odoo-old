@@ -20,7 +20,6 @@
 # Rick Hunter <rick_hunter_ec@yahoo.com>, 2019
 # Inigo Zuluaga <inigo_zuluaga@yahoo.es>, 2019
 # Cristopher Cravioto <ccr@odoo.com>, 2019
-# Jerome Vanhaudenard <jev@odoo.com>, 2019
 # Mariana Santos Romo <msn@odoo.com>, 2019
 # Efrem Jimenez <efj@odoo.com>, 2019
 # Martin Trigaux, 2019
@@ -31,10 +30,11 @@
 # VivianMontana23 <vivianpvm@gmail.com>, 2020
 # Osiris Anael Roman Eras <osiris.roman@yachaytech.edu.ec>, 2020
 # Jesús Alan Ramos Rodríguez <alan.ramos@jarsa.com.mx>, 2020
-# Pedro M. Baeza <pedro.baeza@tecnativa.com>, 2021
 # Lucia Pacheco <lpo@odoo.com>, 2021
 # Jairo Llopis <yajo.sk8@gmail.com>, 2021
 # jabelchi, 2021
+# Pere Martínez, 2021
+# Pedro M. Baeza <pedro.baeza@tecnativa.com>, 2022
 # 
 msgid ""
 msgstr ""
@@ -42,13 +42,13 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-27 09:22+0000\n"
 "PO-Revision-Date: 2019-08-26 09:11+0000\n"
-"Last-Translator: jabelchi, 2021\n"
+"Last-Translator: Pedro M. Baeza <pedro.baeza@tecnativa.com>, 2022\n"
 "Language-Team: Spanish (https://www.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: mail
 #: code:addons/mail/models/mail_channel.py:0
@@ -104,7 +104,7 @@ msgstr "%s (copia)"
 #: code:addons/mail/static/src/js/models/threads/mixins/thread_typing_mixin.js:0
 #, python-format
 msgid "%s and %s are typing..."
-msgstr "%s y %s están escribiendo.."
+msgstr "%s y %s están escribiendo..."
 
 #. module: mail
 #: code:addons/mail/models/mail_thread.py:0
@@ -117,14 +117,14 @@ msgstr "%s creado"
 #: code:addons/mail/static/src/js/models/threads/mixins/thread_typing_mixin.js:0
 #, python-format
 msgid "%s is typing..."
-msgstr "%s esta escribiendo.."
+msgstr "%s esta escribiendo..."
 
 #. module: mail
 #. openerp-web
 #: code:addons/mail/static/src/js/models/threads/mixins/thread_typing_mixin.js:0
 #, python-format
 msgid "%s, %s and more are typing..."
-msgstr "%s, %s y más están escribiendo.."
+msgstr "%s, %s y más están escribiendo..."
 
 #. module: mail
 #: code:addons/mail/models/mail_activity.py:0
@@ -2458,7 +2458,7 @@ msgstr "Seguidores (Canales)"
 #: model:ir.model.fields,field_description:mail.field_res_partner__message_partner_ids
 #: model:ir.model.fields,field_description:mail.field_res_users__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "Seguidores (Empresas)"
+msgstr "Seguidores (Contactos)"
 
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.view_mail_subscription_form
@@ -3024,7 +3024,7 @@ msgstr "Es una notificación"
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_notification__is_read
 msgid "Is Read"
-msgstr "Es leído"
+msgstr "Está leído"
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_channel__is_subscribed
@@ -3425,14 +3425,14 @@ msgstr "Marcar como hecho"
 #: code:addons/mail/static/src/xml/discuss.xml:0
 #, python-format
 msgid "Mark all as read"
-msgstr "Marcar todo como leido"
+msgstr "Marcar todo como leído"
 
 #. module: mail
 #. openerp-web
 #: code:addons/mail/static/src/xml/discuss.xml:0
 #, python-format
 msgid "Mark all read"
-msgstr "Marcar todo como leido"
+msgstr "Marcar todo como leído"
 
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.mail_activity_view_form_popup
@@ -3445,7 +3445,7 @@ msgstr "Marcar como Hecho"
 #: code:addons/mail/static/src/xml/thread.xml:0
 #, python-format
 msgid "Mark as Read"
-msgstr "Marcar como leido"
+msgstr "Marcar como leído"
 
 #. module: mail
 #. openerp-web
@@ -5070,7 +5070,7 @@ msgstr "Reenviar correo electrónico"
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.mail_resend_message_view_form
 msgid "Resend to selected"
-msgstr "Reenvíe para seleccionar"
+msgstr "Reenviar a seleccionados"
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_resend_partner__resend_wizard_id
@@ -6525,12 +6525,12 @@ msgstr ""
 #: code:addons/mail/models/mail_thread.py:0
 #, python-format
 msgid "You have been assigned to %s"
-msgstr "Has sido asignado a %s"
+msgstr "Ha sido asignado a %s"
 
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.message_user_assigned
 msgid "You have been assigned to the"
-msgstr "Has sido asignado al"
+msgstr "Ha sido asignado al"
 
 #. module: mail
 #. openerp-web
