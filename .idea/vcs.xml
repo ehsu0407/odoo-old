@@ -5,21 +5,30 @@
     <mapping directory="$PROJECT_DIR$/uniware" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/CybroAddons" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/OpenHRMS" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/account-financial-reporting" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/account-financial-tools" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/account-invoicing" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/commission" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/connector" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/e-commerce" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/hr" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/odoo-addons" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/odoo-cloud-platform" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/odooapps" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/operating-unit" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/product-attribute" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/purchase-workflow" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/queue" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/reporting-engine" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/sale-workflow" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/server-backend" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/server-env" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/server-ux" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/stock-logistics-barcode" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/stock-logistics-transport" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/stock-logistics-warehouse" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/stock-logistics-workflow" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uniware/addons_external/storage" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/transport-management-system" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/ventor-merp" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/uniware/addons_external/web" vcs="Git" />
